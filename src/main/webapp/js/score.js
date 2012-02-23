@@ -13,6 +13,7 @@ var Sets = {
 		Sets.setLabel = setLabel;
 		$('label', document.getElementById(Sets.setsPane)).append(Sets.count + Sets.nthSetLabel);
 		$('input', document.getElementById(Sets.setsPane)).blur(Sets.switchSidesIfNeeded);
+		Sets.updateAllSetsInfo();
 		Sets.switchSidesIfNeeded();
 	},
 
@@ -45,6 +46,7 @@ var Sets = {
 
 	updateAllSetsInfo: function() {
 		var sets = Sets.getAllSets();
+		Sets.count = sets.length;
 		var jSet = $(sets[0]);
 		jSet.attr('id', Sets.setsPane);
 		Sets.decorate(jSet, 1);
@@ -145,7 +147,6 @@ var Sets = {
 };
 
 $(function() {
-	$( "#date" ).datepicker();
 	var availableTags = [
 		"ActionScript",
 		"AppleScript",
