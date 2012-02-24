@@ -1,3 +1,18 @@
+var playersList = ["Andre Agassi",
+                   "Pete Sampras",
+                   "Sergi Bruguera",
+                   "Yevgeny Kafelnikov",
+                   "Goran Ivanisevic",
+                   "Slobodan Milosevic",
+                   "Richard Krajicek",
+                   "Jimmy Connors",
+                   "Felipe Freitas",
+                   "Roger Federer",
+                   "Rafael Nadal",
+                   "Andy Roddick",
+                   "Novak Jokovic",
+                   "Andy Murray"];
+
 var Sets = {
 	MAX: 5,
 	playersPane: "",
@@ -99,8 +114,8 @@ var Sets = {
 			Sets.switchSides();
 		}
 	},
-	
-	// returns -1, left; 0, no winner; 1, right 
+
+	// returns -1: left; 0: no winner; 1: right 
 	calculateWinner: function() {
 		var leftTotal = 0;
 		var rightTotal = 0;
@@ -146,64 +161,140 @@ var Sets = {
 	}
 };
 
-$(function() {
-	var availableTags = [
-		"ActionScript",
-		"AppleScript",
-		"Asp",
-		"BASIC",
-		"C",
-		"C++",
-		"Clojure",
-		"COBOL",
-		"ColdFusion",
-		"Erlang",
-		"Fortran",
-		"Groovy",
-		"Haskell",
-		"Java",
-		"JavaScript",
-		"Lisp",
-		"Perl",
-		"PHP",
-		"Python",
-		"Ruby",
-		"Scala",
-		"Scheme"
-	];
-	function split( val ) {
-		return val.split( /,\s*/ );
-	}
-	function extractLast( term ) {
-		return split( term ).pop();
-	}
-	$( "#playersLeft,#playersRight" ).bind( "keydown", function( event ) {
-			if ( event.keyCode === $.ui.keyCode.TAB &&
-					$( this ).data( "autocomplete" ).menu.active ) {
-				event.preventDefault();
+var NewPlayerWizzard = {
+	contextPath: "",
+	label_yes: "",
+	label_no: "",
+	continueWithSavingProcessCallback: {},
+	newPlayers: [],
+	currentNewPlayer: 0,
+	step1_associationRequested: false,
+
+	init: function(choosenPlayers, contextPath, label_yes, label_no) {
+		NewPlayerWizzard.label_yes = label_yes;
+		NewPlayerWizzard.label_no = label_no;
+		NewPlayerWizzard.contextPath = contextPath;
+		NewPlayerWizzard.currentNewPlayer = 0;
+		NewPlayerWizzard.continueWithSavingProcessCallback = function() {
+			$("#score-form").submit();
+		};
+
+		NewPlayerWizzard.start(choosenPlayers, playersList);
+	},
+
+	start: function(choosenPlayers, playersList) {
+		NewPlayerWizzard.newPlayers = NewPlayerWizzard.createList(choosenPlayers, playersList);
+
+		NewPlayerWizzard.startForCurrentPlayer();
+	},
+
+	createList : function(choosenPlayers, playersList) {
+		var choosenPlayers = NewPlayerWizzard.trimList(choosenPlayers);
+		var result = choosenPlayers.split(',');
+		var choosenPlayersList = choosenPlayers.split(',');
+		for ( var j = 0; j < playersList.length; j++) {
+			for ( var i = 0; i < choosenPlayersList.length; i++) {
+				if (choosenPlayersList[i] == '' || playersList[j] == '') {
+					if (choosenPlayersList[i] == '') {
+						choosenPlayersList.splice(i, 1);
+						result.splice(i, 1);
+						i--;
+					}
+					continue;
+				}
+				if (choosenPlayersList[i].toUpperCase() == playersList[j]
+						.toUpperCase()) {
+					choosenPlayersList.splice(i, 1);
+					result.splice(i, 1);
+					i--;
+				}
 			}
-		})
-		.autocomplete({
-			minLength: 0,
-			source: function( request, response ) {
-				// delegate back to autocomplete, but extract the last term
-				response( $.ui.autocomplete.filter(
-					availableTags, extractLast( request.term ) ) );
-			},
-			focus: function() {
-				// prevent value inserted on focus
-				return false;
-			},
-			select: function( event, ui ) {
-				var terms = split( this.value );
-				// remove the current input
-				terms.pop();
-				// add the selected item
-				terms.push( ui.item.value );
-				// add placeholder to get the comma-and-space at the end
-				terms.push( "" );
-				this.value = terms.join( ", " );
-				return false;
-			}
-		});
-});
+		}
+		return result;
+	},
+
+	trimList: function(commaSeparatedString) {
+		var result = commaSeparatedString.split(',');
+		for (var i = 0; i<result.length; i++) {
+			result[i] = result[i].trim();
+		}
+		return result.join(',');
+	},
+
+	startForCurrentPlayer: function() {
+		console.log('startForCurrentPlayer');
+		NewPlayerWizzard.step1_associationRequested = false;
+		if (NewPlayerWizzard.currentNewPlayer < NewPlayerWizzard.newPlayers.length) {
+			$.ajax({
+				url: NewPlayerWizzard.contextPath+"/app/score/newUser",
+				data: {'player': NewPlayerWizzard.newPlayers[NewPlayerWizzard.currentNewPlayer++]}, 
+				type: 'POST',
+				dataType: 'json',
+				cache: false,
+				success: NewPlayerWizzard.step1
+			});
+		} else {
+			NewPlayerWizzard.continueWithSavingProcessCallback();
+		}
+	},
+
+	step1: function(data) {
+		console.log('step1');
+		if (data.proceedWithConfirmation) {
+			$("#dialog-confirm").attr('title', data.title);
+			$("#dialog-confirm").dialog({
+				resizable: false,
+				height: 140,
+				modal: true,
+				close : function() {
+					$("#dialog-confirm").dialog("destroy");
+					if (!NewPlayerWizzard.step1_associationRequested) {
+						NewPlayerWizzard.startForCurrentPlayer();
+					}
+				},
+				buttons : [ {
+					text : NewPlayerWizzard.label_yes,
+					click : function() {
+						NewPlayerWizzard.step1_associationRequested = true;
+						$("#dialog-confirm").dialog("close");
+						NewPlayerWizzard.step2();
+					}
+				}, {
+					text : NewPlayerWizzard.label_no,
+					click : function() {
+						$("#dialog-confirm").dialog("close");
+					}
+				} ]
+			});
+		} else {
+			NewPlayerWizzard.startForCurrentPlayer();
+		}
+	},
+
+	step2: function() {
+		console.log('step2');
+		$("#dialog-search").dialog("open");
+	},
+
+	step3: function(data) {
+		console.log('step3');
+		$("#dialog-search").dialog( "close" );
+		if (data.playerFound) {
+			// shows popup where user can send association request
+		} else { 
+			// shows popup where user can send inivitation to scoreshared
+		}
+	},
+
+	step4a: function() {
+		console.log('step4a');
+		// sends association request
+		// closes popup
+	},
+
+	step4b: function() {
+		console.log('step4b');
+		// sends invitation
+		// closes popup
+	}
+};
