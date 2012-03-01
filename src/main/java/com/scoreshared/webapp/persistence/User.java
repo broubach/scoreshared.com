@@ -6,6 +6,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String avatarUrl;
+    private Profile profile;
 
     public int getId() {
         return id;
@@ -37,5 +39,21 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

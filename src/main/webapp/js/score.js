@@ -168,7 +168,7 @@ var NewPlayerWizzard = {
 	continueWithSavingProcessCallback: {},
 	newPlayers: [],
 	currentNewPlayer: 0,
-	step1_associationRequested: false,
+	stepSucceeded: false,
 
 	init: function(choosenPlayers, contextPath, label_yes, label_no) {
 		NewPlayerWizzard.label_yes = label_yes;
@@ -223,7 +223,7 @@ var NewPlayerWizzard = {
 
 	startForCurrentPlayer: function() {
 		console.log('startForCurrentPlayer');
-		NewPlayerWizzard.step1_associationRequested = false;
+		NewPlayerWizzard.stepSucceeded = false;
 		if (NewPlayerWizzard.currentNewPlayer < NewPlayerWizzard.newPlayers.length) {
 			$.ajax({
 				url: NewPlayerWizzard.contextPath+"/app/score/newUser",
@@ -248,14 +248,16 @@ var NewPlayerWizzard = {
 				modal: true,
 				close : function() {
 					$("#dialog-confirm").dialog("destroy");
-					if (!NewPlayerWizzard.step1_associationRequested) {
+					if (!NewPlayerWizzard.stepSucceeded) {
 						NewPlayerWizzard.startForCurrentPlayer();
+					} else {
+						NewPlayerWizzard.stepSucceeded = false;
 					}
 				},
 				buttons : [ {
 					text : NewPlayerWizzard.label_yes,
 					click : function() {
-						NewPlayerWizzard.step1_associationRequested = true;
+						NewPlayerWizzard.stepSucceeded = true;
 						$("#dialog-confirm").dialog("close");
 						NewPlayerWizzard.step2();
 					}
@@ -280,21 +282,25 @@ var NewPlayerWizzard = {
 		console.log('step3');
 		$("#dialog-search").dialog( "close" );
 		if (data.playerFound) {
-			// shows popup where user can send association request
+			$("#requested dt").text(data.playerName);
+			$("#requested dd").text(data.playerLocation);
+			$("#friendRequest-form textarea").text(data.requestMessage);
+			$("#dialog-friendRequest").dialog("open");
 		} else { 
-			// shows popup where user can send inivitation to scoreshared
+			$("#invitation-form textarea").text(data.invitationMessage);
+			$("#dialog-invitation").dialog("open");
 		}
 	},
 
 	step4a: function() {
 		console.log('step4a');
-		// sends association request
-		// closes popup
+		$("#dialog-friendRequest").dialog( "close" );
+		NewPlayerWizzard.startForCurrentPlayer();
 	},
 
 	step4b: function() {
 		console.log('step4b');
-		// sends invitation
-		// closes popup
+		$("#dialog-invitation").dialog( "close" );
+		NewPlayerWizzard.startForCurrentPlayer();
 	}
 };

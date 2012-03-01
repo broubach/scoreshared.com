@@ -65,6 +65,28 @@
 			</form>
 		</div>
 
+		<div id="dialog-friendRequest" title="<@spring.message code="label.association"/>">
+			<form id="friendRequest-form">
+				<dl id="requested">
+					<dt></dt>
+					<dd></dd>
+				</dl>
+				<dl>
+					<dt><textarea id="message"></textarea></dt>
+					<dd></dd>
+				</dl>
+			</form>
+		</div>
+
+		<div id="dialog-invitation" title="<@spring.message code="label.association"/>">
+			<form id="invitation-form">
+				<dl>
+					<dt></dt>
+					<dd><textarea id="message"></textarea></dd>
+				</dl>
+			</form>
+		</div>
+
 	</body>
 </html>
 
@@ -124,11 +146,20 @@ $(function() {
 		height: 300,
 		width: 350,
 		modal: true,
+		open: function() {
+			$('#search-form input').val('');
+		},
+		close : function() {
+			if (!NewPlayerWizzard.stepSucceeded) {
+				NewPlayerWizzard.startForCurrentPlayer();
+			} else {
+				NewPlayerWizzard.stepSucceeded = false;
+			}
+		},
 		buttons: [{
 			text: "<@spring.message code="label.associate"/>",
 			click: function() {
-			    // validate form fields
-			    
+				NewPlayerWizzard.stepSucceeded = true;
 				$.ajax({
 					url: NewPlayerWizzard.contextPath+"/app/score/searchNewUser",
 					data: $('#search-form').serialize(), 
@@ -136,6 +167,62 @@ $(function() {
 					dataType: 'json',
 					cache: false,
 					success: NewPlayerWizzard.step3
+				});
+			}
+		}]
+	});		
+
+	$( "#dialog-friendRequest" ).dialog({
+		autoOpen: false,
+		height: 300,
+		width: 350,
+		modal: true,
+		close : function() {
+			if (!NewPlayerWizzard.stepSucceeded) {
+				NewPlayerWizzard.startForCurrentPlayer();
+			} else {
+				NewPlayerWizzard.stepSucceeded = false;
+			}
+		},
+		buttons: [{
+			text: "<@spring.message code="label.associate"/>",
+			click: function() {
+				NewPlayerWizzard.stepSucceeded = true;
+				$.ajax({
+					url: NewPlayerWizzard.contextPath+"/app/score/newFriendRequest",
+					data: $('#friendRequest-form').serialize(), 
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: NewPlayerWizzard.step4a
+				});
+			}
+		}]
+	});
+
+	$( "#dialog-invitation" ).dialog({
+		autoOpen: false,
+		height: 300,
+		width: 350,
+		modal: true,
+		close : function() {
+			if (!NewPlayerWizzard.stepSucceeded) {
+				NewPlayerWizzard.startForCurrentPlayer();
+			} else {
+				NewPlayerWizzard.stepSucceeded = false;
+			}
+		},
+		buttons: [{
+			text: "<@spring.message code="label.associate"/>",
+			click: function() {
+				NewPlayerWizzard.stepSucceeded = true;
+				$.ajax({
+					url: NewPlayerWizzard.contextPath+"/app/score/newInvitation",
+					data: $('#invitation-form').serialize(), 
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: NewPlayerWizzard.step4b
 				});
 			}
 		}]

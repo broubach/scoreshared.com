@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.webapp.view.dto.FriendRequestModel;
+import com.scoreshared.webapp.view.dto.InvitationModel;
 import com.scoreshared.webapp.view.dto.ScoreModel;
 import com.scoreshared.webapp.view.dto.SearchModel;
 
@@ -30,6 +32,8 @@ public class ScoreController {
         ModelAndView mav = new ModelAndView("score");
         mav.addObject("score", new ScoreModel());
         mav.addObject("search", new SearchModel());
+        mav.addObject("friendRequest", new FriendRequestModel());
+        mav.addObject("invitation", new InvitationModel());
         return mav;
     }
 
@@ -41,6 +45,8 @@ public class ScoreController {
         ModelAndView mav = new ModelAndView("score");
         mav.addObject("score", score);
         mav.addObject("search", new SearchModel());
+        mav.addObject("friendRequest", new FriendRequestModel());
+        mav.addObject("invitation", new InvitationModel());
         return mav;
     }
 
@@ -59,15 +65,15 @@ public class ScoreController {
 
     @RequestMapping(value = "/searchNewUser", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> searchNewUser(@ModelAttribute SearchModel search) {
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("playerFound", "false");
+    public Map<String, Object> searchNewUser(@ModelAttribute SearchModel search) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("playerFound", Boolean.FALSE);
         result.put("invitationMessage",
                 "Olá Felipe! Quero compartilhar meus resultados com você! Junte-se a mim no ScoreShared!");
         if (!search.getEmail().isEmpty()) {
             // search by email
             if (search.getEmail().equalsIgnoreCase("fdfreitas8@hotmail.com")) {
-                result.put("playerFound", "true");
+                result.put("playerFound", Boolean.TRUE);
                 result.put("playerName", "Felipe Freitas");
                 result.put("playerLocation", "Belo Horizonte, Brasil");
                 result.put("requestMessage", "Olá Felipe! Posso compartilhar meus resultados com você?");
@@ -76,6 +82,20 @@ public class ScoreController {
         } else {
             // search by other fields
         }
+        return result;
+    }
+
+    @RequestMapping(value = "/newFriendRequest", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> postFriendRequest(@ModelAttribute FriendRequestModel friendRequest) {
+        Map<String, String> result = new HashMap<String, String>();
+        return result;
+    }
+
+    @RequestMapping(value = "/newInvitation", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> postInvitation(@ModelAttribute InvitationModel friendRequest) {
+        Map<String, String> result = new HashMap<String, String>();
         return result;
     }
 }
