@@ -71,7 +71,7 @@
 					<dt></dt>
 					<dd></dd>
 				</dl>
-				<dl>
+				<dl id="requester">
 					<dt><textarea id="message"></textarea></dt>
 					<dd></dd>
 				</dl>
@@ -107,9 +107,19 @@ $(function() {
 	$("#time").mask("99:99");
 	$("#date").datepicker({dateFormat: '<@spring.message code="label.datepicker_date_format"/>'});
 	Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>");
-	$(':button').click(function() {
-		NewPlayerWizzard.init($("#playersLeft").val() + ',' + $("#playersRight").val(), '<@spring.url relativeUrl="/"/>','<@spring.message code="label.yes"/>', '<@spring.message code="label.no"/>');
-	});
+
+	var newPlayerWizzardOptions = {
+		contextPath: '<@spring.url relativeUrl="/"/>',
+		label_yes: '<@spring.message code="label.yes"/>',
+		label_no: '<@spring.message code="label.no"/>',
+		label_associate: '<@spring.message code="label.associate"/>',
+		label_send_request: '<@spring.message code="label.send_request"/>',
+		label_invite_to_scoreshared: '<@spring.message code="label.invite_to_scoreshared"/>',
+		label_user_not_found: '<@spring.message code="label.user_not_found"/>',
+		label_take_the_opportunity_to_invite: '<@spring.message code="label.take_the_opportunity_to_invite"/>',
+		loggedUserAvatarUrl: '/loggedUser/avatar/url'
+	};
+	NewPlayerWizzard.init(newPlayerWizzardOptions);
 
 	$( "#playersLeft,#playersRight" ).bind( "keydown", function( event ) {
 			if ( event.keyCode === $.ui.keyCode.TAB &&
@@ -140,93 +150,6 @@ $(function() {
 				return false;
 			}
 		});
-
-	$( "#dialog-search" ).dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
-		open: function() {
-			$('#search-form input').val('');
-		},
-		close : function() {
-			if (!NewPlayerWizzard.stepSucceeded) {
-				NewPlayerWizzard.startForCurrentPlayer();
-			} else {
-				NewPlayerWizzard.stepSucceeded = false;
-			}
-		},
-		buttons: [{
-			text: "<@spring.message code="label.associate"/>",
-			click: function() {
-				NewPlayerWizzard.stepSucceeded = true;
-				$.ajax({
-					url: NewPlayerWizzard.contextPath+"/app/score/searchNewUser",
-					data: $('#search-form').serialize(), 
-					type: 'POST',
-					dataType: 'json',
-					cache: false,
-					success: NewPlayerWizzard.step3
-				});
-			}
-		}]
-	});		
-
-	$( "#dialog-friendRequest" ).dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
-		close : function() {
-			if (!NewPlayerWizzard.stepSucceeded) {
-				NewPlayerWizzard.startForCurrentPlayer();
-			} else {
-				NewPlayerWizzard.stepSucceeded = false;
-			}
-		},
-		buttons: [{
-			text: "<@spring.message code="label.associate"/>",
-			click: function() {
-				NewPlayerWizzard.stepSucceeded = true;
-				$.ajax({
-					url: NewPlayerWizzard.contextPath+"/app/score/newFriendRequest",
-					data: $('#friendRequest-form').serialize(), 
-					type: 'POST',
-					dataType: 'json',
-					cache: false,
-					success: NewPlayerWizzard.step4a
-				});
-			}
-		}]
-	});
-
-	$( "#dialog-invitation" ).dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
-		close : function() {
-			if (!NewPlayerWizzard.stepSucceeded) {
-				NewPlayerWizzard.startForCurrentPlayer();
-			} else {
-				NewPlayerWizzard.stepSucceeded = false;
-			}
-		},
-		buttons: [{
-			text: "<@spring.message code="label.associate"/>",
-			click: function() {
-				NewPlayerWizzard.stepSucceeded = true;
-				$.ajax({
-					url: NewPlayerWizzard.contextPath+"/app/score/newInvitation",
-					data: $('#invitation-form').serialize(), 
-					type: 'POST',
-					dataType: 'json',
-					cache: false,
-					success: NewPlayerWizzard.step4b
-				});
-			}
-		}]
-	});		
 });
 
 </script>

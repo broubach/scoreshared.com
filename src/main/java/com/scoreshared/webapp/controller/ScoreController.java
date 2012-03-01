@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.scoreshared.webapp.view.dto.FriendRequestModel;
-import com.scoreshared.webapp.view.dto.InvitationModel;
 import com.scoreshared.webapp.view.dto.ScoreModel;
 import com.scoreshared.webapp.view.dto.SearchModel;
 
@@ -32,8 +30,6 @@ public class ScoreController {
         ModelAndView mav = new ModelAndView("score");
         mav.addObject("score", new ScoreModel());
         mav.addObject("search", new SearchModel());
-        mav.addObject("friendRequest", new FriendRequestModel());
-        mav.addObject("invitation", new InvitationModel());
         return mav;
     }
 
@@ -45,8 +41,6 @@ public class ScoreController {
         ModelAndView mav = new ModelAndView("score");
         mav.addObject("score", score);
         mav.addObject("search", new SearchModel());
-        mav.addObject("friendRequest", new FriendRequestModel());
-        mav.addObject("invitation", new InvitationModel());
         return mav;
     }
 
@@ -68,33 +62,39 @@ public class ScoreController {
     public Map<String, Object> searchNewUser(@ModelAttribute SearchModel search) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("playerFound", Boolean.FALSE);
-        result.put("invitationMessage",
-                "Olá Felipe! Quero compartilhar meus resultados com você! Junte-se a mim no ScoreShared!");
         if (!search.getEmail().isEmpty()) {
             // search by email
             if (search.getEmail().equalsIgnoreCase("fdfreitas8@hotmail.com")) {
                 result.put("playerFound", Boolean.TRUE);
                 result.put("playerName", "Felipe Freitas");
                 result.put("playerLocation", "Belo Horizonte, Brasil");
+                result.put("playerAvatarUrl", "/player/avatar/url");
                 result.put("requestMessage", "Olá Felipe! Posso compartilhar meus resultados com você?");
             }
 
         } else {
             // search by other fields
         }
+
+        if (search.getEmail().isEmpty()) {
+            // not found
+            result.put("playerName", "Felipe Freitas");
+            result.put("invitationMessage",
+                    "Olá Felipe! Quero compartilhar meus resultados com você! Junte-se a mim no ScoreShared!");
+        }
         return result;
     }
 
     @RequestMapping(value = "/newFriendRequest", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> postFriendRequest(@ModelAttribute FriendRequestModel friendRequest) {
+    public Map<String, String> postFriendRequest(@ModelAttribute(value = "message") String friendRequestMessage) {
         Map<String, String> result = new HashMap<String, String>();
         return result;
     }
 
     @RequestMapping(value = "/newInvitation", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> postInvitation(@ModelAttribute InvitationModel friendRequest) {
+    public Map<String, String> postInvitation(@ModelAttribute(value = "message") String invitationMessage) {
         Map<String, String> result = new HashMap<String, String>();
         return result;
     }

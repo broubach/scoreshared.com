@@ -162,29 +162,32 @@ var Sets = {
 };
 
 var NewPlayerWizzard = {
-	contextPath: "",
-	label_yes: "",
-	label_no: "",
-	continueWithSavingProcessCallback: {},
+	options: {},
 	newPlayers: [],
 	currentNewPlayer: 0,
 	stepSucceeded: false,
 
-	init: function(choosenPlayers, contextPath, label_yes, label_no) {
-		NewPlayerWizzard.label_yes = label_yes;
-		NewPlayerWizzard.label_no = label_no;
-		NewPlayerWizzard.contextPath = contextPath;
-		NewPlayerWizzard.currentNewPlayer = 0;
-		NewPlayerWizzard.continueWithSavingProcessCallback = function() {
-			$("#score-form").submit();
-		};
-
-		NewPlayerWizzard.start(choosenPlayers, playersList);
+	applyDefaults: function(options){
+		options['contextPath'] = (options['contextPath'] == undefined ? '/scoreshared' : options['contextPath']);
+		options['label_yes'] = (options['label_yes'] == undefined ? 'yes' : options['label_yes']);
+		options['label_no'] = (options['label_no'] == undefined ? 'no' : options['label_no']);
+		options['label_send_request'] = (options['label_send_request'] == undefined ? 'send request' : options['label_send_request']);
+		options['label_invite_to_scoreshared'] = (options['label_invite_to_scoreshared'] == undefined ? 'invite to scoreshared' : options['label_invite_to_scoreshared']);
+		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
+		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
+		options['loggedUserAvatarUrl'] = (options['loggedUserAvatarUrl'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarUrl']);
+		if (options['continueWithSavingProcessCallback'] == undefined) {
+			options.continueWithSavingProcessCallback = function() {
+				$("#score-form").submit();
+			};
+		}
+		return options;
 	},
 
-	start: function(choosenPlayers, playersList) {
+	start: function(choosenPlayers) {
 		NewPlayerWizzard.newPlayers = NewPlayerWizzard.createList(choosenPlayers, playersList);
 
+		NewPlayerWizzard.currentNewPlayer = 0;
 		NewPlayerWizzard.startForCurrentPlayer();
 	},
 
@@ -226,7 +229,7 @@ var NewPlayerWizzard = {
 		NewPlayerWizzard.stepSucceeded = false;
 		if (NewPlayerWizzard.currentNewPlayer < NewPlayerWizzard.newPlayers.length) {
 			$.ajax({
-				url: NewPlayerWizzard.contextPath+"/app/score/newUser",
+				url: NewPlayerWizzard.options.contextPath+"/app/score/newUser",
 				data: {'player': NewPlayerWizzard.newPlayers[NewPlayerWizzard.currentNewPlayer++]}, 
 				type: 'POST',
 				dataType: 'json',
@@ -234,7 +237,7 @@ var NewPlayerWizzard = {
 				success: NewPlayerWizzard.step1
 			});
 		} else {
-			NewPlayerWizzard.continueWithSavingProcessCallback();
+			NewPlayerWizzard.options.continueWithSavingProcessCallback();
 		}
 	},
 
@@ -248,21 +251,17 @@ var NewPlayerWizzard = {
 				modal: true,
 				close : function() {
 					$("#dialog-confirm").dialog("destroy");
-					if (!NewPlayerWizzard.stepSucceeded) {
-						NewPlayerWizzard.startForCurrentPlayer();
-					} else {
-						NewPlayerWizzard.stepSucceeded = false;
-					}
+					NewPlayerWizzard.dialogCloseCallback();
 				},
 				buttons : [ {
-					text : NewPlayerWizzard.label_yes,
+					text : NewPlayerWizzard.options.label_yes,
 					click : function() {
 						NewPlayerWizzard.stepSucceeded = true;
 						$("#dialog-confirm").dialog("close");
 						NewPlayerWizzard.step2();
 					}
 				}, {
-					text : NewPlayerWizzard.label_no,
+					text : NewPlayerWizzard.options.label_no,
 					click : function() {
 						$("#dialog-confirm").dialog("close");
 					}
@@ -282,11 +281,13 @@ var NewPlayerWizzard = {
 		console.log('step3');
 		$("#dialog-search").dialog( "close" );
 		if (data.playerFound) {
-			$("#requested dt").text(data.playerName);
-			$("#requested dd").text(data.playerLocation);
-			$("#friendRequest-form textarea").text(data.requestMessage);
+			$("#requested dt").text(data.playerAvatarUrl);
+			$("#requested dd").html(data.playerName + "<br/>" + data.playerLocation);
+			$("#requester textarea").text(data.requestMessage);
+			$("#requester dd").text(NewPlayerWizzard.options.loggedUserAvatarUrl);
 			$("#dialog-friendRequest").dialog("open");
-		} else { 
+		} else {
+			$("#invitation-form dt").html(data.playerName + " " + NewPlayerWizzard.options.label_user_not_found + '<br/>' + NewPlayerWizzard.options.label_take_the_opportunity_to_invite);
 			$("#invitation-form textarea").text(data.invitationMessage);
 			$("#dialog-invitation").dialog("open");
 		}
@@ -302,5 +303,90 @@ var NewPlayerWizzard = {
 		console.log('step4b');
 		$("#dialog-invitation").dialog( "close" );
 		NewPlayerWizzard.startForCurrentPlayer();
+	},
+
+	dialogCloseCallback: function() {
+		if (!NewPlayerWizzard.stepSucceeded) {
+			NewPlayerWizzard.startForCurrentPlayer();
+		} else {
+			NewPlayerWizzard.stepSucceeded = false;
+		}
+	},
+
+	init: function(options) {
+		NewPlayerWizzard.options = NewPlayerWizzard.applyDefaults(options);
+
+		$(':button').click(function() {
+			NewPlayerWizzard.start($("#playersLeft").val() + ',' + $("#playersRight").val());
+		});
+
+		$( "#dialog-search" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 350,
+			modal: true,
+			open: function() {
+				$('#search-form input').val('');
+			},
+			close : NewPlayerWizzard.dialogCloseCallback,
+			buttons: [{
+				text: NewPlayerWizzard.options.label_associate,
+				click: function() {
+					NewPlayerWizzard.stepSucceeded = true;
+					$.ajax({
+						url: NewPlayerWizzard.options.contextPath+"/app/score/searchNewUser",
+						data: $('#search-form').serialize(), 
+						type: 'POST',
+						dataType: 'json',
+						cache: false,
+						success: NewPlayerWizzard.step3
+					});
+				}
+			}]
+		});		
+
+		$( "#dialog-friendRequest" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 350,
+			modal: true,
+			close : NewPlayerWizzard.dialogCloseCallback,
+			buttons: [{
+				text: NewPlayerWizzard.options.label_send_request,
+				click: function() {
+					NewPlayerWizzard.stepSucceeded = true;
+					$.ajax({
+						url: NewPlayerWizzard.options.contextPath+"/app/score/newFriendRequest",
+						data: $('#friendRequest-form').serialize(), 
+						type: 'POST',
+						dataType: 'json',
+						cache: false,
+						success: NewPlayerWizzard.step4a
+					});
+				}
+			}]
+		});
+
+		$( "#dialog-invitation" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 350,
+			modal: true,
+			close : NewPlayerWizzard.dialogCloseCallback,
+			buttons: [{
+				text: NewPlayerWizzard.options.label_invite_to_scoreshared,
+				click: function() {
+					NewPlayerWizzard.stepSucceeded = true;
+					$.ajax({
+						url: NewPlayerWizzard.options.contextPath+"/app/score/newInvitation",
+						data: $('#invitation-form').serialize(), 
+						type: 'POST',
+						dataType: 'json',
+						cache: false,
+						success: NewPlayerWizzard.step4b
+					});
+				}
+			}]
+		});
 	}
 };
