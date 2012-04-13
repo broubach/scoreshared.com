@@ -8,6 +8,7 @@
 		<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.8.17.custom.min.js"/>"></script>
 	</head>
 	<body>
+		<a href="<@spring.url relativeUrl="/j_spring_security_logout"/>">logout</a>
 		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
 			<dl>
 				<dt><label for="date"><@spring.message code="label.date"/></label></dt>
