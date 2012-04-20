@@ -2,35 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-        http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context-3.1.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
-        http://www.springframework.org/schema/security
-        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-	<security:http pattern="/app/index" security="none"/>
-	<security:http pattern="/app/signin" security="none"/>
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:scoreshared.properties" />
+	</bean>
 
-	<security:http use-expressions="true" >
-		<!-- Authentication policy -->
-		<security:form-login login-page="/app/index" authentication-failure-url="/app/signin" />
-		<security:access-denied-handler error-page="/app/signin"/>
-		<security:logout delete-cookies="JSESSIONID" />
-		<security:intercept-url pattern="/**" access="isAuthenticated()" />
-	</security:http>
-
-	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider>
-			<security:user-service id="userDetailsService">
-				<security:user name="broubach" password="321654" authorities="ROLE_USER, ROLE_ADMIN" />
-			</security:user-service>
-		</security:authentication-provider>
-	</security:authentication-manager>
- 
+	<import resource="security-context.xml" />
+	<import resource="social-context.xml" />
 </beans>
