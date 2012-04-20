@@ -6,6 +6,7 @@
 </head>
 <body>
 <@spring.message code="label.welcome"/>, ${userFirstName}!
+<a href="<@spring.url relativeUrl="/j_spring_security_logout"/>">logout</a><br/>
 
 <h2><@spring.message code="label.see_who_already_registered_their_results"/></h2>
 
