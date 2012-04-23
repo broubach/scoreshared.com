@@ -19,8 +19,8 @@
 	</form>
 
 	<@spring.message code="label.enterwith"/>:
-	<form action="<@spring.url relativeUrl="/app/signin/facebook"/>"><button type="submit"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
-	<form action="<@spring.url relativeUrl="/app/signin/twitter"/>"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
-	<form action="<@spring.url relativeUrl="/app/signin/google"/>"><button type="submit"><img src="<@spring.url relativeUrl="/img/google.png"/>"/> <@spring.message code="label.google"/></button></form>
+	<form action="<@spring.url relativeUrl="/app/signin/twitter"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
+	<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
+	<form action="<@spring.url relativeUrl="/app/signin/google"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/google.png"/>"/> <@spring.message code="label.google"/></button></form>
 </body>
 </html>

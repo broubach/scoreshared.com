@@ -14,9 +14,6 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-	<mvc:annotation-driven/>
-	<context:component-scan base-package="com.scoreshared.webapp" />
-
 	<!-- freemarker config -->
 	<bean id="freemarkerConfig"
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
@@ -47,5 +44,4 @@
 	<bean id="localeResolver"
 		class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
 
-	<mvc:view-controller path="/signin" view-name="signin" />
 </beans>
