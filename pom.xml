@@ -242,4 +242,14 @@
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- According to https://forum.hibernate.org/viewtopic.php?p=2400801 -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.5.6</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

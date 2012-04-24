@@ -34,4 +34,8 @@
 			</props>
 		</property>
 	</bean>
+	
+	<bean class="com.scoreshared.business.persistence.GenericOperationsDao">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
 </beans>

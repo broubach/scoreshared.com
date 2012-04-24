@@ -13,6 +13,7 @@
 	<http pattern="/js/*" security="none"/>
 	<http pattern="/app/index" security="none"/>
 	<http pattern="/app/login" security="none"/>
+	<http pattern="/app/signup" security="none"/>
 	<http pattern="/app/signin*/**" security="none"/>
 
 	<http use-expressions="true" >

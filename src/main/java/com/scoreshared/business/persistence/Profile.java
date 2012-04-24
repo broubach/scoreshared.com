@@ -1,5 +1,10 @@
 package com.scoreshared.business.persistence;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "profile")
 public class Profile extends BaseEntity {
 
     private String city;

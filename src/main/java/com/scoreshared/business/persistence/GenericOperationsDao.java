@@ -15,9 +15,9 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * @author Alessio Pace
  * http://forum.springsource.org/showthread.php?25160-Adding-GenericDAO-classes-to-Spring
  */
-public class HibernatePersistenceManager extends HibernateDaoSupport {
+public class GenericOperationsDao extends HibernateDaoSupport {
 
-    protected Logger logger = Logger.getLogger(HibernatePersistenceManager.class.getName());
+    protected Logger logger = Logger.getLogger(GenericOperationsDao.class.getName());
 
     public <T> List<T> findAll(Class<T> entityClass) throws DataAccessException {
         List<T> results = getHibernateTemplate().loadAll(entityClass);

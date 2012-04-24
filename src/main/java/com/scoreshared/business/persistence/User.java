@@ -1,6 +1,7 @@
 package com.scoreshared.business.persistence;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -11,6 +12,8 @@ public class User extends BaseEntity {
     private String lastName;
     private String email;
     private String avatarUrl;
+
+    @OneToOne
     private Profile profile;
 
     public String getFirstName() {

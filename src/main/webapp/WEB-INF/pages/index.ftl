@@ -21,7 +21,7 @@
 			VIDEO
 		</div>
 		<div id="signup">
-			<form>
+			<form action="<@spring.url relativeUrl="/app/signup"/>" method="POST">
 				<dl>
 					<dt><label for="firstname"><@spring.message code="label.first_name"/></label></dt> 
 					<dd>
@@ -122,7 +122,7 @@
 						</select>
 					</dd>
 				</dl>
-				<input type="button" value="<@spring.message code="label.signup"/>"></input>
+				<button type="submit"><@spring.message code="label.signup"/></input>
 			</form>
 		</div>
 	</div>
