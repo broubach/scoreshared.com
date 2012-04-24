@@ -1,23 +1,14 @@
-package com.scoreshared.webapp.persistence;
+package com.scoreshared.business.persistence;
 
 import java.util.Date;
 
-public class Player {
-    private int id;
+public class Player extends BaseEntity {
     private String name;
     private User owner;
     private User association;
     private String invitationEmail;
     private String invitationMessage;
     private Date invitationDate;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

@@ -41,6 +41,12 @@
 					</dd>
 				</dl>
 				<dl>
+					<dt><label for="email_confirmation"><@spring.message code="label.email_confirmation"/></label></dt> 
+					<dd>
+						<input type="text" id="email_confirmation" maxlength="45"></input>
+					</dd>
+				</dl>
+				<dl>
 					<dt><label for="password"><@spring.message code="label.password"/></label></dt>
 					<dd>
 						<input type="password" id="password"></input>

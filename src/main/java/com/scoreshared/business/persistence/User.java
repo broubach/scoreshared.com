@@ -1,21 +1,17 @@
-package com.scoreshared.webapp.persistence;
+package com.scoreshared.business.persistence;
 
-public class User {
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-    private int id;
+@Entity
+@Table(name = "user")
+public class User extends BaseEntity {
+
     private String firstName;
     private String lastName;
     private String email;
     private String avatarUrl;
     private Profile profile;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

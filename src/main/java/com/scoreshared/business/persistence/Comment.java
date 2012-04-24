@@ -1,18 +1,9 @@
-package com.scoreshared.webapp.persistence;
+package com.scoreshared.business.persistence;
 
-public class Comment {
-    private int id;
+public class Comment extends BaseEntity {
     private User owner;
     private boolean pvt; //pvt used because private is a reserved word
     private Score score;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public User getOwner() {
         return owner;

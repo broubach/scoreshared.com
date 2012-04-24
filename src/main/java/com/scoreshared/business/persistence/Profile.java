@@ -1,8 +1,7 @@
-package com.scoreshared.webapp.persistence;
+package com.scoreshared.business.persistence;
 
-public class Profile {
+public class Profile extends BaseEntity {
 
-    private int id;
     private String city;
     private String country;
     private String club;
@@ -10,14 +9,6 @@ public class Profile {
     private String coach;
     private Boolean showContactInfoToFriends;
     private String phone;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getCity() {
         return city;

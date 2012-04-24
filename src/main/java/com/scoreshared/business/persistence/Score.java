@@ -1,10 +1,9 @@
-package com.scoreshared.webapp.persistence;
+package com.scoreshared.business.persistence;
 
 import java.util.Date;
 import java.util.Set;
 
-public class Score {
-    private int id;
+public class Score extends BaseEntity {
     private Date date;
     private Date time;
     private User owner;
@@ -22,14 +21,6 @@ public class Score {
     private Set<Player> leftPlayers;
     private Set<Player> rightPlayers;
     private boolean winnerDefined;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Date getDate() {
         return date;
