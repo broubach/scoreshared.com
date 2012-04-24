@@ -3,6 +3,8 @@
 <html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.7.1.min.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/index.js"/>"></script>
 </head>
 <body>
 	<div id="header">
@@ -21,42 +23,42 @@
 			VIDEO
 		</div>
 		<div id="signup">
-			<form action="<@spring.url relativeUrl="/app/signup"/>" method="POST">
+			<form id="signup-form">
 				<dl>
-					<dt><label for="firstname"><@spring.message code="label.first_name"/></label></dt> 
+					<dt><label for="firstName"><@spring.message code="label.first_name"/></label></dt> 
 					<dd>
-						<input type="text" id="firstname" maxlength="45"></input>
+						<input type="text" id="firstName" name="firstName" maxlength="45"></input>
 					</dd>
 				</dl>
 				<dl>
-					<dt><label for="lastname"><@spring.message code="label.last_name"/></label></dt> 
+					<dt><label for="lastName"><@spring.message code="label.last_name"/></label></dt> 
 					<dd>
-						<input type="text" id="lastname" maxlength="45"></input>
+						<input type="text" id="lastName" name="lastName" maxlength="45"></input>
 					</dd>
 				</dl>
 				<dl>
 					<dt><label for="email"><@spring.message code="label.email"/></label></dt> 
 					<dd>
-						<input type="text" id="email" maxlength="45"></input>
+						<input type="text" id="email" name="email" maxlength="45"></input>
 					</dd>
 				</dl>
 				<dl>
-					<dt><label for="email_confirmation"><@spring.message code="label.email_confirmation"/></label></dt> 
+					<dt><label for="emailConfirmation"><@spring.message code="label.email_confirmation"/></label></dt> 
 					<dd>
-						<input type="text" id="email_confirmation" maxlength="45"></input>
+						<input type="text" id="emailConfirmation" name="emailConfirmation" maxlength="45"></input>
 					</dd>
 				</dl>
 				<dl>
 					<dt><label for="password"><@spring.message code="label.password"/></label></dt>
 					<dd>
-						<input type="password" id="password"></input>
+						<input type="password" id="password" name="password"></input>
 					</dd>
 				</dl>
 				<dl>
 					<dt><label for="gender"><@spring.message code="label.gender"/></label></dt> 
 					<dd>
-						<select id="gender">
-							<option><@spring.message code="label.gender.hint"/></option>
+						<select id="gender" name="gender">
+							<option value=""><@spring.message code="label.gender.hint"/></option>
 							<option value="Homem">Homem</option>
 							<option value="Mulher">Mulher</option>
 						</select>
@@ -65,8 +67,8 @@
 				<dl>
 					<dt><label for="day"><@spring.message code="label.birthday"/></label></dt> 
 					<dd>
-						<select id="day">
-							<option><@spring.message code="label.day"/></option>
+						<select id="day" name="birthDay">
+							<option value="0"><@spring.message code="label.day"/></option>
 							<option value="1">01</option>
 							<option value="2">02</option>
 							<option value="3">03</option>
@@ -99,8 +101,8 @@
 							<option value="30">30</option>
 							<option value="31">31</option>
 						</select>
-						<select>
-							<option><@spring.message code="label.month"/></option>
+						<select name="birthMonth">
+							<option value="-1"><@spring.message code="label.month"/></option>
 							<option value="0"><@spring.message code="label.month.01"/></option>
 							<option value="1"><@spring.message code="label.month.02"/></option>
 							<option value="2"><@spring.message code="label.month.03"/></option>
@@ -114,19 +116,35 @@
 							<option value="10"><@spring.message code="label.month.11"/></option>
 							<option value="11"><@spring.message code="label.month.12"/></option>
 						</select>
-						<select>
-							<option><@spring.message code="label.year"/></option>
+						<select name="birthYear">
+							<option value="0"><@spring.message code="label.year"/></option>
 							<#list thisYear..1900 as i>
-								<option>${i?string("#")}</option>
+								<option value="${i?string("#")}">${i?string("#")}</option>
 							</#list>
 						</select>
 					</dd>
 				</dl>
-				<button type="submit"><@spring.message code="label.signup"/></input>
+				<button type="button"><@spring.message code="label.signup"/></button>
 			</form>
+			<div id="messageConsole"></div>
 		</div>
 	</div>
 	<div id="footer">
 	</div>
 </body>
 </html>
+
+<script type="text/javascript">
+	$(function() {
+		$('#signup-form button').click(function() {
+			$.ajax({
+				url: '<@spring.url relativeUrl="/app/signup"/>',
+				data: $('#signup-form').serialize(), 
+				type: 'POST',
+				dataType: 'json',
+				cache: false,
+				success: SignupFlow.onSuccessResponse
+			});
+		});
+	});
+</script>
