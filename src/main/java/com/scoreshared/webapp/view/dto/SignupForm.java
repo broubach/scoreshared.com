@@ -1,5 +1,9 @@
 package com.scoreshared.webapp.view.dto;
 
+import java.util.Calendar;
+
+import com.scoreshared.business.persistence.User;
+
 public class SignupForm {
     private String firstName;
     private String lastName;
@@ -7,9 +11,9 @@ public class SignupForm {
     private String emailConfirmation;
     private String password;
     private String gender;
-    private String birthDay;
-    private String birthMonth;
-    private String birthYear;
+    private int birthDay;
+    private int birthMonth;
+    private int birthYear;
 
     public String getFirstName() {
         return firstName;
@@ -59,27 +63,44 @@ public class SignupForm {
         this.gender = gender;
     }
 
-    public String getBirthDay() {
+    public int getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(String birthDay) {
+    public void setBirthDay(int birthDay) {
         this.birthDay = birthDay;
     }
 
-    public String getBirthMonth() {
+    public int getBirthMonth() {
         return birthMonth;
     }
 
-    public void setBirthMonth(String birthMonth) {
+    public void setBirthMonth(int birthMonth) {
         this.birthMonth = birthMonth;
     }
 
-    public String getBirthYear() {
+    public int getBirthYear() {
         return birthYear;
     }
 
-    public void setBirthYear(String birthYear) {
+    public void setBirthYear(int birthYear) {
         this.birthYear = birthYear;
+    }
+
+    public User toUser() {
+        User result = new User();
+        result.setFirstName(firstName);
+        result.setLastName(lastName);
+        result.setEmail(email);
+
+        Calendar birthday = Calendar.getInstance();
+        birthday.set(Calendar.DATE, this.birthDay);
+        birthday.set(Calendar.MONTH, this.birthMonth);
+        birthday.set(Calendar.YEAR, this.birthYear);
+        result.setBirthday(birthday.getTime());
+
+        result.setPassword(password);
+        result.setGender(gender);
+        return result;
     }
 }

@@ -1,10 +1,15 @@
 package com.scoreshared.business.persistence;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
+@NamedQueries({ @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email") })
 @Table(name = "user")
 public class User extends BaseEntity {
 
@@ -12,6 +17,9 @@ public class User extends BaseEntity {
     private String lastName;
     private String email;
     private String avatarUrl;
+    private Date birthday;
+    private String password;
+    private String gender;
 
     @OneToOne
     private Profile profile;
@@ -54,5 +62,29 @@ public class User extends BaseEntity {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

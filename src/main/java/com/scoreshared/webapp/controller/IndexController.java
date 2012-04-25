@@ -1,5 +1,7 @@
 package com.scoreshared.webapp.controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,6 +23,7 @@ import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.webapp.view.dto.SignupForm;
 
 @Controller
+@SessionAttributes(types = SignupForm.class)
 public class IndexController {
 
     @Inject
@@ -40,8 +44,8 @@ public class IndexController {
 
     @ResponseBody
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public Map<String, String> signup(HttpServletRequest request, @ModelAttribute SignupForm form) {
-        Map<String, String> result = new HashMap<String, String>();
+    public Map<String, Object> signup(HttpServletRequest request, @ModelAttribute SignupForm form) {
+        Map<String, Object> result = new HashMap<String, Object>();
 
         boolean hasEmptyFields = false;
 
@@ -57,6 +61,10 @@ public class IndexController {
             hasEmptyFields = true;
         }
 
+        if (form.getEmailConfirmation() == null || form.getEmailConfirmation().trim().equals("")) {
+            hasEmptyFields = true;
+        }
+
         if (form.getPassword() == null || form.getPassword().trim().equals("")) {
             hasEmptyFields = true;
         }
@@ -65,13 +73,13 @@ public class IndexController {
             hasEmptyFields = true;
         }
 
-        if (form.getBirthDay() == null || new Integer(0).equals(form.getBirthDay())) {
+        if (0 == form.getBirthDay()) {
             hasEmptyFields = true;
         }
-        if (form.getBirthMonth() == null || new Integer(-1).equals(form.getBirthMonth())) {
+        if (-1 == form.getBirthMonth()) {
             hasEmptyFields = true;
         }
-        if (form.getBirthYear() == null || new Integer(0).equals(form.getBirthYear())) {
+        if (0 == form.getBirthYear()) {
             hasEmptyFields = true;
         }
 
@@ -82,19 +90,61 @@ public class IndexController {
                             localeResolver.resolveLocale(request)));
 
         } else {
-            //            if (form.getEmail().indexOf('@') == -1 || form.getEmail().indexOf('.') == -1) {
-            //                messages.addErrorMessage(REGISTRAR_NOVO_USUARIO, "error_digite_um_email_valido");
-            //            } else if (!PersistenceHelper.findByNamedQuery("emailExistenteQuery", form.getEmail()).isEmpty()) {
-            //                messages.addErrorMessage(REGISTRAR_NOVO_USUARIO, "error_email_especificado_jah_existe");
-            //            }
-            //            validaSenha(REGISTRAR_NOVO_USUARIO, form.getSenha());
-        }
+            if (form.getEmail().indexOf('@') == -1 || form.getEmail().indexOf('.') == -1) {
+                result.put(
+                        "errorMessage",
+                        messageResource.getMessage("error.type_in_valid_email", null,
+                                localeResolver.resolveLocale(request)));
 
-        //        if (messages.getErrorMessages().isEmpty()) {
-        //            return "passo1";
-        //        }
+            } else if (!form.getEmail().equals(form.getEmailConfirmation())) {
+                result.put(
+                        "errorMessage",
+                        messageResource.getMessage("error.emails_do_not_match", null,
+                                localeResolver.resolveLocale(request)));
+
+            } else if (userBo.checkEmailExists(form.getEmail())) {
+                result.put(
+                        "errorMessage",
+                        messageResource.getMessage("error.the_specified_email_already_exists", null,
+                                localeResolver.resolveLocale(request)));
+            }
+
+            if (form.getPassword().length() < 6) {
+                if (result.get("errorMessage") == null) {
+                    result.put("errorMessage", "error.the_password_must_have_at_least_6_characters");
+                } else {
+                    result.put(
+                            "errorMessage",
+                            new Object[] {
+                                    result.get("errorMessage"),
+                                    messageResource.getMessage("error.the_password_must_have_at_least_6_characters",
+                                            null, localeResolver.resolveLocale(request)) });
+                }
+            }
+        }
 
         return result;
     }
 
+    protected String encriptMd5(String senha) {
+        byte[] defaultBytes = senha.getBytes();
+        MessageDigest algorithm;
+        try {
+            algorithm = MessageDigest.getInstance("MD5");
+            algorithm.reset();
+            byte[] salt = new byte[12];
+            System.arraycopy("+#5_GSgY2Wkm".getBytes(), 0, salt, 0, 12);
+            algorithm.update(salt);
+            algorithm.update(defaultBytes);
+            byte messageDigest[] = algorithm.digest();
+
+            StringBuffer hexString = new StringBuffer();
+            for (int i = 0; i < messageDigest.length; i++) {
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -59,8 +59,8 @@
 					<dd>
 						<select id="gender" name="gender">
 							<option value=""><@spring.message code="label.gender.hint"/></option>
-							<option value="Homem">Homem</option>
-							<option value="Mulher">Mulher</option>
+							<option value="M">Homem</option>
+							<option value="F">Mulher</option>
 						</select>
 					</dd>
 				</dl>
