@@ -1,5 +1,6 @@
 package com.scoreshared.business.persistence;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -7,6 +8,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email") })
@@ -86,5 +89,10 @@ public class User extends BaseEntity {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public org.springframework.security.core.userdetails.User toSecurityUser() {
+        return new org.springframework.security.core.userdetails.User(email, password,
+                new ArrayList<GrantedAuthority>());
     }
 }

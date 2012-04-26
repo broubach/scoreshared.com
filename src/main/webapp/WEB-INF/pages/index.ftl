@@ -138,12 +138,12 @@
 	$(function() {
 		$('#signup-form button').click(function() {
 			$.ajax({
-				url: '<@spring.url relativeUrl="/app/signup"/>',
+				url: '<@spring.url relativeUrl="/app/signup/data"/>',
 				data: $('#signup-form').serialize(), 
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
-				success: SignupFlow.onSuccessResponse
+				success: SignupFlow.onSignupDataPostSuccess
 			});
 		});
 	});

@@ -5,6 +5,24 @@
 	version="3.0">
 	<display-name>scoreshared</display-name>
 
+	<!-- Captcha config -->
+	<servlet>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<servlet-class>com.scoreshared.scaffold.CaptchaServlet</servlet-class>
+		<init-param>
+			<param-name>width</param-name>
+			<param-value>250</param-value>
+		</init-param>
+		<init-param>
+			<param-name>height</param-name>
+			<param-value>40</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<url-pattern>/app/captcha</url-pattern>
+	</servlet-mapping>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/spring/root-ctx.xml</param-value>

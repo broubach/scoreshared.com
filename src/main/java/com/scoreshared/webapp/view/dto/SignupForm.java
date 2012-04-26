@@ -89,9 +89,9 @@ public class SignupForm {
 
     public User toUser() {
         User result = new User();
-        result.setFirstName(firstName);
-        result.setLastName(lastName);
-        result.setEmail(email);
+        result.setFirstName(firstName.trim());
+        result.setLastName(lastName.trim());
+        result.setEmail(email.trim());
 
         Calendar birthday = Calendar.getInstance();
         birthday.set(Calendar.DATE, this.birthDay);
@@ -99,7 +99,6 @@ public class SignupForm {
         birthday.set(Calendar.YEAR, this.birthYear);
         result.setBirthday(birthday.getTime());
 
-        result.setPassword(password);
         result.setGender(gender);
         return result;
     }

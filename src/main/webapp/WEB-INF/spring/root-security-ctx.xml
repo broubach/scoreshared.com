@@ -13,11 +13,12 @@
 	<http pattern="/js/*" security="none"/>
 	<http pattern="/app/index" security="none"/>
 	<http pattern="/app/login" security="none"/>
-	<http pattern="/app/signup" security="none"/>
-	<http pattern="/app/welcome1" security="none"/>
+	<http pattern="/app/signup/captcha" security="none"/>
+	<http pattern="/app/captcha" security="none"/>
+	<http pattern="/app/signup/data" security="none"/>
 	<http pattern="/app/signin*/**" security="none"/>
 
-	<http use-expressions="true" >
+	<http use-expressions="true">
 		<!-- Authentication policy -->
 		<form-login login-page="/app/index" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true"/>
 		<access-denied-handler error-page="/app/login"/>
@@ -26,11 +27,12 @@
 	</http>
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider>
-			<user-service id="userDetailsService">
-				<user name="broubach" password="321654" authorities="ROLE_USER, ROLE_ADMIN" />
-			</user-service>
+		<authentication-provider user-service-ref="userBo">
+			<password-encoder ref="passwordEncoder" >
+				<salt-source user-property="username" />
+			</password-encoder>
 		</authentication-provider>
 	</authentication-manager>
-
+	
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></beans:bean>
 </beans:beans>
