@@ -16,6 +16,7 @@
 
 	<view-controller path="/login" view-name="login" />
 	<view-controller path="/welcome1" view-name="welcome1" />
+	<view-controller path="/error" view-name="error" />
 
 	<beans:bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">

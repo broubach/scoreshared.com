@@ -11,20 +11,33 @@
 	<http pattern="/css/*" security="none"/>
 	<http pattern="/img/*" security="none"/>
 	<http pattern="/js/*" security="none"/>
-	<http pattern="/app/index" security="none"/>
-	<http pattern="/app/login" security="none"/>
-	<http pattern="/app/signup/captcha" security="none"/>
-	<http pattern="/app/captcha" security="none"/>
-	<http pattern="/app/signup/data" security="none"/>
+	<http pattern="/app/captcha" security="none" />
 	<http pattern="/app/signin*/**" security="none"/>
 
 	<http use-expressions="true">
 		<!-- Authentication policy -->
-		<form-login login-page="/app/index" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true"/>
-		<access-denied-handler error-page="/app/login"/>
+		<form-login login-page="/app/index" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true" />
+		<access-denied-handler ref="accessDeniedHandler" />
 		<logout delete-cookies="JSESSIONID" />
+		<intercept-url pattern="/app/index" access="isAnonymous()" method="GET"/>
+		<intercept-url pattern="/app/login" access="isAnonymous()" />
+		<intercept-url pattern="/app/signup/captcha" access="isAnonymous()" />
+		<intercept-url pattern="/app/signup/data" access="isAnonymous()" method="POST"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
+
+	<beans:bean id="accessDeniedHandler" class="com.scoreshared.scaffold.AccessDeniedHandlerImpl">
+		<beans:constructor-arg name="anonymousResources">
+			<beans:list>
+				<beans:value>/app/index</beans:value>
+				<beans:value>/app/login</beans:value>
+				<beans:value>/app/signup/captcha</beans:value>
+				<beans:value>/app/signup/data</beans:value>
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:constructor-arg name="onDeniedToNonAnonymousDestinationUrl" value="/app/home" />
+		<beans:constructor-arg name="onDeniedDefaultDestinationUrl" value="/app/error" />
+	</beans:bean>
 
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="userBo">
