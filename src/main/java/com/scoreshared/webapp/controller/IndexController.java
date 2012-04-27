@@ -59,7 +59,6 @@ public class IndexController {
     @Inject
     private HttpSessionSecurityContextRepository contextRepository;
 
-    @Inject
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index() {
         ModelAndView mav = new ModelAndView("index");

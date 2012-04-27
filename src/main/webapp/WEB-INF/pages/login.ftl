@@ -18,6 +18,12 @@
 		<input type="submit" value="<@spring.message code="label.signin"/>"></input>
 	</form>
 
+	<#if (SPRING_SECURITY_LAST_EXCEPTION??)>
+		<div id="error">
+			<@spring.message code="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+		</div>
+	</#if>
+
 	<@spring.message code="label.enterwith"/>:
 	<form action="<@spring.url relativeUrl="/app/signin/twitter"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
 	<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>

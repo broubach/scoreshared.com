@@ -5,6 +5,6 @@
 	<title><@spring.message code="label.scoreshared"/></title>
 </head>
 <body>
-Lamentamos. Nosso serviço foi quebrado =), por favor volte mais tarde.
+	<@spring.message code="severe"/>
 </body>
 </html>
