@@ -22,7 +22,7 @@
 		<intercept-url pattern="/app/index" access="isAnonymous()" method="GET"/>
 		<intercept-url pattern="/app/login" access="isAnonymous()" />
 		<intercept-url pattern="/app/signup/captcha" access="isAnonymous()" />
-		<intercept-url pattern="/app/signup/data" access="isAnonymous()" method="POST"/>
+		<intercept-url pattern="/app/signup/data" access="isAnonymous()"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
 
@@ -46,6 +46,6 @@
 			</password-encoder>
 		</authentication-provider>
 	</authentication-manager>
-	
+
 	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></beans:bean>
 </beans:beans>

@@ -61,9 +61,16 @@ public class IndexController {
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index() {
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("thisYear", Calendar.getInstance().get(Calendar.YEAR));
+        ModelAndView mav = getSignupSnippet();
         mav.addObject(new SignupForm());
+        mav.setViewName("index");
+        return mav;
+    }
+
+    @RequestMapping(value = "/signup/data", method = RequestMethod.GET)
+    public ModelAndView getSignupSnippet() {
+        ModelAndView mav = new ModelAndView("signupSnippet");
+        mav.addObject("thisYear", Calendar.getInstance().get(Calendar.YEAR));
         return mav;
     }
 
