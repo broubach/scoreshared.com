@@ -1,5 +1,4 @@
 <#import "/spring.ftl" as spring />
-<#import "/scoreshared.ftl" as scs />
 
 			<form id="signup-form">
 				<dl>
@@ -45,55 +44,29 @@
 				<dl>
 					<dt><label for="day"><@spring.message code="label.birthday"/></label></dt> 
 					<dd>
-						<select id="day" name="birthDay">
-							<option value="0"><@spring.message code="label.day"/></option>
-							<option value="1">01</option>
-							<option value="2">02</option>
-							<option value="3">03</option>
-							<option value="4">04</option>
-							<option value="5">05</option>
-							<option value="6">06</option>
-							<option value="7">07</option>
-							<option value="8">08</option>
-							<option value="9">09</option>
-							<option value="10">10</option>
-							<option value="11">11</option>
-							<option value="12">12</option>
-							<option value="13">13</option>
-							<option value="14">14</option>
-							<option value="15">15</option>
-							<option value="16">16</option>
-							<option value="17">17</option>
-							<option value="18">18</option>
-							<option value="19">19</option>
-							<option value="20">20</option>
-							<option value="21">21</option>
-							<option value="22">22</option>
-							<option value="23">23</option>
-							<option value="24">24</option>
-							<option value="25">25</option>
-							<option value="26">26</option>
-							<option value="27">27</option>
-							<option value="28">28</option>
-							<option value="29">29</option>
-							<option value="30">30</option>
-							<option value="31">31</option>
-						</select>
-						<select name="birthMonth">
-							<option value="-1"><@spring.message code="label.month"/></option>
-							<option value="0"><@spring.message code="label.month.01"/></option>
-							<option value="1"><@spring.message code="label.month.02"/></option>
-							<option value="2"><@spring.message code="label.month.03"/></option>
-							<option value="3"><@spring.message code="label.month.04"/></option>
-							<option value="4"><@spring.message code="label.month.05"/></option>
-							<option value="5"><@spring.message code="label.month.06"/></option>
-							<option value="6"><@spring.message code="label.month.07"/></option>
-							<option value="7"><@spring.message code="label.month.08"/></option>
-							<option value="8"><@spring.message code="label.month.09"/></option>
-							<option value="9"><@spring.message code="label.month.10"/></option>
-							<option value="10"><@spring.message code="label.month.11"/></option>
-							<option value="11"><@spring.message code="label.month.12"/></option>
-						</select>
+						<#assign label_day><@spring.message code="label.day"/></#assign>
+						<#assign dayHash = {"0":label_day, "1":"01", "2":"02", "3":"03", "4":"04", "5":"05", "6":"06", "7":"07", "8":"08", "9":"09", "10":"10",
+											   "11":"11", "12":"12", "13":"13", "14":"14", "15":"15", "16":"16", "17":"17", "18":"18", "19":"19", "20":"20",
+											   "21":"21", "22":"22", "23":"23", "24":"24", "25":"25", "26":"26", "27":"27", "28":"28", "29":"29", "30":"30", "31":"31"} >
+						<@spring.formSingleSelect "signupForm.birthDay", dayHash, "" />
+
+						<#assign label_month><@spring.message code="label.month"/></#assign>
+						<#assign label_month_01><@spring.message code="label.month_01"/></#assign>
+						<#assign label_month_02><@spring.message code="label.month_02"/></#assign>
+						<#assign label_month_03><@spring.message code="label.month_03"/></#assign>
+						<#assign label_month_04><@spring.message code="label.month_04"/></#assign>
+						<#assign label_month_05><@spring.message code="label.month_05"/></#assign>
+						<#assign label_month_06><@spring.message code="label.month_06"/></#assign>
+						<#assign label_month_07><@spring.message code="label.month_07"/></#assign>
+						<#assign label_month_08><@spring.message code="label.month_08"/></#assign>
+						<#assign label_month_09><@spring.message code="label.month_09"/></#assign>
+						<#assign label_month_10><@spring.message code="label.month_10"/></#assign>
+						<#assign label_month_11><@spring.message code="label.month_11"/></#assign>
+						<#assign label_month_12><@spring.message code="label.month_12"/></#assign>
+						<#assign monthHash = {"-1":label_month, "1":label_month_01, "2":label_month_02, "3":label_month_03, "4":label_month_04, "5":label_month_05, "6":label_month_06,
+											   "7":label_month_07, "8":label_month_08, "9":label_month_09, "10":label_month_10, "11":label_month_11, "12":label_month_12} >
+						<@spring.formSingleSelect "signupForm.birthMonth", monthHash, "" />
+
 						<select name="birthYear">
 							<option value="0"><@spring.message code="label.year"/></option>
 							<#list thisYear..1900 as i>
