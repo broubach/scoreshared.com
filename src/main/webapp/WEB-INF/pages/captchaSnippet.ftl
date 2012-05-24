@@ -1,11 +1,12 @@
 <#import "/spring.ftl" as spring />
 
-<h3>Controle de Seguranca</h3>
-<h4>Insira a palavra mostrada aqui em baixo. Não consegue compreender a palavra?</h4>
-<a href="#">Tente com outras palavras.</a>
+<h3><@spring.message code="label.security_control"/></h3>
+<h4><@spring.message code="label.insert_word_shown_below"/></h4>
+<a href="#"><@spring.message code="label.try_with_other_words"/></a>
 <img src="<@spring.url relativeUrl="/app/captcha"/>"/>
 <form id="captcha-form">
-	Insira aqui: <input name="captchaAnswer" type="text" maxlength="5"></input>
-	<button type="button">Enviar</button>
+	<@spring.message code="label.insert_it_here"/>: <input name="captchaAnswer" type="text" maxlength="5"></input>
+	<button type="button"><@spring.message code="label.send"/></button>
 </form>
-<a id="goBack" href="#">Voltar</a> 
+<div id="messageConsole"></div>
+<a id="goBack" href="#"><@spring.message code="label.back" /></a> 

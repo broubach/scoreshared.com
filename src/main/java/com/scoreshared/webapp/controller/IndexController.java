@@ -2,8 +2,10 @@ package com.scoreshared.webapp.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -60,17 +62,28 @@ public class IndexController {
     private HttpSessionSecurityContextRepository contextRepository;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public ModelAndView index() {
-        ModelAndView mav = getSignupSnippet();
+    public ModelAndView index(HttpServletRequest request) {
+        ModelAndView mav = getSignupSnippet(request);
         mav.addObject(new SignupForm());
         mav.setViewName("index");
         return mav;
     }
 
     @RequestMapping(value = "/signup/data", method = RequestMethod.GET)
-    public ModelAndView getSignupSnippet() {
+    public ModelAndView getSignupSnippet(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("signupSnippet");
-        mav.addObject("thisYear", Calendar.getInstance().get(Calendar.YEAR));
+        Map<String, String> yearHash = new TreeMap<String, String>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        yearHash.put("9999", messageResource.getMessage("label.year", null, localeResolver.resolveLocale(request)));
+
+        for (int i = 1900; i <= Calendar.getInstance().get(Calendar.YEAR); i++) {
+            yearHash.put(String.valueOf(i), String.valueOf(i));
+        }
+        mav.addObject("yearHash", yearHash);
         return mav;
     }
 
@@ -111,7 +124,7 @@ public class IndexController {
         if (-1 == form.getBirthMonth()) {
             hasEmptyFields = true;
         }
-        if (0 == form.getBirthYear()) {
+        if (9999 == form.getBirthYear()) {
             hasEmptyFields = true;
         }
 

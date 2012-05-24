@@ -36,11 +36,15 @@ var SignupFlow = {
 
 			$('#signup #goBack').click(SignupFlow.backFromCaptcha);
 		},
-		
-		onSignupCaptchaPostSuccess: function() {
-			window.location.href = '/scoreshared/app/welcome1';
+
+		onSignupCaptchaPostSuccess: function(data) {
+			if (data.errorMessage == undefined) {
+				window.location.href = '/scoreshared/app/welcome/step1';
+			} else {
+				$('#messageConsole').html(data.errorMessage);
+			}
 		},
-		
+
 		backFromCaptcha: function() {
 			$.ajax({
 				url: '/scoreshared/app/signup/data',

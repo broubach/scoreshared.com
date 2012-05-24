@@ -67,12 +67,7 @@
 											   "7":label_month_07, "8":label_month_08, "9":label_month_09, "10":label_month_10, "11":label_month_11, "12":label_month_12} >
 						<@spring.formSingleSelect "signupForm.birthMonth", monthHash, "" />
 
-						<select name="birthYear">
-							<option value="0"><@spring.message code="label.year"/></option>
-							<#list thisYear..1900 as i>
-								<option value="${i?string("#")}">${i?string("#")}</option>
-							</#list>
-						</select>
+						<@spring.formSingleSelect "signupForm.birthYear", yearHash, "" />
 					</dd>
 				</dl>
 				<button type="button"><@spring.message code="label.signup"/></button>
