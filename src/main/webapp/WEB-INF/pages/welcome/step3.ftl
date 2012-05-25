@@ -14,12 +14,11 @@
 	<span><@spring.message code="label.step3"/></span>
 </div>
 
-<h3><@spring.message code="label.connect_yourself_to_the_social_networks_before_start"/></h3>
+<h3><@spring.message code="label.show_us_who_you_are"/></h3>
 
-<a href="#"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/><@spring.message code="label.connect"/></a><br/>
-<a href="#"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/><@spring.message code="label.connect"/></a><br/>
-<br/>
-<a href="<@spring.url relativeUrl="/app/welcome/step3"/>"><@spring.message code="label.next_step"/></a>
+<img src="<@spring.url relativeUrl="/img/pete_sampras.jpg"/>"/>
+
+<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.ready_i_want_to_share_my_scores"/></a>
 
 </body>
 </html>

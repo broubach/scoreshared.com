@@ -54,7 +54,7 @@
 		<property name="applicationUrl" value="${application.url}"/>
 	</bean>
 	
-	<bean class="org.springframework.social.connect.web.ConnectController">
+	<bean class="com.scoreshared.scaffold.ScoreSharedConnectController">
 		<constructor-arg ref="connectionRepository"/>
 		<constructor-arg ref="connectionFactoryLocator"/>
 	</bean>

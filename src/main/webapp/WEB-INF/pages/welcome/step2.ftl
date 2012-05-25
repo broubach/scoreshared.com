@@ -16,8 +16,13 @@
 
 <h3><@spring.message code="label.connect_yourself_to_the_social_networks_before_start"/></h3>
 
-<a href="#"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/><@spring.message code="label.connect"/></a><br/>
-<a href="#"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/><@spring.message code="label.connect"/></a><br/>
+<form action="<@spring.url relativeUrl="/app/connect/facebook"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.connect"/></button></form>
+
+<#if twitterConnected>
+	<img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connected"/>: ${twitterAccount}
+<#else>
+	<form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connect"/></button></form>
+</#if>
 <br/>
 <a href="<@spring.url relativeUrl="/app/welcome/step3"/>"><@spring.message code="label.next_step"/></a>
 

@@ -9,7 +9,6 @@
 	</head>
 	<body>
 		<a href="<@spring.url relativeUrl="/j_spring_security_logout"/>">logout</a><br/>
-		account is linked|unlinked<br/>
 		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
 			<dl>
 				<dt><label for="date"><@spring.message code="label.date"/></label></dt>
