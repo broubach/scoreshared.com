@@ -32,6 +32,7 @@
 
 <script type="text/javascript">
 	$(function() {
+		SignupFlow.init('<@spring.url relativeUrl=""/>');
 		SignupFlow.bindSignupDataPost();
 	});
 </script>
