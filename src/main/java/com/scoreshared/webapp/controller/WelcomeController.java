@@ -3,21 +3,30 @@ package com.scoreshared.webapp.controller;
 import java.security.Principal;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.scoreshared.webapp.view.dto.WelcomeStep1Form;
+import com.scoreshared.webapp.dto.WelcomeStep1Form;
+import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
 
 @Controller
 @RequestMapping(value = "/welcome")
 public class WelcomeController {
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(new WelcomeStep1FormValidator());
+    }
 
     @Inject
     private ConnectionRepository connectionRepository;
@@ -30,7 +39,7 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
-    public ModelAndView validateAndSaveStep1(Principal currentUser, @ModelAttribute WelcomeStep1Form form) {
+    public ModelAndView validateAndSaveStep1(Principal currentUser, @Valid WelcomeStep1Form form, BindingResult result) {
         return getStep2();
     }
 

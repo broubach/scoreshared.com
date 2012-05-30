@@ -1,4 +1,4 @@
-package com.scoreshared.webapp.view.dto;
+package com.scoreshared.webapp.dto;
 
 public class SearchModel {
     private String email;

@@ -9,9 +9,11 @@
 <h2><@spring.message code="label.welcome"/></h2>
 
 <div>
-	<span><@spring.message code="label.step1"/></span>
-	<span><@spring.message code="label.step2"/></span>
-	<span><@spring.message code="label.step3"/></span>
+	<ul>
+		<li><h4><@spring.message code="label.step1"/></h4></li>
+		<li><h6><@spring.message code="label.step2"/></h6></li>
+		<li><h6><@spring.message code="label.step3"/></h6></li>
+	<ul>
 </div>
 
 <h3><@spring.message code="label.tell_us_more_about_you"/></h3>
@@ -37,9 +39,9 @@
 		<dl>
 			<dt><label for="leftHanded0"><@spring.message code="label.you_are"/></label></dt>
 			<dd>
-				<#assign label_handed_left><@spring.message code="label.handed_left"/></#assign>
 				<#assign label_handed_right><@spring.message code="label.handed_right"/></#assign>
-				<#assign leftHandedHash = {"true":label_handed_left, "false":label_handed_right} />
+				<#assign label_handed_left><@spring.message code="label.handed_left"/></#assign>
+				<#assign leftHandedHash = {"false":label_handed_right, "true":label_handed_left} />
 				<@spring.formRadioButtons "welcomeStep1Form.leftHanded", leftHandedHash, "", "" />
 			</dd>
 		</dl>
@@ -50,12 +52,12 @@
 		</dl>
 
 		<dl>
-			<dt><label for="showContactToPlayers0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/></label></dt>
+			<dt><label for="showContactToPlayers0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/> *</label></dt>
 			<dd>
-				<#assign label_agree><@spring.message code="label.agree"/></#assign>
-				<#assign label_disagree><@spring.message code="label.disagree"/></#assign>
-				<#assign showContactToPlayersHash = {"true":label_agree, "false":label_disagree} />
-				<@spring.formRadioButtons "welcomeStep1Form.showContactToPlayers", leftHandedHash, "", "" />
+				<#assign label_yes><@spring.message code="label.yes"/></#assign>
+				<#assign label_no><@spring.message code="label.no"/></#assign>
+				<#assign yesNoHash = {"true":label_yes, "false":label_no} />
+				<@spring.formRadioButtons "welcomeStep1Form.showContactToPlayers", yesNoHash, "", "" />
 			</dd>
 		</dl>
 
@@ -66,14 +68,11 @@
 
 		<dl>
 			<dt>
-				<label for="agree0"><@spring.message code="label.i_have_read_and_agreed_with_the_service_license"/></label><br/>
+				<label for="agree0"><@spring.message code="label.i_have_read_and_agreed_with_the_service_license"/> *</label><br/>
 				<a href="#"><@spring.message code="label.click_to_read_the_service_license"/></a>
 			</dt>
 			<dd>
-				<#assign label_yes><@spring.message code="label.yes"/></#assign>
-				<#assign label_no><@spring.message code="label.no"/></#assign>
-				<#assign agreeHash = {"true":label_yes, "false":label_no} />
-				<@spring.formRadioButtons "welcomeStep1Form.agree", agreeHash, "", "" />
+				<@spring.formRadioButtons "welcomeStep1Form.agree", yesNoHash, "", "" />
 			</dd>
 		</dl>
 

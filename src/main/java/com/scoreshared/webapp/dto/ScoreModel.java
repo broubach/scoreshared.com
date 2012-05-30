@@ -1,4 +1,4 @@
-package com.scoreshared.webapp.view.dto;
+package com.scoreshared.webapp.dto;
 
 import java.util.HashMap;
 import java.util.Map;

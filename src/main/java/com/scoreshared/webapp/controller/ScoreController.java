@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.scoreshared.webapp.view.dto.ScoreModel;
-import com.scoreshared.webapp.view.dto.SearchModel;
+import com.scoreshared.webapp.dto.ScoreModel;
+import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
 @RequestMapping(value = "/score")

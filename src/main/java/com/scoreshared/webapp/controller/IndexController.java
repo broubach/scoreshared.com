@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.User;
-import com.scoreshared.webapp.view.dto.SignupForm;
+import com.scoreshared.webapp.dto.SignupForm;
 
 @Controller
 @SessionAttributes(types = SignupForm.class)

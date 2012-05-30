@@ -9,9 +9,11 @@
 <h2><@spring.message code="label.welcome"/></h2>
 
 <div>
-	<span><@spring.message code="label.step1"/></span>
-	<span><@spring.message code="label.step2"/></span>
-	<span><@spring.message code="label.step3"/></span>
+	<ul>
+		<li><h6><@spring.message code="label.step1"/></h6></li>
+		<li><h6><@spring.message code="label.step2"/></h6></li>
+		<li><h4><@spring.message code="label.step3"/></h4></li>
+	</ul>
 </div>
 
 <h3><@spring.message code="label.show_us_who_you_are"/></h3>
