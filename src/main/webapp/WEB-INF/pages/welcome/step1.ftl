@@ -18,6 +18,11 @@
 
 <h3><@spring.message code="label.tell_us_more_about_you"/></h3>
 
+<@spring.bind "welcomeStep1Form.city" />
+<#if (spring.status.errors.errorCount > 0)>
+	<span><@spring.message code="error.please_fill_out_all_fields"/></span>
+</#if>
+
 	<form action="<@spring.url relativeUrl="/app/welcome/step1"/>" method="post">
 		<dl>
 			<dt><label for="city"><@spring.message code="label.which_city_do_you_live"/></label></dt>
@@ -58,12 +63,16 @@
 				<#assign label_no><@spring.message code="label.no"/></#assign>
 				<#assign yesNoHash = {"true":label_yes, "false":label_no} />
 				<@spring.formRadioButtons "welcomeStep1Form.showContactToPlayers", yesNoHash, "", "" />
+				<@spring.showErrors "<br/>", "myClass"/>
 			</dd>
 		</dl>
 
 		<dl>
 			<dt><label for="phoneNumber"><@spring.message code="label.phone_number"/></label></dt>
-			<dd><@spring.formInput "welcomeStep1Form.phoneNumber", "maxlength='45'", "text"/></dd>
+			<dd>
+				<@spring.formInput "welcomeStep1Form.phoneNumber", "maxlength='45'", "text"/>
+				<@spring.showErrors "<br/>", "myClass"/>
+			</dd>
 		</dl>
 
 		<dl>
@@ -73,6 +82,7 @@
 			</dt>
 			<dd>
 				<@spring.formRadioButtons "welcomeStep1Form.agree", yesNoHash, "", "" />
+				<@spring.showErrors "<br/>", "myClass"/>
 			</dd>
 		</dl>
 

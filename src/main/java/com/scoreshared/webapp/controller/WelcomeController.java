@@ -40,6 +40,11 @@ public class WelcomeController {
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
     public ModelAndView validateAndSaveStep1(Principal currentUser, @Valid WelcomeStep1Form form, BindingResult result) {
+        if (result.hasErrors()) {
+            ModelAndView mav = getStep1();
+            mav.addObject(form);
+            return mav;
+        }
         return getStep2();
     }
 
