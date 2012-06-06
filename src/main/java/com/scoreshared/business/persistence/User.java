@@ -12,14 +12,13 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email") })
+@NamedQueries({ @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = ?") })
 @Table(name = "user")
 public class User extends BaseEntity {
 
     private String firstName;
     private String lastName;
     private String email;
-    private String avatarUrl;
     private Date birthday;
     private String password;
     private String gender;
@@ -49,14 +48,6 @@ public class User extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public Profile getProfile() {

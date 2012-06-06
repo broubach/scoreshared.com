@@ -1,99 +1,203 @@
 package com.scoreshared.business.persistence;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.ObjectRetrievalFailureException;
+import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-/**
- * @author Alessio Pace
- * http://forum.springsource.org/showthread.php?25160-Adding-GenericDAO-classes-to-Spring
- */
 public class GenericOperationsDao extends HibernateDaoSupport {
 
     protected Logger logger = Logger.getLogger(GenericOperationsDao.class.getName());
 
-    public <T> List<T> findAll(Class<T> entityClass) throws DataAccessException {
-        List<T> results = getHibernateTemplate().loadAll(entityClass);
+    public <T> T findByPk(Class<T> clazz, Integer id, String... collectionsToLoad) {
+        Session session = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            Object entity = session.get(clazz, id);
+            if (collectionsToLoad != null) {
+                for (String collection : collectionsToLoad) {
+                    Hibernate.initialize(BeanUtils.getProperty(entity, collection));
+                }
+            }
 
-        Set<T> set = new HashSet<T>(results);
-        results = new ArrayList<T>(set);
-        return results;
-    }
-
-    public <T> T findById(Class<T> entityClass, Long id) throws DataAccessException {
-        T o = getHibernateTemplate().get(entityClass, id);
-        if (o == null) {
-            logger.warning("uh oh, document with id '" + id + "' not found...");
-            throw new ObjectRetrievalFailureException(entityClass, id);
-        } else {
-            return o;
+            return (T) entity;
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
-    public <T> void saveOrUpdate(T entity) throws DataAccessException {
-        getHibernateTemplate().saveOrUpdate(entity);
+    public List find(String query) {
+        return getHibernateTemplate().find(query);
     }
 
-    public <T> T merge(T entity) throws DataAccessException {
-        return getHibernateTemplate().merge(entity);
+    public <T> List<T> findAll(Class<T> c) {
+        return getHibernateTemplate().loadAll(c);
     }
 
-    public <T> void remove(T entity) throws DataAccessException {
-        getHibernateTemplate().delete(entity);
+    public List findByNamedQuery(String namedQuery, Object... paramValues) {
+        return getHibernateTemplate().findByNamedQuery(namedQuery, paramValues);
     }
 
-    public <T> void removeAll(Class<T> entityClass) throws DataAccessException {
-        getHibernateTemplate().deleteAll(this.findAll(entityClass));
+    public List findByNamedQueryWithLimits(String namedQuery, int firstResult, int maxResults, Object... paramValues) {
+        Session session = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            org.hibernate.Query query = session.getNamedQuery(namedQuery);
+            query.setFirstResult(firstResult);
+            query.setMaxResults(maxResults);
+            if (paramValues != null) {
+                for (int i = 0; i < query.getNamedParameters().length; i++) {
+                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
+                }
+            }
+            return query.list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
-    public <T> List<T> findByNamedQueryAndNamedParam(Class<T> entityClass, String queryName, String[] paramNames,
-            Object[] values) throws DataAccessException {
+    public <T> List<T> findByNamedQueryAndNamedParam(String queryName, Map<String, ?> params) {
+        String[] paramNames = new String[params.size()];
+        Object[] values = new Object[params.size()];
 
+        List<String> keys = new ArrayList<String>(params.keySet());
+        for (int i = 0; i < keys.size(); i++) {
+            String k = keys.get(i);
+            paramNames[i] = k;
+            values[i] = params.get(k);
+        }
+        return findByNamedQueryAndNamedParam(queryName, paramNames, values);
+    }
+
+    public <T> List<T> findByNamedQueryAndNamedParam(String queryName, String[] paramNames, Object[] values) {
         return getHibernateTemplate().findByNamedQueryAndNamedParam(queryName, paramNames, values);
     }
 
-    public <T> List<T> findByNamedQueryAndNamedParam(Class<T> entityClass, String queryName, Map<String, ?> params)
-            throws DataAccessException {
+    public <T> T findFirst(Class<T> clazz) {
+        Session session = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(clazz);
+            criteria.setFirstResult(0);
+            criteria.setMaxResults(1);
+            return (T) criteria.uniqueResult();
 
-        String[] paramNames = new String[params.size()];
-        Object[] values = new Object[params.size()];
-
-        List<String> keys = new ArrayList<String>(params.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            String k = keys.get(i);
-            paramNames[i] = k;
-            values[i] = params.get(k);
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
-
-        return this.findByNamedQueryAndNamedParam(entityClass, queryName, paramNames, values);
     }
 
-    public <T> List<T> findByNamedParam(Class<T> entityClass, String query, String[] paramNames, Object[] values)
-            throws DataAccessException {
+    public <T extends BaseEntity> T findFirst(Class<T> clazz, T notToBe) {
+        Session session = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(clazz);
+            criteria.setFirstResult(0);
+            criteria.setMaxResults(1);
+            criteria.add(Restrictions.not(Restrictions.eq("id", notToBe.getId())));
+            return (T) criteria.uniqueResult();
 
-        return getHibernateTemplate().findByNamedParam(query, paramNames, values);
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
-    public <T> List<T> findByNamedParam(Class<T> entityClass, String query, Map<String, ?> params)
-            throws DataAccessException {
+    public <T> void saveOrUpdate(T entity) {
+        getHibernateTemplate().saveOrUpdate(entity);
+    }
 
-        String[] paramNames = new String[params.size()];
-        Object[] values = new Object[params.size()];
+    public <T> void remove(T entity) {
+        getHibernateTemplate().delete(entity);
+    }
 
-        List<String> keys = new ArrayList<String>(params.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            String k = keys.get(i);
-            paramNames[i] = k;
-            values[i] = params.get(k);
+    public <T> void removeAll(Class<T> entityClass) {
+        getHibernateTemplate().deleteAll(this.findAll(entityClass));
+    }
+
+    public <T> T merge(T entity) {
+        return getHibernateTemplate().merge(entity);
+    }
+
+    public static boolean isInitialized(Object obj, String proxy) {
+        try {
+            if (BeanUtils.getProperty(obj, proxy).equals("com.sun.jdi.InvocationException occurred invoking method.")) {
+                return false;
+            }
+            return true;
+        } catch (LazyInitializationException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
+    }
 
-        return getHibernateTemplate().findByNamedParam(query, paramNames, values);
+    public Transaction beginTransaction() {
+        return getHibernateTemplate().getSessionFactory().getCurrentSession().beginTransaction();
+    }
+
+    public void rollbackTransaction(Transaction tx) {
+        tx.rollback();
+        getHibernateTemplate().getSessionFactory().getCurrentSession().close();
+    }
+
+    public void execute(String namedQuery, Object... paramValues) {
+        Session session = null;
+        Transaction t = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            t = session.beginTransaction();
+            Query query = session.getNamedQuery(namedQuery);
+            if (paramValues != null) {
+                for (int i = 0; i < query.getNamedParameters().length; i++) {
+                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
+                }
+            }
+            query.executeUpdate();
+            t.commit();
+
+        } catch (HibernateException e) {
+            t.rollback();
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

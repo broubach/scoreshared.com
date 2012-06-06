@@ -1,7 +1,5 @@
 package com.scoreshared.webapp.controller;
 
-import java.security.Principal;
-
 import javax.inject.Inject;
 import javax.validation.Valid;
 
@@ -39,7 +37,7 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
-    public ModelAndView validateAndSaveStep1(Principal currentUser, @Valid WelcomeStep1Form form, BindingResult result) {
+    public ModelAndView validateAndSaveStep1(@Valid WelcomeStep1Form form, BindingResult result) {
         if (result.hasErrors()) {
             ModelAndView mav = getStep1();
             mav.addObject(form);

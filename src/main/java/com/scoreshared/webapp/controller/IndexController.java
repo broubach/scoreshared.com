@@ -38,7 +38,7 @@ import com.scoreshared.business.persistence.User;
 import com.scoreshared.webapp.dto.SignupForm;
 
 @Controller
-@SessionAttributes(types = SignupForm.class)
+@SessionAttributes({ "signupForm" })
 public class IndexController {
 
     protected Logger logger = Logger.getLogger(IndexController.class.getName());

@@ -1,6 +1,9 @@
 package com.scoreshared.business.persistence;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +17,13 @@ public class Profile extends BaseEntity {
     private String coach;
     private Boolean showContactInfoToFriends;
     private String phone;
+    private String avatarHash;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    private File avatar;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    private File smallAvatar;
 
     public String getCity() {
         return city;
@@ -69,5 +79,29 @@ public class Profile extends BaseEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public File getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(File avatar) {
+        this.avatar = avatar;
+    }
+
+    public File getSmallAvatar() {
+        return smallAvatar;
+    }
+
+    public void setSmallAvatar(File smallAvatar) {
+        this.smallAvatar = smallAvatar;
+    }
+
+    public String getAvatarHash() {
+        return avatarHash;
+    }
+
+    public void setAvatarHash(String avatarHash) {
+        this.avatarHash = avatarHash;
     }
 }
