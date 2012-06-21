@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
 </head>
@@ -28,24 +28,24 @@
 
 	<form action="<@spring.url relativeUrl="/app/welcome/step1"/>" method="post">
 		<dl>
-			<dt><label for="city"><@spring.message code="label.which_city_do_you_live"/></label></dt>
+			<dt><label for="profile.city"><@spring.message code="label.which_city_do_you_live"/></label></dt>
 			<dd>
 				<@spring.formInput "welcomeStep1Form.profile.city", "maxlength='45'", "text"/>
 			</dd>
 		</dl>
 
 		<dl>
-			<dt><label for="country"><@spring.message code="label.which_country"/></label></dt>
+			<dt><label for="profile.country"><@spring.message code="label.which_country"/></label></dt>
 			<dd><@spring.formInput "welcomeStep1Form.profile.country", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>
-			<dt><label for="club"><@spring.message code="label.which_club_do_you_play_most"/></label></dt>
+			<dt><label for="profile.club"><@spring.message code="label.which_club_do_you_play_most"/></label></dt>
 			<dd><@spring.formInput "welcomeStep1Form.profile.club", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>
-			<dt><label for="leftHanded0"><@spring.message code="label.you_are"/></label></dt>
+			<dt><label for="profile.leftHanded0"><@spring.message code="label.you_are"/></label></dt>
 			<dd>
 				<#assign label_handed_right><@spring.message code="label.handed_right"/></#assign>
 				<#assign label_handed_left><@spring.message code="label.handed_left"/></#assign>
@@ -55,12 +55,12 @@
 		</dl>
 
 		<dl>
-			<dt><label for="style"><@spring.message code="label.define_your_style_of_game"/></label></dt>
+			<dt><label for="profile.style"><@spring.message code="label.define_your_style_of_game"/></label></dt>
 			<dd><@spring.formTextarea "welcomeStep1Form.profile.style", "" /></dd>
 		</dl>
 
 		<dl>
-			<dt><label for="showContactInfoToFriends0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/> *</label></dt>
+			<dt><label for="profile.showContactInfoToFriends0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/> *</label></dt>
 			<dd>
 				<#assign label_yes><@spring.message code="label.yes"/></#assign>
 				<#assign label_no><@spring.message code="label.no"/></#assign>
@@ -70,7 +70,7 @@
 		</dl>
 
 		<dl>
-			<dt><label for="phone"><@spring.message code="label.phone_number"/></label></dt>
+			<dt><label for="profile.phone"><@spring.message code="label.phone_number"/></label></dt>
 			<dd>
 				<@spring.formInput "welcomeStep1Form.profile.phone", "maxlength='45'", "text"/>
 			</dd>
@@ -82,7 +82,7 @@
 				<a href="#"><@spring.message code="label.click_to_read_the_service_license"/></a>
 			</dt>
 			<dd>
-				<@spring.formRadioButtons "welcomeStep1Form.profile.agree", yesNoHash, "", "" />
+				<@spring.formRadioButtons "welcomeStep1Form.agree", yesNoHash, "", "" />
 			</dd>
 		</dl>
 

@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.7.1.min.js"/>"></script>

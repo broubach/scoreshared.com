@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 	<head>
 		<title><@spring.message code="label.scoreshared"/></title>
 		<link type="text/css" href="<@spring.url relativeUrl="/css/le-frog/jquery-ui-1.8.17.custom.css"/>" rel="Stylesheet" />	

@@ -1,7 +1,6 @@
 package com.scoreshared.webapp.controller;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.File;
@@ -51,47 +49,47 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
-    public ModelAndView getStep1() {
-        ModelAndView mav = new ModelAndView("welcome/step1");
-        mav.addObject(new WelcomeStep1Form());
-        return mav;
+    public String getStep1(HttpSession session, ModelMap modelMap) {
+        if (!modelMap.containsAttribute("welcomeStep1Form")) {
+            modelMap.addAttribute(new WelcomeStep1Form(getLoggedUser(session)));
+        }
+        return "welcome/step1";
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
-    public ModelAndView validateAndSaveStep1(@ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
+    public String validateAndSaveStep1(HttpSession session, ModelMap modelMap,
+            @ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
         if (result.hasErrors()) {
-            ModelAndView mav = getStep1();
-            mav.addObject(form);
-            return mav;
+            return "welcome/step1";
         }
         bo.save(form.getProfile());
-        return getStep2();
+        bo.save(getLoggedUser(session));
+        return getStep2(modelMap);
     }
 
     @RequestMapping(value = "/step2", method = RequestMethod.GET)
-    public ModelAndView getStep2() {
-        ModelAndView mav = new ModelAndView("welcome/step2");
+    public String getStep2(ModelMap modelMap) {
         Connection<Twitter> connection = connectionRepository.findPrimaryConnection(Twitter.class);
         if (connection != null) {
-            mav.addObject("twitterAccount", connection.fetchUserProfile().getUsername());
-            mav.addObject("twitterConnected", true);
+            modelMap.addAttribute("twitterAccount", connection.fetchUserProfile().getUsername());
+            modelMap.addAttribute("twitterConnected", true);
         } else {
-            mav.addObject("twitterConnected", false);
+            modelMap.addAttribute("twitterConnected", false);
         }
-        return mav;
+        return "welcome/step2";
     }
 
     @RequestMapping(value = "/step3", method = RequestMethod.GET)
-    public ModelAndView getStep3() {
-        ModelAndView mav = new ModelAndView("welcome/step3");
-        mav.addObject(new WelcomeStep3Form());
-        return mav;
+    public String getStep3(ModelMap modelMap) {
+        if (!modelMap.containsAttribute("welcomeStep3Form")) {
+            modelMap.addAttribute(new WelcomeStep3Form());
+        }
+        return "welcome/step3";
     }
 
     @RequestMapping(value = "/step3", method = RequestMethod.POST)
-    public String saveStep3(Principal loggedUser, ModelMap modelMap, HttpSession session, SessionStatus status) {
+    public String saveStep3(@ModelAttribute WelcomeStep3Form step3Form, HttpSession session, SessionStatus status) {
         try {
-            WelcomeStep3Form step3Form = (WelcomeStep3Form) modelMap.get("welcomeStep3Form");
             if (Boolean.TRUE.equals(step3Form.getAvatarUploaded())) {
                 createFileAndSaveAvatar(session, step3Form.getFile());
                 step3Form.setAvatarUploaded(Boolean.FALSE);

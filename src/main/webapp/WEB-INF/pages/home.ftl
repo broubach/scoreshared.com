@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
 </head>

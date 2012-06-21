@@ -74,14 +74,13 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 
         // resize and crop small avatar
         File smallAvatar = (File) avatar.clone();
-        smallAvatar.setData(cropAndScaleImage(avatar.getData(), x, y, x2, y2, DEFAULT_AVATAR_WIDTH,
-                DEFAULT_AVATAR_HEIGHT));
+        smallAvatar.setData(cropAndScaleImage(avatar.getData(), x, y, x2, y2, SMALL_AVATAR_WIDTH, SMALL_AVATAR_HEIGHT));
         smallAvatar.setSize(Long.valueOf(smallAvatar.getData().length));
         smallAvatar.setMime("image/png");
         loggedUser.getProfile().setSmallAvatar(smallAvatar);
 
         // resize and crop default avatar
-        avatar.setData(cropAndScaleImage(avatar.getData(), x, y, x2, y2, SMALL_AVATAR_WIDTH, SMALL_AVATAR_HEIGHT));
+        avatar.setData(cropAndScaleImage(avatar.getData(), x, y, x2, y2, DEFAULT_AVATAR_WIDTH, DEFAULT_AVATAR_HEIGHT));
         avatar.setSize(Long.valueOf(avatar.getData().length));
         avatar.setMime("image/png");
         loggedUser.getProfile().setAvatar(avatar);

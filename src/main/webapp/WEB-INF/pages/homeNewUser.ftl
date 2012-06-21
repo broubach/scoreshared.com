@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
 </head>
@@ -17,7 +17,7 @@
 	<td>Diogo</td>
 	<td>6x4</td>
 	<td><a href="#">Felipe Freitas</a></td>
-	<td><img src="<@spring.url relativeUrl="/img/pete_sampras.jpg"/>"/></td>
+	<td><img src="<@spring.url relativeUrl="/app/avatar?hash=3858fdd7ee78b1220ed07ef68c372734&small"/>"/></td>
 </tr>
 <tr>
 	<td><img src="<@spring.url relativeUrl="/img/pete_sampras.jpg"/>"/></td>

@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<html>
+<!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
 </head>
@@ -26,7 +26,7 @@
 	<form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connect"/></button></form>
 </#if>
 <br/>
-<a href="<@spring.url relativeUrl="/app/welcome/step2"/>"><@spring.message code="label.back"/></a>
+<a href="<@spring.url relativeUrl="/app/welcome/step1"/>"><@spring.message code="label.back"/></a>
 <a href="<@spring.url relativeUrl="/app/welcome/step3"/>"><@spring.message code="label.next_step"/></a>
 
 </body>

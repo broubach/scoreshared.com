@@ -17,7 +17,7 @@ public class WelcomeStep1FormValidator implements Validator {
     public void validate(Object target, Errors errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "profile.showContactInfoToFriends",
                 "error.field_is_required", "label.show_contact");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "profile.agree", "error.field_is_required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "agree", "error.field_is_required");
         if (Boolean.FALSE.toString().equals(errors.getFieldValue("agree"))) {
             errors.reject("error.please_read_service_license");
         }
