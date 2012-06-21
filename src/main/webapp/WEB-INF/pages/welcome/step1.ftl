@@ -30,18 +30,18 @@
 		<dl>
 			<dt><label for="city"><@spring.message code="label.which_city_do_you_live"/></label></dt>
 			<dd>
-				<@spring.formInput "welcomeStep1Form.city", "maxlength='45'", "text"/>
+				<@spring.formInput "welcomeStep1Form.profile.city", "maxlength='45'", "text"/>
 			</dd>
 		</dl>
 
 		<dl>
 			<dt><label for="country"><@spring.message code="label.which_country"/></label></dt>
-			<dd><@spring.formInput "welcomeStep1Form.country", "maxlength='45'", "text"/></dd>
+			<dd><@spring.formInput "welcomeStep1Form.profile.country", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>
 			<dt><label for="club"><@spring.message code="label.which_club_do_you_play_most"/></label></dt>
-			<dd><@spring.formInput "welcomeStep1Form.club", "maxlength='45'", "text"/></dd>
+			<dd><@spring.formInput "welcomeStep1Form.profile.club", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>
@@ -50,29 +50,29 @@
 				<#assign label_handed_right><@spring.message code="label.handed_right"/></#assign>
 				<#assign label_handed_left><@spring.message code="label.handed_left"/></#assign>
 				<#assign leftHandedHash = {"false":label_handed_right, "true":label_handed_left} />
-				<@spring.formRadioButtons "welcomeStep1Form.leftHanded", leftHandedHash, "", "" />
+				<@spring.formRadioButtons "welcomeStep1Form.profile.leftHanded", leftHandedHash, "", "" />
 			</dd>
 		</dl>
 
 		<dl>
-			<dt><label for="styleDescription"><@spring.message code="label.define_your_style_of_game"/></label></dt>
-			<dd><@spring.formTextarea "welcomeStep1Form.styleDescription", "" /></dd>
+			<dt><label for="style"><@spring.message code="label.define_your_style_of_game"/></label></dt>
+			<dd><@spring.formTextarea "welcomeStep1Form.profile.style", "" /></dd>
 		</dl>
 
 		<dl>
-			<dt><label for="showContactToPlayers0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/> *</label></dt>
+			<dt><label for="showContactInfoToFriends0"><@spring.message code="label.show_email_phone_to_players_in_my_list"/> *</label></dt>
 			<dd>
 				<#assign label_yes><@spring.message code="label.yes"/></#assign>
 				<#assign label_no><@spring.message code="label.no"/></#assign>
 				<#assign yesNoHash = {"true":label_yes, "false":label_no} />
-				<@spring.formRadioButtons "welcomeStep1Form.showContactToPlayers", yesNoHash, "", "" />
+				<@spring.formRadioButtons "welcomeStep1Form.profile.showContactInfoToFriends", yesNoHash, "", "" />
 			</dd>
 		</dl>
 
 		<dl>
-			<dt><label for="phoneNumber"><@spring.message code="label.phone_number"/></label></dt>
+			<dt><label for="phone"><@spring.message code="label.phone_number"/></label></dt>
 			<dd>
-				<@spring.formInput "welcomeStep1Form.phoneNumber", "maxlength='45'", "text"/>
+				<@spring.formInput "welcomeStep1Form.profile.phone", "maxlength='45'", "text"/>
 			</dd>
 		</dl>
 
@@ -82,7 +82,7 @@
 				<a href="#"><@spring.message code="label.click_to_read_the_service_license"/></a>
 			</dt>
 			<dd>
-				<@spring.formRadioButtons "welcomeStep1Form.agree", yesNoHash, "", "" />
+				<@spring.formRadioButtons "welcomeStep1Form.profile.agree", yesNoHash, "", "" />
 			</dd>
 		</dl>
 

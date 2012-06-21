@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class LoginController {
 
+    /**
+     * This controller transfers the exception reported by the spring security from the session to the request,
+     * so the error message is showed only once.
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(HttpServletRequest request, HttpSession session) {
         if (session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) != null) {

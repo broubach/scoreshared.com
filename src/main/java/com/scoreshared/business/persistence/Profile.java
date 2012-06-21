@@ -18,6 +18,7 @@ public class Profile extends BaseEntity {
     private Boolean showContactInfoToFriends;
     private String phone;
     private String avatarHash;
+    private String style;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private File avatar;
@@ -79,6 +80,14 @@ public class Profile extends BaseEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
     }
 
     public File getAvatar() {

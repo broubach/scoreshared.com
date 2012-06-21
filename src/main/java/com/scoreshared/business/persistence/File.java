@@ -15,7 +15,7 @@ import javax.persistence.Table;
         @NamedQuery(name = "avatarIdByHashQuery", query = "select avatar.id from Profile profile join profile.avatar avatar where profile.avatarHash = ?"),
         @NamedQuery(name = "smallAvatarIdByHashQuery", query = "select smallAvatar.id from Profile profile join profile.smallAvatar smallAvatar where profile.avatarHash = ?") })
 @Table(name = "file")
-public class File extends BaseEntity {
+public class File extends BaseEntity implements Cloneable {
 
     @Lob
     private byte[] data;
@@ -73,5 +73,17 @@ public class File extends BaseEntity {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public Object clone() {
+        File clone = new File();
+        clone.setData(data);
+        clone.setDate(date);
+        clone.setMime(mime);
+        clone.setName(name);
+        clone.setOwner(owner);
+        clone.setSize(size);
+        return clone;
     }
 }

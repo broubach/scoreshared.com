@@ -39,7 +39,7 @@ import com.scoreshared.webapp.dto.SignupForm;
 
 @Controller
 @SessionAttributes({ "signupForm" })
-public class IndexController {
+public class IndexController extends BaseController {
 
     protected Logger logger = Logger.getLogger(IndexController.class.getName());
 
@@ -190,9 +190,10 @@ public class IndexController {
             if (captcha.isCorrect(captchaAnswer)) {
                 User user = form.toUser();
                 user.setPassword(passwordEncoder.encodePassword(form.getPassword(), form.getEmail()));
-                userBo.createUser(user);
+                userBo.save(user);
+                setLoggedUser(request.getSession(), user);
 
-                addUserToSession(request, response, form.getEmail(), form.getPassword());
+                addUserToSpringSecurityContext(request, response, form.getEmail(), form.getPassword());
 
                 sessionStatus.setComplete();
             } else {
@@ -210,7 +211,7 @@ public class IndexController {
         }
     }
 
-    private void addUserToSession(HttpServletRequest request, HttpServletResponse response, String email,
+    private void addUserToSpringSecurityContext(HttpServletRequest request, HttpServletResponse response, String email,
             String password) {
         HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
         contextRepository.loadContext(holder);
