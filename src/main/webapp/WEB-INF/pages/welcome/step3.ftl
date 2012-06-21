@@ -37,7 +37,9 @@
 			</li>
 			<li>
 				<@spring.message code="label.cut_your_best_angle_and_see_how_it_looks"/><br/>
-				<img/>
+				<div style="width:123px;height:162px;overflow:hidden;margin-left:5px;border:0px;"> 
+					<img id="preview" src="<@spring.url relativeUrl="/app/avatar"/>?${((.now?datetime)?string)?replace(" ", "")}"/>
+				</div>
 			</li>
 		</ol>
 	</span>
