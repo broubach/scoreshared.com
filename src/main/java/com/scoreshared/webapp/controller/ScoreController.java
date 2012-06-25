@@ -18,7 +18,7 @@ import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
 @RequestMapping(value = "/score")
-public class ScoreController {
+public class ScoreController extends BaseController {
 
     private final List playersList = CollectionUtils.arrayToList(new String[] { "Andre Agassi", "Pete Sampras",
             "Sergi Bruguera", "Yevgeny Kafelnikov", "Goran Ivanisevic", "Slobodan Milosevic", "Richard Krajicek",

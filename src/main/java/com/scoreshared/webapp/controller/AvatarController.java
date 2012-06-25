@@ -24,7 +24,7 @@ import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.File;
 
 @Controller
-public class AvatarController {
+public class AvatarController extends BaseController {
 
     @Inject
     private UserBo bo;
