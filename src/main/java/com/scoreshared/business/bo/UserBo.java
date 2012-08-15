@@ -26,9 +26,9 @@ import com.scoreshared.business.persistence.User;
 public class UserBo extends BaseBo<User> implements UserDetailsService {
 
     public static final String DEFAULT_AVATAR_KEY = "defaultAvatarKey";
-    private static final Integer DEFAULT_AVATAR_ID = 4;
+    private static final Integer DEFAULT_AVATAR_ID = 1;
     public static final String SMALL_DEFAULT_AVATAR_KEY = "smallDefaultAvatarKey";
-    private static final Integer SMALL_DEFAULT_AVATAR_ID = 7;
+    private static final Integer SMALL_DEFAULT_AVATAR_ID = 5;
     public static final String CURRENT_USERS_AVATAR = "currentUsersAvatar";
     public static final int SMALL_AVATAR_HEIGHT = 49;
     public static final int SMALL_AVATAR_WIDTH = 37;
@@ -94,7 +94,9 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         BufferedImage bdest = null;
 
         if (x2 - x1 > 0 && y2 - y1 > 0) {
-            bdest = getScaledInstance(bsrc.getSubimage(x1, y1, x2 - x1, y2 - y1), width, height,
+            int croppedWidth = (x2 - x1) > bsrc.getWidth() ? bsrc.getWidth() : (x2 - x1);
+            int croppedHeight = (y2 - y1) > bsrc.getHeight() ? bsrc.getHeight() : (y2 - y1);
+            bdest = getScaledInstance(bsrc.getSubimage(x1, y1, croppedWidth, croppedHeight), width, height,
                     RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
         } else {
             bdest = getScaledInstance(bsrc, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);

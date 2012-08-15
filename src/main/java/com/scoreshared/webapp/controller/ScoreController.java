@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.business.persistence.Score;
 import com.scoreshared.webapp.dto.ScoreModel;
 import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
 @RequestMapping(value = "/score")
 public class ScoreController extends BaseController {
+
+    @Inject
+    private ConversionService conversionService;
 
     private final List playersList = CollectionUtils.arrayToList(new String[] { "Andre Agassi", "Pete Sampras",
             "Sergi Bruguera", "Yevgeny Kafelnikov", "Goran Ivanisevic", "Slobodan Milosevic", "Richard Krajicek",
@@ -34,13 +41,17 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView save(@ModelAttribute ScoreModel score) {
+    public ModelAndView save(@ModelAttribute ScoreModel scoreModel) {
         // validate model
         // persist model
         // check if users already exist
         ModelAndView mav = new ModelAndView("score");
-        mav.addObject("score", score);
+        Score score = conversionService.convert(scoreModel, Score.class);
+        // TODO: persist score, player and comment
+        // TODO: post in twitter or facebook
+        mav.addObject("score", scoreModel);
         mav.addObject("search", new SearchModel());
+
         return mav;
     }
 

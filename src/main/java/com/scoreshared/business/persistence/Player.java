@@ -10,6 +10,13 @@ public class Player extends BaseEntity {
     private String invitationMessage;
     private Date invitationDate;
 
+    public Player() {
+    }
+
+    public Player(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

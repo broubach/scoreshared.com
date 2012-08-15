@@ -10,6 +10,15 @@
 		<property name="location" value="classpath:scoreshared.properties" />
 	</bean>
 
+	<bean id="conversionService"
+	      class="org.springframework.context.support.ConversionServiceFactoryBean">
+	    <property name="converters">
+	        <list>
+	            <bean class="com.scoreshared.webapp.dto.ScoreConverter"/>
+	        </list>
+	    </property>
+	</bean>
+
 	<import resource="root-persistence-ctx.xml" />
 	<import resource="root-mvc-ctx.xml" />
 	<import resource="root-security-ctx.xml" />
