@@ -54,7 +54,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<User> result = dao.findByNamedQuery("existentEmailQuery", username);
         if (result.size() > 0) {
-            return result.get(0).toSecurityUser();
+            return result.get(0);
         }
         throw new UsernameNotFoundException("no user found");
     }

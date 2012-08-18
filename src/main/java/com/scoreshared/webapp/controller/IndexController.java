@@ -191,7 +191,6 @@ public class IndexController extends BaseController {
                 User user = form.toUser();
                 user.setPassword(passwordEncoder.encodePassword(form.getPassword(), form.getEmail()));
                 userBo.save(user);
-                setLoggedUser(request.getSession(), user);
 
                 addUserToSpringSecurityContext(request, response, form.getEmail(), form.getPassword());
 

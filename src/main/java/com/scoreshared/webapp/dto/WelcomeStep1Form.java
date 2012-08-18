@@ -8,9 +8,9 @@ public class WelcomeStep1Form {
     private Profile profile;
     private Boolean agree;
 
-    public WelcomeStep1Form(User loggedUser) {
+    public WelcomeStep1Form(User user) {
         this.profile = new Profile();
-        loggedUser.setProfile(profile);
+        user.setProfile(profile);
     }
 
     public Profile getProfile() {

@@ -11,7 +11,12 @@
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-	<annotation-driven/>
+	<annotation-driven>
+	    <argument-resolvers>
+			<!-- see http://stackoverflow.com/questions/8764545/best-practice-for-getting-active-users-userdetails -->
+	        <beans:bean class="com.scoreshared.scaffold.LoggedUserWebArgumentResolver"/>
+	    </argument-resolvers>
+	</annotation-driven>
 	<context:component-scan base-package="com.scoreshared" />
 
 	<view-controller path="/error" view-name="error" />

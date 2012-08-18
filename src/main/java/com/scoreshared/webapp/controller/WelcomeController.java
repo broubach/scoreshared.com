@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.File;
+import com.scoreshared.business.persistence.User;
+import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.WelcomeStep1Form;
 import com.scoreshared.webapp.dto.WelcomeStep3Form;
 import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
@@ -49,21 +51,21 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
-    public String getStep1(HttpSession session, ModelMap modelMap) {
+    public String getStep1(@LoggedUser User loggedUser, ModelMap modelMap) {
         if (!modelMap.containsAttribute("welcomeStep1Form")) {
-            modelMap.addAttribute(new WelcomeStep1Form(getLoggedUser(session)));
+            modelMap.addAttribute(new WelcomeStep1Form(loggedUser));
         }
         return "welcome/step1";
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
-    public String validateAndSaveStep1(HttpSession session, ModelMap modelMap,
+    public String validateAndSaveStep1(@LoggedUser User loggedUser, ModelMap modelMap,
             @ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
         if (result.hasErrors()) {
             return "welcome/step1";
         }
         bo.save(form.getProfile());
-        bo.save(getLoggedUser(session));
+        bo.save(loggedUser);
         return getStep2(modelMap);
     }
 
@@ -88,15 +90,16 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step3", method = RequestMethod.POST)
-    public String saveStep3(@ModelAttribute WelcomeStep3Form step3Form, HttpSession session, SessionStatus status) {
+    public String saveStep3(@ModelAttribute WelcomeStep3Form step3Form, @LoggedUser User loggedUser,
+            HttpSession session, SessionStatus status) {
         try {
             if (Boolean.TRUE.equals(step3Form.getAvatarUploaded())) {
-                createFileAndSaveAvatar(session, step3Form.getFile());
+                createFileAndSaveAvatar(loggedUser, session, step3Form.getFile());
                 step3Form.setAvatarUploaded(Boolean.FALSE);
                 return "welcome/step3";
             }
-            bo.cropResizeAndSaveAvatars(getLoggedUser(session), getSavedAvatar(session), step3Form.getX().intValue(),
-                    step3Form.getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
+            bo.cropResizeAndSaveAvatars(loggedUser, getSavedAvatar(session), step3Form.getX().intValue(), step3Form
+                    .getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
 
             status.setComplete();
 
@@ -108,7 +111,7 @@ public class WelcomeController extends BaseController {
         }
     }
 
-    private File createFileAndSaveAvatar(HttpSession session, MultipartFile avatar) throws IOException {
+    private File createFileAndSaveAvatar(User loggedUser, HttpSession session, MultipartFile avatar) throws IOException {
         File file = new File();
         file.setDate(new Date());
         if (avatar.getOriginalFilename().length() > 45) {
@@ -119,7 +122,7 @@ public class WelcomeController extends BaseController {
         }
         file.setSize(avatar.getSize());
         file.setData(avatar.getBytes());
-        file.setOwner(getLoggedUser(session));
+        file.setOwner(loggedUser);
 
         saveAvatar(session, file);
 

@@ -2,6 +2,7 @@ package com.scoreshared.webapp.dto;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class ScoreConverter implements Converter<ScoreModel, Score> {
 
     private Date getTime(String time) throws ParseException {
         DateFormat df = DateFormat.getTimeInstance();
+        ((SimpleDateFormat) df).applyPattern("HH:mm");
         return df.parse(time);
     }
 

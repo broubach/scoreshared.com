@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.persistence.Score;
+import com.scoreshared.business.persistence.User;
+import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.ScoreModel;
 import com.scoreshared.webapp.dto.SearchModel;
 
@@ -26,6 +29,9 @@ public class ScoreController extends BaseController {
 
     @Inject
     private ConversionService conversionService;
+
+    @Inject
+    private ScoreBo scoreBo;
 
     private final List playersList = CollectionUtils.arrayToList(new String[] { "Andre Agassi", "Pete Sampras",
             "Sergi Bruguera", "Yevgeny Kafelnikov", "Goran Ivanisevic", "Slobodan Milosevic", "Richard Krajicek",
@@ -41,16 +47,13 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView save(@ModelAttribute ScoreModel scoreModel) {
+    public ModelAndView save(@LoggedUser User loggedUser, @ModelAttribute ScoreModel scoreModel) {
         // validate model
-        // persist model
-        // check if users already exist
         ModelAndView mav = new ModelAndView("score");
-        Score score = conversionService.convert(scoreModel, Score.class);
-        // TODO: persist score, player and comment
-        // TODO: post in twitter or facebook
+        scoreBo.save(loggedUser, conversionService.convert(scoreModel, Score.class));
         mav.addObject("score", scoreModel);
         mav.addObject("search", new SearchModel());
+        // check if users already exist
 
         return mav;
     }
