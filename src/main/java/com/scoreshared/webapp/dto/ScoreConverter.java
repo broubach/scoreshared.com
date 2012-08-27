@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
 
@@ -33,23 +32,16 @@ public class ScoreConverter implements Converter<ScoreModel, Score> {
             dest.setSet5Right(src.getSet5Right());
 
             Set<Player> leftPlayers = new HashSet<Player>();
-            for (String playerLeft : src.getPlayersLeft().split(",")) {
+            for (String playerLeft : src.getPlayersLeft().trim().split(",")) {
                 leftPlayers.add(new Player(playerLeft));
 
             }
             dest.setLeftPlayers(leftPlayers);
             Set<Player> rightPlayers = new HashSet<Player>();
-            for (String playerRight : src.getPlayersRight().split(",")) {
+            for (String playerRight : src.getPlayersRight().trim().split(",")) {
                 rightPlayers.add(new Player(playerRight));
             }
-            dest.setLeftPlayers(rightPlayers);
-
-            if (src.getComment() != null && !src.getComment().isEmpty()) {
-                Comment comment = new Comment();
-                comment.setPrivate(src.getPrivate());
-                comment.setDescription(src.getComment());
-                comment.setScore(dest);
-            }
+            dest.setRightPlayers(rightPlayers);
 
             return dest;
         } catch (ParseException e) {

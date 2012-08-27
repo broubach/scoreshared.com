@@ -26,9 +26,9 @@ import com.scoreshared.business.persistence.User;
 public class UserBo extends BaseBo<User> implements UserDetailsService {
 
     public static final String DEFAULT_AVATAR_KEY = "defaultAvatarKey";
-    private static final Integer DEFAULT_AVATAR_ID = 1;
+    private static final Integer DEFAULT_AVATAR_ID = 4;
     public static final String SMALL_DEFAULT_AVATAR_KEY = "smallDefaultAvatarKey";
-    private static final Integer SMALL_DEFAULT_AVATAR_ID = 5;
+    private static final Integer SMALL_DEFAULT_AVATAR_ID = 7;
     public static final String CURRENT_USERS_AVATAR = "currentUsersAvatar";
     public static final int SMALL_AVATAR_HEIGHT = 49;
     public static final int SMALL_AVATAR_WIDTH = 37;

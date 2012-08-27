@@ -1,15 +1,18 @@
 package com.scoreshared.webapp.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
+import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -33,36 +37,46 @@ public class ScoreController extends BaseController {
     @Inject
     private ScoreBo scoreBo;
 
-    private final List playersList = CollectionUtils.arrayToList(new String[] { "Andre Agassi", "Pete Sampras",
-            "Sergi Bruguera", "Yevgeny Kafelnikov", "Goran Ivanisevic", "Slobodan Milosevic", "Richard Krajicek",
-            "Jimmy Connors", "Felipe Freitas", "Roger Federer", "Rafael Nadal", "Andy Roddick", "Novak Jokovic",
-            "Andy Murray" });
-
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView show() {
-        ModelAndView mav = new ModelAndView("score");
-        mav.addObject("score", new ScoreModel());
-        mav.addObject("search", new SearchModel());
-        return mav;
+    public ModelAndView show(@LoggedUser User loggedUser) {
+        try {
+            ModelAndView mav = new ModelAndView("score");
+            mav.addObject("score", new ScoreModel());
+            mav.addObject("search", new SearchModel());
+
+            StringWriter playersList = new StringWriter();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(playersList, scoreBo.listPlayersName(loggedUser));
+            mav.addObject("playersList", playersList.toString());
+            return mav;
+        } catch (JsonGenerationException e) {
+            throw new RuntimeException(e);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView save(@LoggedUser User loggedUser, @ModelAttribute ScoreModel scoreModel) {
-        // validate model
+        // TODO: validate model
+        Score score = conversionService.convert(scoreModel, Score.class);
+        Comment comment = conversionService.convert(scoreModel, Comment.class);
+        scoreBo.save(loggedUser, score, comment);
+
         ModelAndView mav = new ModelAndView("score");
-        scoreBo.save(loggedUser, conversionService.convert(scoreModel, Score.class));
         mav.addObject("score", scoreModel);
         mav.addObject("search", new SearchModel());
-        // check if users already exist
 
         return mav;
     }
 
     @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> postNewUser(@ModelAttribute(value = "player") String player) {
+    public Map<String, String> postNewUser(@LoggedUser User loggedUser, @ModelAttribute(value = "player") String player) {
         Map<String, String> result = new HashMap<String, String>();
-        if (playersList.contains(player)) {
+        if (scoreBo.userHas(loggedUser, player)) {
             result.put("proceedWithConfirmation", "false");
         } else {
             result.put("proceedWithConfirmation", "true");

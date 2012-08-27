@@ -1,9 +1,19 @@
 package com.scoreshared.business.persistence;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "comment")
 public class Comment extends BaseEntity {
     private User owner;
     private boolean pvt; //pvt used because private is a reserved word
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private Score score;
 
     public User getOwner() {
