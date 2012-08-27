@@ -1,18 +1,3 @@
-var playersList = ["Andre Agassi",
-                   "Pete Sampras",
-                   "Sergi Bruguera",
-                   "Yevgeny Kafelnikov",
-                   "Goran Ivanisevic",
-                   "Slobodan Milosevic",
-                   "Richard Krajicek",
-                   "Jimmy Connors",
-                   "Felipe Freitas",
-                   "Roger Federer",
-                   "Rafael Nadal",
-                   "Andy Roddick",
-                   "Novak Jokovic",
-                   "Andy Murray"];
-
 var Sets = {
 	MAX: 5,
 	playersPane: "",
@@ -124,8 +109,8 @@ var Sets = {
 		var sets = Sets.getAllSets();
 		for (var i = 0; i< sets.length; i++) {
 			// calculate winner for each
-			leftVal = $('#set' + (i + 1) + 'left', sets[i]).val();
-			rightVal = $('#set' + (i + 1) + 'right', sets[i]).val();
+			leftVal = $('#set' + (i + 1) + 'Left', sets[i]).val();
+			rightVal = $('#set' + (i + 1) + 'Right', sets[i]).val();
 			if (leftVal != '' && rightVal != '' && parseInt(leftVal) > parseInt(rightVal)) {
 				leftTotal++;
 			} else if (leftVal != '' && rightVal != '' && parseInt(rightVal) > parseInt(leftVal)) {
@@ -185,7 +170,7 @@ var NewPlayerWizzard = {
 	},
 
 	start: function(choosenPlayers) {
-		NewPlayerWizzard.newPlayers = NewPlayerWizzard.createList(choosenPlayers, playersList);
+		NewPlayerWizzard.newPlayers = NewPlayerWizzard.createList(choosenPlayers, NewPlayerWizzard.options.playersList);
 
 		NewPlayerWizzard.currentNewPlayer = 0;
 		NewPlayerWizzard.startForCurrentPlayer();

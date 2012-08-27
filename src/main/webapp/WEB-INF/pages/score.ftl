@@ -93,7 +93,7 @@
 
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?1"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {
@@ -118,7 +118,8 @@ $(function() {
 		label_invite_to_scoreshared: '<@spring.message code="label.invite_to_scoreshared"/>',
 		label_user_not_found: '<@spring.message code="label.user_not_found"/>',
 		label_take_the_opportunity_to_invite: '<@spring.message code="label.take_the_opportunity_to_invite"/>',
-		loggedUserAvatarUrl: '/loggedUser/avatar/url'
+		loggedUserAvatarUrl: '/loggedUser/avatar/url',
+		playersList: ${playersList}
 	};
 	NewPlayerWizzard.init(newPlayerWizzardOptions);
 
@@ -133,7 +134,7 @@ $(function() {
 			source: function( request, response ) {
 				// delegate back to autocomplete, but extract the last term
 				response( $.ui.autocomplete.filter(
-					playersList, extractLast( request.term ) ) );
+					${playersList}, extractLast( request.term ) ) );
 			},
 			focus: function() {
 				// prevent value inserted on focus
