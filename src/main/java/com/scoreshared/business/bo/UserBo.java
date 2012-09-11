@@ -50,6 +50,14 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return !dao.findByNamedQuery("existentEmailQuery", email).isEmpty();
     }
 
+    public User findUserByEmailFetchProfile(String email) {
+        List<User> result = dao.findByNamedQuery("existentEmailFetchProfileQuery", email);
+        if (result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<User> result = dao.findByNamedQuery("existentEmailQuery", username);

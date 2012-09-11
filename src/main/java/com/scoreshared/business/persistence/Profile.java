@@ -113,4 +113,8 @@ public class Profile extends BaseEntity {
     public void setAvatarHash(String avatarHash) {
         this.avatarHash = avatarHash;
     }
+
+    public String getLocation() {
+        return new StringBuilder().append(city).append(", ").append(country).toString();
+    }
 }

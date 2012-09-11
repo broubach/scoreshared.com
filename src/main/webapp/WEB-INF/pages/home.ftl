@@ -6,5 +6,7 @@
 </head>
 <body>
 
+congrats!! new score recorded!
+
 </body>
 </html>

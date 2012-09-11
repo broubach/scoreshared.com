@@ -14,7 +14,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = ?") })
+@NamedQueries({
+        @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = ?"),
+        @NamedQuery(name = "existentEmailFetchProfileQuery", query = "from User user where user.email = ? join fetch user.profile ") })
 @Table(name = "user")
 public class User extends BaseEntity implements UserDetails {
 
@@ -113,5 +115,9 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getFullName() {
+        return new StringBuilder().append(firstName).append(" ").append(lastName).toString();
     }
 }

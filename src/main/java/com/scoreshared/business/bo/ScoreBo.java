@@ -37,6 +37,8 @@ public class ScoreBo extends BaseBo<Score> {
             List<Player> result = dao.findByNamedQuery("playerByNameAndOwner", player.getName(), loggedUser.getId());
             if (result.size() > 0) {
                 playersFound.add(result.get(0));
+                // TODO: validate if this code worked
+                result.get(0).setOwner(loggedUser);
             } else {
                 player.setOwner(loggedUser);
             }
@@ -54,5 +56,9 @@ public class ScoreBo extends BaseBo<Score> {
 
     public List<String> listPlayersName(User loggedUser) {
         return dao.findByNamedQuery("playerNameByOwner", loggedUser.getId());
+    }
+
+    public boolean hasScores(User loggedUser) {
+        return !dao.findByNamedQuery("hasScoreWithOwnerId", loggedUser.getId()).isEmpty();
     }
 }
