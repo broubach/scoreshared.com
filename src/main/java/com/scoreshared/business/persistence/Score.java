@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-<<<<<<< HEAD
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -18,12 +17,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "score")
 @NamedQueries({ @NamedQuery(name = "hasScoreWithOwnerId", query = "select 1 from Score score where score.owner.id = ?") })
-=======
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "score")
->>>>>>> refs/remotes/origin/master
 public class Score extends BaseEntity {
     private Date date;
     private Date time;
