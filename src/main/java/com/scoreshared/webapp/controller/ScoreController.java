@@ -2,6 +2,10 @@ package com.scoreshared.webapp.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
+<<<<<<< HEAD
+=======
+import java.text.MessageFormat;
+>>>>>>> refs/remotes/origin/master
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+<<<<<<< HEAD
 import org.springframework.context.MessageSource;
+=======
+>>>>>>> refs/remotes/origin/master
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +29,10 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
+<<<<<<< HEAD
 import com.scoreshared.business.bo.UserBo;
+=======
+>>>>>>> refs/remotes/origin/master
 import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
@@ -40,6 +50,7 @@ public class ScoreController extends BaseController {
     @Inject
     private ScoreBo scoreBo;
 
+<<<<<<< HEAD
     @Inject
     private UserBo userBo;
 
@@ -49,6 +60,8 @@ public class ScoreController extends BaseController {
     @Inject
     private LocaleResolver localeResolver;
 
+=======
+>>>>>>> refs/remotes/origin/master
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView show(@LoggedUser User loggedUser) {
         try {
@@ -71,18 +84,34 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
+<<<<<<< HEAD
     public String save(@LoggedUser User loggedUser, @ModelAttribute ScoreModel scoreModel) {
         Score score = conversionService.convert(scoreModel, Score.class);
         Comment comment = conversionService.convert(scoreModel, Comment.class);
         scoreBo.save(loggedUser, score, comment);
+=======
+    public ModelAndView save(@LoggedUser User loggedUser, @ModelAttribute ScoreModel scoreModel) {
+        // TODO: validate model
+        Score score = conversionService.convert(scoreModel, Score.class);
+        Comment comment = conversionService.convert(scoreModel, Comment.class);
+        scoreBo.save(loggedUser, score, comment);
+
+        ModelAndView mav = new ModelAndView("score");
+        mav.addObject("score", scoreModel);
+        mav.addObject("search", new SearchModel());
+>>>>>>> refs/remotes/origin/master
 
         return "home";
     }
 
     @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     @ResponseBody
+<<<<<<< HEAD
     public Map<String, String> postNewUser(@LoggedUser User loggedUser,
             @ModelAttribute(value = "player") String player, HttpServletRequest request) {
+=======
+    public Map<String, String> postNewUser(@LoggedUser User loggedUser, @ModelAttribute(value = "player") String player) {
+>>>>>>> refs/remotes/origin/master
         Map<String, String> result = new HashMap<String, String>();
         if (scoreBo.userHas(loggedUser, player)) {
             result.put("proceedWithConfirmation", "false");
