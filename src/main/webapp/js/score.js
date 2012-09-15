@@ -148,8 +148,8 @@ var Sets = {
 
 var NewPlayerWizzard = {
 	options: {},
-	newPlayers: [],
-	currentNewPlayer: 0,
+	scorePlayers: [],
+	currentScorePlayer: 0,
 	stepSucceeded: false,
 
 	applyDefaults: function(options){
@@ -161,6 +161,7 @@ var NewPlayerWizzard = {
 		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
 		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
 		options['loggedUserAvatarUrl'] = (options['loggedUserAvatarUrl'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarUrl']);
+		// TODO: start passing over the correct url
 		if (options['continueWithSavingProcessCallback'] == undefined) {
 			options.continueWithSavingProcessCallback = function() {
 				$("#score-form").submit();
@@ -170,35 +171,22 @@ var NewPlayerWizzard = {
 	},
 
 	start: function(choosenPlayers) {
-		NewPlayerWizzard.newPlayers = NewPlayerWizzard.createList(choosenPlayers, NewPlayerWizzard.options.playersList);
+		NewPlayerWizzard.scorePlayers = NewPlayerWizzard.createList(choosenPlayers);
 
-		NewPlayerWizzard.currentNewPlayer = 0;
+		NewPlayerWizzard.currentScorePlayer = 0;
 		NewPlayerWizzard.startForCurrentPlayer();
 	},
 
-	createList : function(choosenPlayers, playersList) {
+	createList : function(choosenPlayers) {
 		var choosenPlayers = NewPlayerWizzard.trimList(choosenPlayers);
-		var result = choosenPlayers.split(',');
 		var choosenPlayersList = choosenPlayers.split(',');
-		for ( var j = 0; j < playersList.length; j++) {
-			for ( var i = 0; i < choosenPlayersList.length; i++) {
-				if (choosenPlayersList[i] == '' || playersList[j] == '') {
-					if (choosenPlayersList[i] == '') {
-						choosenPlayersList.splice(i, 1);
-						result.splice(i, 1);
-						i--;
-					}
-					continue;
-				}
-				if (choosenPlayersList[i].toUpperCase() == playersList[j]
-						.toUpperCase()) {
-					choosenPlayersList.splice(i, 1);
-					result.splice(i, 1);
-					i--;
-				}
+		for ( var i = 0; i < choosenPlayersList.length; i++) {
+			if (choosenPlayersList[i] == '') {
+				choosenPlayersList.splice(i, 1);
+				i--;
 			}
 		}
-		return result;
+		return choosenPlayersList;
 	},
 
 	trimList: function(commaSeparatedString) {
@@ -212,10 +200,10 @@ var NewPlayerWizzard = {
 	startForCurrentPlayer: function() {
 		console.log('startForCurrentPlayer');
 		NewPlayerWizzard.stepSucceeded = false;
-		if (NewPlayerWizzard.currentNewPlayer < NewPlayerWizzard.newPlayers.length) {
+		if (NewPlayerWizzard.currentScorePlayer < NewPlayerWizzard.scorePlayers.length) {
 			$.ajax({
 				url: NewPlayerWizzard.options.contextPath+"/app/score/newUser",
-				data: {'player': NewPlayerWizzard.newPlayers[NewPlayerWizzard.currentNewPlayer++]}, 
+				data: {'player': NewPlayerWizzard.scorePlayers[NewPlayerWizzard.currentScorePlayer++]}, 
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
@@ -266,11 +254,30 @@ var NewPlayerWizzard = {
 		console.log('step3');
 		$("#dialog-search").dialog( "close" );
 		if (data.playerFound) {
-			$("#requested dt").text(data.playerAvatarUrl);
-			$("#requested dd").html(data.playerName + "<br/>" + data.playerLocation);
-			$("#requester textarea").text(data.requestMessage);
-			$("#requester dd").text(NewPlayerWizzard.options.loggedUserAvatarUrl);
-			$("#dialog-friendRequest").dialog("open");
+		    if (data.playerList.length > 1) {
+                $("#dialog-friendListRequest table").append("<tbody>");
+   		        for ( var i = 0; i < data.playerList.length; i++) {
+		            $("#dialog-friendListRequest table").append("<tr><td>");
+                    $("#dialog-friendListRequest table").append(
+                            "<img src='" + NewPlayerWizzard.options.contextPath + "/app/avatar?hash="
+                                    + data.playerList[i][1] + "'/>");
+		            $("#dialog-friendListRequest table").append("</td><td>");
+                    $("#dialog-friendListRequest table").append(data.playerList[i][2]);
+                    $("#dialog-friendListRequest table").append("</td><td>");
+                    $("#dialog-friendListRequest table").append(data.playerList[i][3]);
+		            $("#dialog-friendListRequest table").append("</td></tr>");
+		        }
+                $("#dialog-friendListRequest table").append("</tbody>");
+	            $("#dialog-friendListRequest").dialog("open");
+		        
+		    } else {
+	            $("#requested dt").text(data.playerList[0][1]);
+	            // TODO: consider the lack of a location
+	            $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]);
+	            $("#requester textarea").text(data.invitationMessage);
+	            $("#requester dd").text(NewPlayerWizzard.options.loggedUserAvatarUrl);
+	            $("#dialog-friendRequest").dialog("open");
+		    }
 		} else {
 			$("#invitation-form dt").html(data.playerName + " " + NewPlayerWizzard.options.label_user_not_found + '<br/>' + NewPlayerWizzard.options.label_take_the_opportunity_to_invite);
 			$("#invitation-form textarea").text(data.invitationMessage);
@@ -318,6 +325,7 @@ var NewPlayerWizzard = {
 				text: NewPlayerWizzard.options.label_associate,
 				click: function() {
 					NewPlayerWizzard.stepSucceeded = true;
+					$('#playerNameInScore').val(NewPlayerWizzard.scorePlayers[NewPlayerWizzard.currentScorePlayer - 1]);
 					$.ajax({
 						url: NewPlayerWizzard.options.contextPath+"/app/score/searchNewUser",
 						data: $('#search-form').serialize(), 
@@ -337,6 +345,8 @@ var NewPlayerWizzard = {
 			modal: true,
 			close : NewPlayerWizzard.dialogCloseCallback,
 			buttons: [{
+                text: "Voltar" // TODO: replace by application's resouce "back" label and add behavior to it. Also add a similar button to the dialog-friendListRequest dialog
+            },{
 				text: NewPlayerWizzard.options.label_send_request,
 				click: function() {
 					NewPlayerWizzard.stepSucceeded = true;

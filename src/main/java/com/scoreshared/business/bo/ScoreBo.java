@@ -50,8 +50,8 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    public boolean userHas(User loggedUser, String player) {
-        return !dao.findByNamedQuery("playerByNameAndOwner", player, loggedUser.getId()).isEmpty();
+    public boolean hasAlreadyAssociatedPlayer(User user, String playerName) {
+        return !dao.findByNamedQuery("playerByNameAndOwnerAndAssociated", playerName, user.getId()).isEmpty();
     }
 
     public List<String> listPlayersName(User loggedUser) {

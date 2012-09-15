@@ -1,11 +1,20 @@
 package com.scoreshared.webapp.dto;
 
 public class SearchModel {
+    private String playerNameInScore;
     private String email;
     private String firstName;
     private String lastName;
     private String city;
     private String country;
+
+    public String getPlayerNameInScore() {
+        return playerNameInScore;
+    }
+
+    public void setPlayerNameInScore(String playerNameInScore) {
+        this.playerNameInScore = playerNameInScore;
+    }
 
     public String getEmail() {
         return email;

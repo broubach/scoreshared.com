@@ -13,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerByNameAndOwner", query = "from Player player where player.name = ? and player.owner.id = ?"),
+        @NamedQuery(name = "playerByNameAndOwnerAndAssociated", query = "select player from Player player join player.association where player.name = ? and player.owner.id = ?"),
         @NamedQuery(name = "playerNameByOwner", query = "select player.name from Player player where player.owner.id = ?") })
 @Table(name = "player")
 public class Player extends BaseEntity {

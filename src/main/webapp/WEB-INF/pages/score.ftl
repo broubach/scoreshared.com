@@ -41,6 +41,7 @@
 
 		<div id="dialog-search" title="<@spring.message code="label.association"/>">
 			<form id="search-form">
+				<@spring.formHiddenInput "search.playerNameInScore", "" />
 				<dl>
 					<dt><label for="name"><@spring.message code="label.email"/></label></dt>
 					<dd><@spring.formInput "search.email", "", "text"/></dd>
@@ -79,6 +80,16 @@
 			</form>
 		</div>
 
+		<div id="dialog-friendListRequest" title="<@spring.message code="label.association"/>" style="display: none">
+			<table>
+			<thead>
+			<tr>
+				<td></td><td><@spring.message code="label.name"/></td><td><@spring.message code="label.location"/></td>
+			</tr>
+			</thead>
+			</table>
+		</div>
+
 		<div id="dialog-invitation" title="<@spring.message code="label.association"/>">
 			<form id="invitation-form">
 				<dl>
@@ -93,7 +104,7 @@
 
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?1"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?2"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {

@@ -4,10 +4,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "profile")
+@NamedQuery(name = "profileDetailsQuery", query = "from User user where (:city is null or user.profile.city like :city) and (:country is null or user.profile.country like :country) and (:firstName is null or user.firstName like :firstName) and (:lastName is null or user.lastName like :lastName)")
 public class Profile extends BaseEntity {
 
     private String city;

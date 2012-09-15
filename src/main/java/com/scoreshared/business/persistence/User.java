@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -14,9 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = ?"),
-        @NamedQuery(name = "existentEmailFetchProfileQuery", query = "from User user where user.email = ? join fetch user.profile ") })
+@NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = ?")
 @Table(name = "user")
 public class User extends BaseEntity implements UserDetails {
 

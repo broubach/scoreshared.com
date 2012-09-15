@@ -2,7 +2,9 @@ package com.scoreshared.webapp.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -84,7 +86,7 @@ public class ScoreController extends BaseController {
     public Map<String, String> postNewUser(@LoggedUser User loggedUser,
             @ModelAttribute(value = "player") String player, HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
-        if (scoreBo.userHas(loggedUser, player)) {
+        if (scoreBo.hasAlreadyAssociatedPlayer(loggedUser, player)) {
             result.put("proceedWithConfirmation", "false");
         } else {
             result.put("proceedWithConfirmation", "true");
@@ -98,29 +100,32 @@ public class ScoreController extends BaseController {
     @ResponseBody
     public Map<String, Object> searchNewUser(@ModelAttribute SearchModel search, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("playerFound", Boolean.FALSE);
-        if (!search.getEmail().isEmpty()) {
 
-            User user = userBo.findUserByEmailFetchProfile(search.getEmail());
+        String[] filters = new String[] { search.getFirstName(), search.getLastName(), search.getCity(),
+                search.getCountry() };
+        List<User> users = userBo.findUserDetailsByMailAndProfileInfo(search.getEmail(), filters);
 
-            if (user != null) {
-                result.put("playerFound", Boolean.TRUE);
-                result.put("playerName", user.getFullName());
-                result.put("playerLocation", user.getProfile().getLocation());
-                result.put("playerAvatarUrl", user.getProfile().getAvatarHash());
-                result.put("requestMessage", messageResource.getMessage("label.association_request",
-                        new Object[] { user.getFirstName() }, localeResolver.resolveLocale(request)));
-            }
-
+        if (!users.isEmpty()) {
+            result.put("playerFound", Boolean.TRUE);
+            result.put("playerList", toArrayList(users));
         } else {
-            // search by other fields
+            result.put("playerFound", Boolean.FALSE);
         }
+        result.put("invitationMessage", messageResource.getMessage("label.invitation_message",
+                new String[] { search.getPlayerNameInScore() }, localeResolver.resolveLocale(request)));
+        return result;
+    }
 
-        if (search.getEmail().isEmpty()) {
-            // not found
-            result.put("playerName", "Felipe Freitas");
-            result.put("invitationMessage",
-                    "Olá Felipe! Quero compartilhar meus resultados com você! Junte-se a mim no ScoreShared!");
+    private List<Object[]> toArrayList(List<User> users) {
+        List<Object[]> result = new ArrayList<Object[]>();
+        Object[] item = null;
+        for (User user : users) {
+            item = new Object[4];
+            item[0] = user.getId();
+            item[1] = user.getProfile().getAvatarHash();
+            item[2] = user.getFullName();
+            item[3] = user.getProfile().getLocation();
+            result.add(item);
         }
         return result;
     }

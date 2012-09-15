@@ -7,7 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -48,14 +50,6 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 
     public boolean checkEmailExists(String email) {
         return !dao.findByNamedQuery("existentEmailQuery", email).isEmpty();
-    }
-
-    public User findUserByEmailFetchProfile(String email) {
-        List<User> result = dao.findByNamedQuery("existentEmailFetchProfileQuery", email);
-        if (result.size() > 0) {
-            return result.get(0);
-        }
-        return null;
     }
 
     @Override
@@ -203,4 +197,37 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return dao.findByPk(File.class, id);
     }
 
+    /**
+     * @param filtersArray 0: email; 1: firstName; 2: lastName; 3: city; 4: country
+     */
+    public List<User> findUserDetailsByMailAndProfileInfo(String email, String[] filtersArray) {
+        List<User> result = null;
+
+        if (email != null && !email.isEmpty()) {
+            // search by email
+            result = dao.findByNamedQuery("existentEmailQuery", email);
+
+        } else {
+            // search by other non unique fields
+            for (int i = 0; i < filtersArray.length; i++) {
+                if (filtersArray[i] != null) {
+                    if (filtersArray[i].isEmpty()) {
+                        filtersArray[i] = null;
+                    } else {
+                        filtersArray[i] = new StringBuilder().append("%").append(filtersArray[i]).append("%")
+                                .toString();
+                    }
+                }
+            }
+
+            Map<String, String> filters = new HashMap<String, String>();
+            filters.put("firstName", filtersArray[0]);
+            filters.put("lastName", filtersArray[1]);
+            filters.put("city", filtersArray[2]);
+            filters.put("country", filtersArray[3]);
+            result = dao.findByNamedQueryAndNamedParam("profileDetailsQuery", filters);
+        }
+
+        return result;
+    }
 }
