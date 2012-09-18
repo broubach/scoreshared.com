@@ -87,6 +87,8 @@
 				<td></td><td><@spring.message code="label.name"/></td><td><@spring.message code="label.location"/></td>
 			</tr>
 			</thead>
+			<tbody>
+			</tbody>
 			</table>
 		</div>
 
@@ -104,7 +106,7 @@
 
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?2"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?3"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {

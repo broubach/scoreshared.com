@@ -255,19 +255,19 @@ var NewPlayerWizzard = {
 		$("#dialog-search").dialog( "close" );
 		if (data.playerFound) {
 		    if (data.playerList.length > 1) {
-                $("#dialog-friendListRequest table").append("<tbody>");
+                var row = "";
    		        for ( var i = 0; i < data.playerList.length; i++) {
-		            $("#dialog-friendListRequest table").append("<tr><td>");
-                    $("#dialog-friendListRequest table").append(
-                            "<img src='" + NewPlayerWizzard.options.contextPath + "/app/avatar?hash="
-                                    + data.playerList[i][1] + "'/>");
-		            $("#dialog-friendListRequest table").append("</td><td>");
-                    $("#dialog-friendListRequest table").append(data.playerList[i][2]);
-                    $("#dialog-friendListRequest table").append("</td><td>");
-                    $("#dialog-friendListRequest table").append(data.playerList[i][3]);
-		            $("#dialog-friendListRequest table").append("</td></tr>");
+   		            row += "<tr><td>";
+                    row += "<img src='" + NewPlayerWizzard.options.contextPath + "/app/avatar?hash="
+                            + data.playerList[i][1] + "&small'/>";
+		            row += "</td><td>";
+                    row += data.playerList[i][2];
+                    row += "</td><td>";
+                    row += data.playerList[i][3];
+		            row += "</td></tr>";
+		            console.log($('#dialog-friendListRequest').html());
 		        }
-                $("#dialog-friendListRequest table").append("</tbody>");
+                $("#dialog-friendListRequest table tbody").html(row);
 	            $("#dialog-friendListRequest").dialog("open");
 		        
 		    } else {
@@ -361,6 +361,17 @@ var NewPlayerWizzard = {
 				}
 			}]
 		});
+
+        $( "#dialog-friendListRequest" ).dialog({
+            autoOpen: false,
+            height: 300,
+            width: 350,
+            modal: true,
+            close : NewPlayerWizzard.dialogCloseCallback,
+            buttons: [{
+                text: "Voltar" // TODO: replace by application's resouce "back" label and add behavior to it. Also add a similar button to the dialog-friendListRequest dialog
+            }]
+        });
 
 		$( "#dialog-invitation" ).dialog({
 			autoOpen: false,

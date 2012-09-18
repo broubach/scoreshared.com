@@ -117,6 +117,13 @@ public class Profile extends BaseEntity {
     }
 
     public String getLocation() {
-        return new StringBuilder().append(city).append(", ").append(country).toString();
+        if (city != null && country != null && !city.isEmpty() && !country.isEmpty()) {
+            return new StringBuilder().append(city).append(", ").append(country).toString();
+        } else if (city != null && !city.isEmpty()) {
+            return city;
+        } else if (country != null && !country.isEmpty()) {
+            return country;
+        }
+        return "";
     }
 }
