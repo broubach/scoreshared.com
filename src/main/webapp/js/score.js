@@ -255,19 +255,33 @@ var NewPlayerWizzard = {
 		$("#dialog-search").dialog( "close" );
 		if (data.playerFound) {
 		    if (data.playerList.length > 1) {
-                var row = "";
    		        for ( var i = 0; i < data.playerList.length; i++) {
-   		            row += "<tr><td>";
+   	                var row = "<tr><td><a href='"+data.playerList[i][0]+"'>";
                     row += "<img src='" + NewPlayerWizzard.options.contextPath + "/app/avatar?hash="
                             + data.playerList[i][1] + "&small'/>";
-		            row += "</td><td>";
+		            row += "</a></td><td><a href='"+data.playerList[i][0]+"'>";
                     row += data.playerList[i][2];
-                    row += "</td><td>";
+                    row += "</a></td><td><a href='"+data.playerList[i][0]+"'>";
                     row += data.playerList[i][3];
-		            row += "</td></tr>";
-		            console.log($('#dialog-friendListRequest').html());
+		            row += "</a></td></tr>";
+                    $("#dialog-friendListRequest table tbody").append(row);
+
+                    $("#dialog-friendListRequest table tbody tr:eq(" + i + ") a").click(function(e) {
+                        e.preventDefault();
+	                    $.ajax({
+	                        url: NewPlayerWizzard.options.contextPath + "/app/score/searchNewUser",
+	                        type: 'POST',
+	                        data: {'email': $(this).attr('href')},
+	                        dataType: 'json',
+	                        cache: false,
+	                        success: function(data) {
+	                            $("#dialog-friendListRequest").dialog("close");
+	                            NewPlayerWizzard.step3();
+	                        }
+	                    });
+	                });
 		        }
-                $("#dialog-friendListRequest table tbody").html(row);
+
 	            $("#dialog-friendListRequest").dialog("open");
 		        
 		    } else {

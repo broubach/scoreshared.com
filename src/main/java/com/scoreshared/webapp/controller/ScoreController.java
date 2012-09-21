@@ -121,7 +121,7 @@ public class ScoreController extends BaseController {
         Object[] item = null;
         for (User user : users) {
             item = new Object[4];
-            item[0] = user.getId();
+            item[0] = user.getEmail();
             item[1] = user.getProfile().getAvatarHash();
             item[2] = user.getFullName();
             item[3] = user.getProfile().getLocation();
