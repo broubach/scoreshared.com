@@ -13,7 +13,7 @@
 	</bean>
 
 	<!-- this is the Message Driven POJO (MDP) -->
-	<bean id="messageListener" class="com.scoreshared.scaffold.MailService">
+	<bean id="messageListener" class="com.scoreshared.scaffold.JmsMailService">
 		<property name="mailSender" ref="mailSender"/>
 	</bean>
 
