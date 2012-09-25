@@ -7,13 +7,16 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.persistence.File;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Profile;
 import com.scoreshared.business.persistence.User;
 
@@ -36,6 +40,12 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public static final int SMALL_AVATAR_WIDTH = 37;
     public static final int DEFAULT_AVATAR_HEIGHT = 162;
     public static final int DEFAULT_AVATAR_WIDTH = 123;
+
+    @Value("${email.from}")
+    private String from;
+
+    @Value("${email.fromName}")
+    private String fromName;
 
     @Inject
     private Md5PasswordEncoder passwordEncoder;
@@ -229,5 +239,54 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         }
 
         return result;
+    }
+
+    public void inviteUser(User loggedUser, String playerName, String email, String message, Locale locale) {
+        invitePlayer(loggedUser, playerName, email, message, true, locale);
+    }
+
+    public void invitePlayer(User loggedUser, String playerName, String email, String message,
+            boolean alreadyRegisteredDestination, Locale locale) {
+        List<Player> players = dao
+                .findByNamedQuery("playerByNameAndOwnerAndAssociated", playerName, loggedUser.getId());
+        if (players.size() > 0) {
+            Player player = players.get(0);
+            player.setInvitationEmail(email);
+            player.setInvitationMessage(message);
+            player.setInvitationPreviousDate(player.getInvitationDate());
+            player.setInvitationDate(new Date());
+
+            dao.saveOrUpdate(player);
+
+            sendMail(email, player.getInvitationPreviousDate() == null, message, alreadyRegisteredDestination, locale);
+        }
+    }
+
+    private void sendMail(String email, boolean isFirstEmail, String message, boolean alreadyRegisteredDestination,
+            Locale locale) {
+        String templateName = calculateTemplateName(alreadyRegisteredDestination, isFirstEmail);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("message", message);
+        String body = parseTemplate(templateName, params, locale);
+        sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
+    }
+
+    protected String calculateTemplateName(boolean alreadyRegisteredDestination, boolean isFirstEmail) {
+        String templateName = null;
+        if (isFirstEmail) {
+            if (alreadyRegisteredDestination) {
+                templateName = "firstEmailToAlreadyRegistered";
+            } else {
+                templateName = "firstEmailToNotRegistered";
+            }
+        } else {
+            if (alreadyRegisteredDestination) {
+                templateName = "reminderToAlreadyRegistered";
+            } else {
+                templateName = "reminderToNotRegistered";
+            }
+        }
+        return templateName;
     }
 }

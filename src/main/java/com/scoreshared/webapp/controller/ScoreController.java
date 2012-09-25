@@ -33,7 +33,7 @@ import com.scoreshared.webapp.dto.ScoreModel;
 import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
-@RequestMapping(value = "/score")
+@RequestMapping("/score")
 public class ScoreController extends BaseController {
 
     @Inject
@@ -83,8 +83,8 @@ public class ScoreController extends BaseController {
 
     @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> postNewUser(@LoggedUser User loggedUser,
-            @ModelAttribute(value = "player") String player, HttpServletRequest request) {
+    public Map<String, String> postNewUser(@LoggedUser User loggedUser, @ModelAttribute("player") String player,
+            HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
         if (scoreBo.hasAlreadyAssociatedPlayer(loggedUser, player)) {
             result.put("proceedWithConfirmation", "false");
@@ -131,16 +131,17 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(value = "/newFriendRequest", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String> postFriendRequest(@ModelAttribute(value = "message") String friendRequestMessage) {
-        Map<String, String> result = new HashMap<String, String>();
-        return result;
+    public void postFriendRequest(HttpServletRequest request, @LoggedUser User user,
+            @ModelAttribute("playerName") String playerName, @ModelAttribute("mail") String invitationMail,
+            @ModelAttribute("message") String invitationMessage) {
+        userBo.inviteUser(user, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
     }
 
     @RequestMapping(value = "/newInvitation", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String> postInvitation(@ModelAttribute(value = "message") String invitationMessage) {
-        Map<String, String> result = new HashMap<String, String>();
-        return result;
+    public void postInvitation(HttpServletRequest request, @LoggedUser User user,
+            @ModelAttribute("playerName") String playerName, @ModelAttribute("mail") String invitationMail,
+            @ModelAttribute("message") String invitationMessage) {
+        userBo.invitePlayer(user, playerName, invitationMail, invitationMessage, false,
+                localeResolver.resolveLocale(request));
     }
 }

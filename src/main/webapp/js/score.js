@@ -275,16 +275,19 @@ var NewPlayerWizzard = {
 	                        dataType: 'json',
 	                        cache: false,
 	                        success: function(data) {
+	                            NewPlayerWizzard.stepSucceeded = true;
 	                            $("#dialog-friendListRequest").dialog("close");
-	                            NewPlayerWizzard.step3();
+                                NewPlayerWizzard.stepSucceeded = true;
+	                            NewPlayerWizzard.step3(data);
 	                        }
 	                    });
 	                });
 		        }
 
 	            $("#dialog-friendListRequest").dialog("open");
-		        
+
 		    } else {
+                $("#friendRequestEmail").val(data.playerList[0][0]);
 	            $("#requested dt").text(data.playerList[0][1]);
 	            // TODO: consider the lack of a location
 	            $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]);

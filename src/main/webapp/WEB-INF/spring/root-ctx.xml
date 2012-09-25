@@ -25,4 +25,8 @@
 	<import resource="root-mvc-ctx.xml" />
 	<import resource="root-security-ctx.xml" />
 	<import resource="root-social-ctx.xml" />
+	<import resource="root-mail-ctx.xml" />
+	<import resource="root-jms-client-ctx.xml" />
+	<import resource="root-jms-server-ctx.xml" />
+	<import resource="root-freemarker-ctx.xml" />
 </beans>

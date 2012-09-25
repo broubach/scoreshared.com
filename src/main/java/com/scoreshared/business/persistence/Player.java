@@ -28,6 +28,7 @@ public class Player extends BaseEntity {
     private String invitationEmail;
     private String invitationMessage;
     private Date invitationDate;
+    private Date invitationPreviousDate;
 
     public Player() {
     }
@@ -109,5 +110,13 @@ public class Player extends BaseEntity {
             return name.hashCode();
         }
         return super.hashCode();
+    }
+
+    public Date getInvitationPreviousDate() {
+        return invitationPreviousDate;
+    }
+
+    public void setInvitationPreviousDate(Date invitationPreviousDate) {
+        this.invitationPreviousDate = invitationPreviousDate;
     }
 }

@@ -69,12 +69,13 @@
 
 		<div id="dialog-friendRequest" title="<@spring.message code="label.association"/>">
 			<form id="friendRequest-form">
+				<input type="hidden" id="friendRequestEmail" name="friendRequestEmail" />
 				<dl id="requested">
 					<dt></dt>
 					<dd></dd>
 				</dl>
 				<dl id="requester">
-					<dt><textarea id="message"></textarea></dt>
+					<dt><textarea id="friendRequestMessage" name="friendRequestMessage"></textarea></dt>
 					<dd></dd>
 				</dl>
 			</form>
@@ -96,7 +97,7 @@
 			<form id="invitation-form">
 				<dl>
 					<dt></dt>
-					<dd><textarea id="message"></textarea></dd>
+					<dd><textarea id="message" name="message" ></textarea></dd>
 				</dl>
 			</form>
 		</div>
@@ -106,7 +107,7 @@
 
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?3"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?5"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {
