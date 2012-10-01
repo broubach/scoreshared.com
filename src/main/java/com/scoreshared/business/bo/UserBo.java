@@ -245,26 +245,27 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         invitePlayer(loggedUser, playerName, email, message, true, locale);
     }
 
-    public void invitePlayer(User loggedUser, String playerName, String email, String message,
-            boolean alreadyRegisteredDestination, Locale locale) {
-        List<Player> players = dao
-                .findByNamedQuery("playerByNameAndOwnerAndAssociated", playerName, loggedUser.getId());
+    public void invitePlayer(User loggedUser, String playerName, String email, String message, boolean isUserExistent,
+            Locale locale) {
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwner", playerName, loggedUser.getId());
+        Player player = null;
         if (players.size() > 0) {
-            Player player = players.get(0);
-            player.setInvitationEmail(email);
-            player.setInvitationMessage(message);
-            player.setInvitationPreviousDate(player.getInvitationDate());
-            player.setInvitationDate(new Date());
-
-            dao.saveOrUpdate(player);
-
-            sendMail(email, player.getInvitationPreviousDate() == null, message, alreadyRegisteredDestination, locale);
+            player = players.get(0);
+        } else {
+            player = new Player(playerName, loggedUser);
         }
+        player.setInvitationEmail(email);
+        player.setInvitationMessage(message);
+        player.setInvitationPreviousDate(player.getInvitationDate());
+        player.setInvitationDate(new Date());
+
+        dao.saveOrUpdate(player);
+
+        sendMail(email, player.getInvitationPreviousDate() == null, message, isUserExistent, locale);
     }
 
-    private void sendMail(String email, boolean isFirstEmail, String message, boolean alreadyRegisteredDestination,
-            Locale locale) {
-        String templateName = calculateTemplateName(alreadyRegisteredDestination, isFirstEmail);
+    private void sendMail(String email, boolean isFirstEmail, String message, boolean isUserExistent, Locale locale) {
+        String templateName = calculateTemplateName(isUserExistent, isFirstEmail);
         Map<String, String> params = new HashMap<String, String>();
         params.put("email", email);
         params.put("message", message);
@@ -272,16 +273,16 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
     }
 
-    protected String calculateTemplateName(boolean alreadyRegisteredDestination, boolean isFirstEmail) {
+    protected String calculateTemplateName(boolean isUserExistent, boolean isFirstEmail) {
         String templateName = null;
         if (isFirstEmail) {
-            if (alreadyRegisteredDestination) {
+            if (isUserExistent) {
                 templateName = "firstEmailToAlreadyRegistered";
             } else {
                 templateName = "firstEmailToNotRegistered";
             }
         } else {
-            if (alreadyRegisteredDestination) {
+            if (isUserExistent) {
                 templateName = "reminderToAlreadyRegistered";
             } else {
                 templateName = "reminderToNotRegistered";

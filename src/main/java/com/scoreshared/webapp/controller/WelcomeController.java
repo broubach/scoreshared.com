@@ -47,7 +47,7 @@ public class WelcomeController extends BaseController {
             binder.setValidator(new WelcomeStep1FormValidator());
         }
 
-        // TODO: will there be a validator for the Step3Form?
+        // TODO: will there be a validator for the Step3Form (image size)?
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)

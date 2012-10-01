@@ -33,13 +33,13 @@ public class ScoreConverter implements Converter<ScoreModel, Score> {
 
             Set<Player> leftPlayers = new HashSet<Player>();
             for (String playerLeft : src.getPlayersLeft().trim().split(",")) {
-                leftPlayers.add(new Player(playerLeft));
-
+                leftPlayers.add(new Player(playerLeft, src.getOwner()));
             }
             dest.setLeftPlayers(leftPlayers);
+
             Set<Player> rightPlayers = new HashSet<Player>();
             for (String playerRight : src.getPlayersRight().trim().split(",")) {
-                rightPlayers.add(new Player(playerRight));
+                rightPlayers.add(new Player(playerRight, src.getOwner()));
             }
             dest.setRightPlayers(rightPlayers);
 

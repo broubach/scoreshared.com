@@ -10,10 +10,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "playerByNameAndOwner", query = "from Player player where player.name = ? and player.owner.id = ?"),
-        @NamedQuery(name = "playerByNameAndOwnerAndAssociated", query = "select player from Player player join player.association where player.name = ? and player.owner.id = ?"),
+        @NamedQuery(name = "playerByNameAndOwner", query = "from Player player where lower(player.name) = lower(?) and player.owner.id = ?"),
+        @NamedQuery(name = "playerByNameAndOwnerAndAssociated", query = "select player from Player player join player.association where lower(player.name) = lower(?) and player.owner.id = ?"),
         @NamedQuery(name = "playerNameByOwner", query = "select player.name from Player player where player.owner.id = ?") })
 @Table(name = "player")
 public class Player extends BaseEntity {
@@ -33,8 +36,9 @@ public class Player extends BaseEntity {
     public Player() {
     }
 
-    public Player(String name) {
+    public Player(String name, User owner) {
         this.name = name;
+        this.owner = owner;
     }
 
     public String getName() {
@@ -87,29 +91,25 @@ public class Player extends BaseEntity {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
         Player other = (Player) obj;
-        if (other.getOwner() != null && other.getOwner().getId() != null && owner != null && owner.getId() != null) {
-            if (name != null) {
-                return other.getOwner().getId().equals(owner.getId()) && name.equals(other.getName());
-            }
-        }
-        if (name != null) {
-            return name.equals(other.getName());
-        }
-        return super.equals(obj);
+        Integer ownerId = owner != null ? owner.getId() : null;
+        Integer objOwnerId = other.getOwner() != null ? other.getOwner().getId() : null;
+        return new EqualsBuilder().append(name, other.getName()).append(ownerId, objOwnerId).isEquals();
     }
 
     @Override
     public int hashCode() {
-        if (owner != null && owner.getId() != null) {
-            if (name != null) {
-                return owner.getId().hashCode() * name.hashCode();
-            }
-        }
-        if (name != null) {
-            return name.hashCode();
-        }
-        return super.hashCode();
+        Integer ownerId = owner != null ? owner.getId() : null;
+        return new HashCodeBuilder(17, 37).append(name).append(ownerId).toHashCode();
     }
 
     public Date getInvitationPreviousDate() {

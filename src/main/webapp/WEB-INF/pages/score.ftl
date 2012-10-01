@@ -69,13 +69,14 @@
 
 		<div id="dialog-friendRequest" title="<@spring.message code="label.association"/>">
 			<form id="friendRequest-form">
-				<input type="hidden" id="friendRequestEmail" name="friendRequestEmail" />
+				<input type="hidden" name="playerName" />
+				<input type="hidden" name="email" />
 				<dl id="requested">
 					<dt></dt>
 					<dd></dd>
 				</dl>
 				<dl id="requester">
-					<dt><textarea id="friendRequestMessage" name="friendRequestMessage"></textarea></dt>
+					<dt><textarea name="message"></textarea></dt>
 					<dd></dd>
 				</dl>
 			</form>
@@ -95,9 +96,14 @@
 
 		<div id="dialog-invitation" title="<@spring.message code="label.association"/>">
 			<form id="invitation-form">
+				<input type="hidden" name="playerName" />
 				<dl>
 					<dt></dt>
 					<dd><textarea id="message" name="message" ></textarea></dd>
+				</dl>
+				<dl>
+					<dt><@spring.message code="label.email"/></dt>
+					<dd><input type="text" name="email"></input></dd>
 				</dl>
 			</form>
 		</div>
@@ -107,7 +113,7 @@
 
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?5"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?6"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {
@@ -123,7 +129,7 @@ $(function() {
 	$("#date").datepicker({dateFormat: '<@spring.message code="label.datepicker_date_format"/>'});
 	Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>");
 
-	var newPlayerWizzardOptions = {
+	var newPlayerWizardOptions = {
 		contextPath: '<@spring.url relativeUrl="/"/>',
 		label_yes: '<@spring.message code="label.yes"/>',
 		label_no: '<@spring.message code="label.no"/>',
@@ -132,10 +138,11 @@ $(function() {
 		label_invite_to_scoreshared: '<@spring.message code="label.invite_to_scoreshared"/>',
 		label_user_not_found: '<@spring.message code="label.user_not_found"/>',
 		label_take_the_opportunity_to_invite: '<@spring.message code="label.take_the_opportunity_to_invite"/>',
+		label_back: '<@spring.message code="label.back" />',
 		loggedUserAvatarUrl: '/loggedUser/avatar/url',
 		playersList: ${playersList}
 	};
-	NewPlayerWizzard.init(newPlayerWizzardOptions);
+	NewPlayerWizard.init(newPlayerWizardOptions);
 
 	$( "#playersLeft,#playersRight" ).bind( "keydown", function( event ) {
 			if ( event.keyCode === $.ui.keyCode.TAB &&

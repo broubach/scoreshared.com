@@ -3,6 +3,8 @@ package com.scoreshared.webapp.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.scoreshared.business.persistence.User;
+
 public class ScoreModel {
 
     private String date;
@@ -23,6 +25,9 @@ public class ScoreModel {
     private boolean pvt;
     private boolean postInTwitter;
     private boolean postInFacebook;
+
+    // field used exclusively to allow the copy of owner to the resulting players ScoreConverter
+    private User owner;
 
     public String getDate() {
         return date;
@@ -166,6 +171,14 @@ public class ScoreModel {
 
     public void setPostInFacebook(boolean postInFacebook) {
         this.postInFacebook = postInFacebook;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public Map<String, String> getSets() {

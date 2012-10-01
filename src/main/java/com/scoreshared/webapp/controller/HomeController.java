@@ -23,7 +23,7 @@ public class HomeController extends BaseController {
         ModelAndView mav = new ModelAndView();
         mav.addObject("userFirstName", loggedUser.getFirstName());
 
-        // TODO: remove comments after score page is ready
+        // TODO: remove comments after home page is ready
         //        if (scoreBo.hasMatches(loggedUser)) {
         //            mav.setViewName("home");
         //        } else {

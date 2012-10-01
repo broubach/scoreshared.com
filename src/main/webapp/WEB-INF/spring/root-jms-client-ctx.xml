@@ -7,6 +7,6 @@
 	<bean id="jmsTemplate" class="com.scoreshared.scaffold.ScoreSharedJmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="defaultDestination" ref="queue" />
-		<property name="enabled" value="true" />
+		<property name="enabled" value="false" />
 	</bean>
 </beans>

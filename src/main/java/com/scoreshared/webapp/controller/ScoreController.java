@@ -74,6 +74,7 @@ public class ScoreController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String save(@LoggedUser User loggedUser, @ModelAttribute ScoreModel scoreModel) {
+        scoreModel.setOwner(loggedUser);
         Score score = conversionService.convert(scoreModel, Score.class);
         Comment comment = conversionService.convert(scoreModel, Comment.class);
         scoreBo.save(loggedUser, score, comment);
@@ -81,9 +82,9 @@ public class ScoreController extends BaseController {
         return "home";
     }
 
-    @RequestMapping(value = "/newUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/isAssociated", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> postNewUser(@LoggedUser User loggedUser, @ModelAttribute("player") String player,
+    public Map<String, String> isAssociated(@LoggedUser User loggedUser, @ModelAttribute("player") String player,
             HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
         if (scoreBo.hasAlreadyAssociatedPlayer(loggedUser, player)) {
@@ -96,9 +97,9 @@ public class ScoreController extends BaseController {
         return result;
     }
 
-    @RequestMapping(value = "/searchNewUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchUser", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> searchNewUser(@ModelAttribute SearchModel search, HttpServletRequest request) {
+    public Map<String, Object> searchUser(@ModelAttribute SearchModel search, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String, Object>();
 
         String[] filters = new String[] { search.getFirstName(), search.getLastName(), search.getCity(),
@@ -110,9 +111,11 @@ public class ScoreController extends BaseController {
             result.put("playerList", toArrayList(users));
         } else {
             result.put("playerFound", Boolean.FALSE);
+            result.put("email", search.getEmail());
         }
         result.put("invitationMessage", messageResource.getMessage("label.invitation_message",
                 new String[] { search.getPlayerNameInScore() }, localeResolver.resolveLocale(request)));
+        result.put("playerNameInScore", search.getPlayerNameInScore());
         return result;
     }
 
@@ -131,15 +134,17 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(value = "/newFriendRequest", method = RequestMethod.POST)
+    @ResponseBody
     public void postFriendRequest(HttpServletRequest request, @LoggedUser User user,
-            @ModelAttribute("playerName") String playerName, @ModelAttribute("mail") String invitationMail,
+            @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
             @ModelAttribute("message") String invitationMessage) {
         userBo.inviteUser(user, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
     }
 
     @RequestMapping(value = "/newInvitation", method = RequestMethod.POST)
+    @ResponseBody
     public void postInvitation(HttpServletRequest request, @LoggedUser User user,
-            @ModelAttribute("playerName") String playerName, @ModelAttribute("mail") String invitationMail,
+            @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
             @ModelAttribute("message") String invitationMessage) {
         userBo.invitePlayer(user, playerName, invitationMail, invitationMessage, false,
                 localeResolver.resolveLocale(request));

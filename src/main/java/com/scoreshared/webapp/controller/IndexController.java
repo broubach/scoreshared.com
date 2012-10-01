@@ -15,14 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import nl.captcha.Captcha;
 
 import org.springframework.context.MessageSource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.context.HttpRequestResponseHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.User;
+import com.scoreshared.scaffold.SecurityHelper;
 import com.scoreshared.webapp.dto.SignupForm;
 
 @Controller
@@ -56,10 +50,7 @@ public class IndexController extends BaseController {
     private Md5PasswordEncoder passwordEncoder;
 
     @Inject
-    private AuthenticationManager authenticationManager;
-
-    @Inject
-    private HttpSessionSecurityContextRepository contextRepository;
+    private SecurityHelper securityHelper;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
@@ -192,7 +183,7 @@ public class IndexController extends BaseController {
                 user.setPassword(passwordEncoder.encodePassword(form.getPassword(), form.getEmail()));
                 userBo.save(user);
 
-                addUserToSpringSecurityContext(request, response, form.getEmail(), form.getPassword());
+                securityHelper.authenticateUserWithPassword(request, response, form.getEmail(), form.getPassword());
 
                 sessionStatus.setComplete();
             } else {
@@ -208,18 +199,5 @@ public class IndexController extends BaseController {
             result.put("severe", messageResource.getMessage("severe", null, localeResolver.resolveLocale(request)));
             return result;
         }
-    }
-
-    private void addUserToSpringSecurityContext(HttpServletRequest request, HttpServletResponse response, String email,
-            String password) {
-        HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
-        contextRepository.loadContext(holder);
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
-        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        Authentication authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        contextRepository.saveContext(SecurityContextHolder.getContext(), holder.getRequest(), holder.getResponse());
     }
 }

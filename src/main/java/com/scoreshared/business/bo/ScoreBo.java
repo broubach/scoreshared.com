@@ -1,6 +1,5 @@
 package com.scoreshared.business.bo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +19,6 @@ public class ScoreBo extends BaseBo<Score> {
         replaceExistentPlayersAndSetLoggedUser(loggedUser, score.getLeftPlayers());
         replaceExistentPlayersAndSetLoggedUser(loggedUser, score.getRightPlayers());
 
-        // TODO: find a way to keep the graph persistence synchronized
         dao.saveOrUpdate(score);
 
         if (comment != null) {
@@ -32,21 +30,15 @@ public class ScoreBo extends BaseBo<Score> {
     }
 
     private void replaceExistentPlayersAndSetLoggedUser(User loggedUser, Set<Player> players) {
-        List<Player> playersFound = new ArrayList<Player>();
         for (Player player : players) {
             List<Player> result = dao.findByNamedQuery("playerByNameAndOwner", player.getName(), loggedUser.getId());
             if (result.size() > 0) {
-                playersFound.add(result.get(0));
-                // TODO: validate if this code worked
+                // replaces the user object just to garantee the graph is concise
                 result.get(0).setOwner(loggedUser);
-            } else {
-                player.setOwner(loggedUser);
+
+                players.remove(player);
+                players.add(result.get(0));
             }
-        }
-        for (Player player : playersFound) {
-            // using equals/hashcode implementation to remove old and add new player
-            players.remove(player);
-            players.add(player);
         }
     }
 
