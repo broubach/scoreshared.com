@@ -135,7 +135,7 @@ $(function() {
 		label_no: '<@spring.message code="label.no"/>',
 		label_associate: '<@spring.message code="label.associate"/>',
 		label_send_request: '<@spring.message code="label.send_request"/>',
-		label_invite_to_scoreshared: '<@spring.message code="label.invite_to_scoreshared"/>',
+		label_invite: '<@spring.message code="label.invite"/>',
 		label_user_not_found: '<@spring.message code="label.user_not_found"/>',
 		label_take_the_opportunity_to_invite: '<@spring.message code="label.take_the_opportunity_to_invite"/>',
 		label_back: '<@spring.message code="label.back" />',

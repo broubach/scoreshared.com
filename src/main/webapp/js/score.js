@@ -188,7 +188,6 @@ var Sets = {
  * step3c                   |                               |step4b, startForCurrentPlayer
  *
  * Back buttons in: #dialog-friendListRequest (step3a); #dialog-friendRequest (step3b); #dialog-invitation (step3c)
- * TODO: resume investigation of how the "back" implementation will be
  **/
 var NewPlayerWizard = {
 	options: {},
@@ -196,13 +195,14 @@ var NewPlayerWizard = {
 	currentScorePlayer: 0,
 	stepSucceeded: false,
 	breadCrumb: [],
+	step3aData: [],
 
 	applyDefaults: function(options){
 		options['contextPath'] = (options['contextPath'] == undefined ? '/scoreshared' : options['contextPath']);
 		options['label_yes'] = (options['label_yes'] == undefined ? 'yes' : options['label_yes']);
 		options['label_no'] = (options['label_no'] == undefined ? 'no' : options['label_no']);
 		options['label_send_request'] = (options['label_send_request'] == undefined ? 'send request' : options['label_send_request']);
-		options['label_invite_to_scoreshared'] = (options['label_invite_to_scoreshared'] == undefined ? 'invite to scoreshared' : options['label_invite_to_scoreshared']);
+		options['label_invite'] = (options['label_invite'] == undefined ? 'invite' : options['label_invite']);
 		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
 		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
 		options['label_back'] = (options['label_back'] == undefined ? 'back' : options['label_back']);
@@ -276,6 +276,7 @@ var NewPlayerWizard = {
 					click : function() {
 						NewPlayerWizard.stepSucceeded = true;
 						$("#dialog-confirm").dialog("close");
+						$('#search-form input').val('');
 						NewPlayerWizard.step2();
 					}
 				}, {
@@ -312,7 +313,10 @@ var NewPlayerWizard = {
 
 	step3a: function(data) {
         console.log('step3a');
-        for ( var i = 0; i < data.playerList.length; i++) {
+        NewPlayerWizard.step3aData = data;
+
+		$("#dialog-friendListRequest table tbody").html('');
+		for ( var i = 0; i < data.playerList.length; i++) {
             var row = "<tr><td><a href='"+data.playerList[i][0]+"'>";
             row += "<img src='" + NewPlayerWizard.options.contextPath + "/app/avatar?hash="
                     + data.playerList[i][1] + "&small'/>";
@@ -325,6 +329,7 @@ var NewPlayerWizard = {
 
             $("#dialog-friendListRequest table tbody tr:eq(" + i + ") a").click(function(e) {
                 e.preventDefault();
+        		NewPlayerWizard.storeBreadcrumb('step3a', undefined, NewPlayerWizard.step3aData);
                 $.ajax({
                     url: NewPlayerWizard.options.contextPath + "/app/score/searchUser",
                     type: 'POST',
@@ -349,8 +354,11 @@ var NewPlayerWizard = {
         console.log('step3b');
         $("#dialog-friendRequest input[name='email']").val(data.playerList[0][0]); // email
         $("#requested dt").text(data.playerList[0][1]); // avatarHash
-        // TODO: consider the lack of a location
-        $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]); // fullName + location
+        if (data.playerList[0][3] != undefined) {
+            $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]); // fullName + location
+        } else {
+            $("#requested dd").html(data.playerList[0][2]); // fullName
+        }
         $("#requester textarea").text(data.invitationMessage); // invitationMessage
         $("#requester dd").text(NewPlayerWizard.options.loggedUserAvatarUrl); // logged user avatar
         $("#dialog-friendRequest input[name='playerName']").val(data.playerNameInScore); // playerName
@@ -397,13 +405,11 @@ var NewPlayerWizard = {
             resizable: true,
 			autoOpen: false,
 			modal: true,
-			open: function() {
-				$('#search-form input').val('');
-			},
 			close : NewPlayerWizard.dialogCloseCallback,
 			buttons: [{
 				text: NewPlayerWizard.options.label_associate,
 				click: function() {
+					NewPlayerWizard.storeBreadcrumb('step2', '#search-form');
 					NewPlayerWizard.stepSucceeded = true;
 					$('#playerNameInScore').val(NewPlayerWizard.scorePlayers[NewPlayerWizard.currentScorePlayer - 1]);
 					$.ajax({
@@ -424,7 +430,12 @@ var NewPlayerWizard = {
 			modal: true,
 			close : NewPlayerWizard.dialogCloseCallback,
 			buttons: [{
-                text: NewPlayerWizard.options.label_back
+                text: NewPlayerWizard.options.label_back,
+                click: function() {
+                    NewPlayerWizard.stepSucceeded = true;
+            		$("#dialog-friendRequest").dialog( "close" );
+            		NewPlayerWizard.goBack();
+                }
             },{
 				text: NewPlayerWizard.options.label_send_request,
 				click: function() {
@@ -447,7 +458,12 @@ var NewPlayerWizard = {
             modal: true,
             close : NewPlayerWizard.dialogCloseCallback,
             buttons: [{
-                text: NewPlayerWizard.options.label_back
+                text: NewPlayerWizard.options.label_back,
+                click: function() {
+                    NewPlayerWizard.stepSucceeded = true;
+            		$("#dialog-friendListRequest").dialog( "close" );
+            		NewPlayerWizard.goBack();
+                }
             }]
         });
 
@@ -457,9 +473,14 @@ var NewPlayerWizard = {
 			modal: true,
 			close : NewPlayerWizard.dialogCloseCallback,
 			buttons: [{
-                text: NewPlayerWizard.options.label_back
+                text: NewPlayerWizard.options.label_back,
+                click: function() {
+                    NewPlayerWizard.stepSucceeded = true;
+            		$("#dialog-invitation").dialog( "close" );
+            		NewPlayerWizard.goBack();
+                }
             }, {
-				text: NewPlayerWizard.options.label_invite_to_scoreshared,
+				text: NewPlayerWizard.options.label_invite,
 				click: function() {
 					NewPlayerWizard.stepSucceeded = true;
 					$.ajax({
@@ -475,12 +496,53 @@ var NewPlayerWizard = {
 		});
 	},
 
-	storeBreadcrumb: function(functionName, data) {
-	    NewPlayerWizard.breadCrumb.push([functionName, data]);
+	storeBreadcrumb: function(functionName, formName, data) {
+		if (data != undefined) {
+		    NewPlayerWizard.breadCrumb.push([functionName, undefined, data]);
+		} else {
+		    NewPlayerWizard.breadCrumb.push([functionName, formName, $(formName).values()]);
+		}
 	},
 
 	goBack: function() {
 	    var lastCrumb = NewPlayerWizard.breadCrumb.pop();
-	    eval(lastCrumb[0] + "(" + lastCrumb[1] + ")");
+	    if (lastCrumb[1] == undefined) {
+	    	eval("NewPlayerWizard." + lastCrumb[0] + "(" + JSON.stringify(lastCrumb[2]) + ")");
+	    } else {
+		    $(lastCrumb[1]).values(lastCrumb[2]);
+		    eval("NewPlayerWizard." + lastCrumb[0] + "()");
+	    }
 	}
+};
+
+/**
+ * Based on http://stackoverflow.com/questions/1489486/jquery-plugin-to-serialize-a-form-and-also-restore-populate-the-form/12218972#12218972
+ */
+$.fn.values = function(data) {
+    var els = $(this).find(':input').get();
+
+    if(typeof data != 'object') {
+        // return all data
+        data = {};
+
+        $.each(els, function() {
+            if (this.name && !this.disabled && (this.checked
+                            || /select|textarea/i.test(this.nodeName)
+                            || /text|hidden|password/i.test(this.type))) {
+                data[this.name] = $(this).val();
+            }
+        });
+        return data;
+    } else {
+        $.each(els, function() {
+            if (this.name && data[this.name]) {
+                if(this.type == 'checkbox' || this.type == 'radio') {
+                    $(this).attr("checked", (data[this.name] == $(this).val()));
+                } else {
+                    $(this).val(data[this.name]);
+                }
+            }
+        });
+        return $(this);
+    }
 };
