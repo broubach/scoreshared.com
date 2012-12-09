@@ -25,7 +25,7 @@ public class Player extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User owner;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User association;
 
     private String invitationEmail;

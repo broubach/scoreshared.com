@@ -48,7 +48,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         }
     }
 
-    public List find(String query) {
+    public List<?> find(String query) {
         return getHibernateTemplate().find(query);
     }
 
@@ -80,7 +80,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         }
     }
 
-    public <T> List<T> findByNamedQueryAndNamedParam(String queryName, Map<String, ?> params) {
+    public List findByNamedQueryAndNamedParam(String queryName, Map<String, ?> params) {
         String[] paramNames = new String[params.size()];
         Object[] values = new Object[params.size()];
 
@@ -93,7 +93,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         return findByNamedQueryAndNamedParam(queryName, paramNames, values);
     }
 
-    public <T> List<T> findByNamedQueryAndNamedParam(String queryName, String[] paramNames, Object[] values) {
+    public List findByNamedQueryAndNamedParam(String queryName, String[] paramNames, Object[] values) {
         return getHibernateTemplate().findByNamedQueryAndNamedParam(queryName, paramNames, values);
     }
 
@@ -194,6 +194,21 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         } catch (HibernateException e) {
             t.rollback();
             throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public List findByQueryWithLimits(String queryStr, int firstResult, int maxResults) {
+        Session session = null;
+        try {
+            session = getHibernateTemplate().getSessionFactory().openSession();
+            org.hibernate.Query query = session.createQuery(queryStr);
+            query.setFirstResult(firstResult);
+            query.setMaxResults(maxResults);
+            return query.list();
         } finally {
             if (session != null) {
                 session.close();

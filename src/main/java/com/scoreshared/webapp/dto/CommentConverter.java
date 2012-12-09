@@ -10,9 +10,9 @@ public class CommentConverter implements Converter<ScoreModel, Comment> {
     public Comment convert(ScoreModel src) {
         Comment dest = null;
         if (src.getComment() != null && !src.getComment().isEmpty()) {
-            Comment comment = new Comment();
-            comment.setPrivate(src.getPrivate());
-            comment.setDescription(src.getComment());
+            dest = new Comment();
+            dest.setPrivate(src.getPrivate());
+            dest.setDescription(src.getComment());
         }
 
         return dest;

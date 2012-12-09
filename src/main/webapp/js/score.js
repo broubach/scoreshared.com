@@ -262,7 +262,7 @@ var NewPlayerWizard = {
 
 	step1: function(data) {
 		console.log('step1');
-		if (data.proceedWithConfirmation) {
+		if (data.proceedWithConfirmation == 'true') {
 			$("#dialog-confirm").attr('title', data.title);
 			$("#dialog-confirm").dialog({
 				resizable: false,

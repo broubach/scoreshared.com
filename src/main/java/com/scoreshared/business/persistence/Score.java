@@ -1,6 +1,7 @@
 package com.scoreshared.business.persistence;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -192,7 +193,7 @@ public class Score extends BaseEntity {
     public Boolean hasWinner() {
         int leftCount = 0;
         int rightCount = 0;
-        Integer[][] finalScore = getFinalScore();
+        Integer[][] finalScore = getFinalScoreArray();
         for (Integer[] set : finalScore) {
             if (set[0] != null && set[1] != null) {
                 if (set[0] > set[1]) {
@@ -205,7 +206,7 @@ public class Score extends BaseEntity {
         return leftCount > rightCount;
     }
 
-    private Integer[][] getFinalScore() {
+    private Integer[][] getFinalScoreArray() {
         Integer[][] finalScore = new Integer[5][2];
         finalScore[0][0] = set1Left;
         finalScore[0][1] = set1Right;
@@ -218,5 +219,47 @@ public class Score extends BaseEntity {
         finalScore[4][0] = set5Left;
         finalScore[4][1] = set5Right;
         return finalScore;
+    }
+    
+    public String getFinalScore(boolean winnerInLeft) {
+        StringBuilder result = new StringBuilder();
+        Integer[][] finalScore = getFinalScoreArray();
+        for (Integer[] set : finalScore) {
+            if (set[0] != null && set[1] != null) {
+                if (winnerInLeft) {
+                    result.append(set[0]).append("x").append(set[1]);
+                } else {
+                    result.append(set[1]).append("x").append(set[0]);
+                }
+                result.append(" ");
+            }
+        }
+        return result.toString().trim();
+    }
+
+    public String getFinalScore() {
+        return getFinalScore(true);
+    }
+
+    public boolean hasWinner(User user) {
+        for (Player player : leftPlayers) {
+            if (player.getAssociation() != null && player.getAssociation().getId().equals(user.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Player getAssociatedPlayer(User loggedUser) {
+        Set<Player> allPlayers = new HashSet<Player>();
+        allPlayers.addAll(leftPlayers);
+        allPlayers.addAll(rightPlayers);
+
+        for (Player player : allPlayers) {
+            if (player.getAssociation() != null && player.getAssociation().getId().equals(loggedUser.getId())) {
+                return player;
+            }
+        }
+        return null;
     }
 }
