@@ -14,6 +14,7 @@ public class SignupForm {
     private int birthDay;
     private int birthMonth;
     private int birthYear;
+    private String invitationHash;
 
     public String getFirstName() {
         return firstName;
@@ -85,6 +86,14 @@ public class SignupForm {
 
     public void setBirthYear(int birthYear) {
         this.birthYear = birthYear;
+    }
+
+    public String getInvitationHash() {
+        return invitationHash;
+    }
+
+    public void setInvitationHash(String invitationHash) {
+        this.invitationHash = invitationHash;
     }
 
     public User toUser() {

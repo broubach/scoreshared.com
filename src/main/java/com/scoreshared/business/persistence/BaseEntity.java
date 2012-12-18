@@ -11,6 +11,8 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    
+    private boolean deleted;
 
     public BaseEntity() {
         super();
@@ -22,6 +24,14 @@ public class BaseEntity {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
 }

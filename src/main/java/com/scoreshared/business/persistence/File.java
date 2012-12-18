@@ -10,11 +10,16 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "avatarIdByHashQuery", query = "select avatar.id from Profile profile join profile.avatar avatar where profile.avatarHash = ?"),
-        @NamedQuery(name = "smallAvatarIdByHashQuery", query = "select smallAvatar.id from Profile profile join profile.smallAvatar smallAvatar where profile.avatarHash = ?") })
+        @NamedQuery(name = "avatarIdByHashQuery", query = "select avatar.id from Profile profile join profile.avatar avatar where profile.avatarHash = :avatarHash"),
+        @NamedQuery(name = "smallAvatarIdByHashQuery", query = "select smallAvatar.id from Profile profile join profile.smallAvatar smallAvatar where profile.avatarHash = :avatarHash") })
 @Table(name = "file")
+@SQLDelete(sql="UPDATE file SET deleted = 1 WHERE id = ?")
+@Where(clause="deleted <> 1")
 public class File extends BaseEntity implements Cloneable {
 
     @Lob

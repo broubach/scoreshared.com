@@ -7,6 +7,7 @@ import com.scoreshared.business.persistence.User;
 
 public class ScoreModel {
 
+    private Integer id;
     private String date;
     private String time;
     private String playersLeft;
@@ -21,6 +22,7 @@ public class ScoreModel {
     private Integer set4Right;
     private Integer set5Left;
     private Integer set5Right;
+    private Integer commentId;
     private String comment;
     private boolean pvt;
     private boolean postInTwitter;
@@ -28,6 +30,14 @@ public class ScoreModel {
 
     // field used exclusively to allow the copy of owner to the resulting players ScoreConverter
     private User owner;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getDate() {
         return date;
@@ -139,6 +149,14 @@ public class ScoreModel {
 
     public void setSet5Right(Integer set5Right) {
         this.set5Right = set5Right;
+    }
+
+    public Integer getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
     }
 
     public String getComment() {

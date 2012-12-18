@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.persistence.File;
+import com.scoreshared.business.persistence.InvitationResponseEnum;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Profile;
 import com.scoreshared.business.persistence.User;
@@ -46,9 +48,12 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 
     @Value("${email.fromName}")
     private String fromName;
+    
+    @Value("${http_server_address_port}")
+    private String httpServerAddressPort;
 
     @Inject
-    private Md5PasswordEncoder passwordEncoder;
+    private Md5PasswordEncoder hashEncoder;
 
     public void save(User user) {
         dao.saveOrUpdate(user);
@@ -82,7 +87,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public void cropResizeAndSaveAvatars(User loggedUser, File avatar, int x, int y, int x2, int y2) throws IOException {
         // set image hash into profile
         loggedUser.getProfile().setAvatarHash(
-                passwordEncoder.encodePassword(avatar.getData().toString(), avatar.getName()));
+                hashEncoder.encodePassword(avatar.getData().toString(), avatar.getName()));
 
         // resize and crop small avatar
         File smallAvatar = (File) avatar.clone();
@@ -241,19 +246,34 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return result;
     }
 
+    public User findByPk(Integer userId) {
+        return dao.findByPk(User.class, userId);
+    }
+
+    public void saveNewUser(User loggedUser, String invitationHash) {
+        Player player = new Player(loggedUser.getFullName(), loggedUser);
+        player.setAssociation(loggedUser);
+        if (!StringUtils.isEmpty(invitationHash)) {
+            acceptInvitation(loggedUser, invitationHash);
+        }
+
+        dao.saveOrUpdate(player);
+    }
+
     public void inviteUser(User loggedUser, String playerName, String email, String message, Locale locale) {
         invitePlayer(loggedUser, playerName, email, message, true, locale);
     }
 
-    public void invitePlayer(User loggedUser, String playerName, String email, String message, boolean isUserExistent,
+    public void invitePlayer(User owner, String playerName, String email, String message, boolean isUserExistent,
             Locale locale) {
-        List<Player> players = dao.findByNamedQuery("playerByNameAndOwner", playerName, loggedUser.getId());
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwner", playerName, owner.getId());
         Player player = null;
         if (players.size() > 0) {
             player = players.get(0);
         } else {
-            player = new Player(playerName, loggedUser);
+            player = new Player(playerName, owner);
         }
+        player.setInvitationHash(hashEncoder.encodePassword(email, player.getInvitationDate()));
         player.setInvitationEmail(email);
         player.setInvitationMessage(message);
         player.setInvitationPreviousDate(player.getInvitationDate());
@@ -261,16 +281,18 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 
         dao.saveOrUpdate(player);
 
-        sendMail(email, player.getInvitationPreviousDate() == null, message, isUserExistent, locale);
+        sendInvitationMail(player, player.getInvitationPreviousDate() == null, isUserExistent, locale);
     }
 
-    private void sendMail(String email, boolean isFirstEmail, String message, boolean isUserExistent, Locale locale) {
+    private void sendInvitationMail(Player player, boolean isFirstEmail, boolean isUserExistent, Locale locale) {
         String templateName = calculateTemplateName(isUserExistent, isFirstEmail);
         Map<String, String> params = new HashMap<String, String>();
-        params.put("email", email);
-        params.put("message", message);
+        params.put("message", player.getName());
+        params.put("userName", player.getInvitationMessage());
+        params.put("invitationHash", player.getInvitationHash());
+        params.put("http_server_address_port", httpServerAddressPort);
         String body = parseTemplate(templateName, params, locale);
-        sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
+        sendMail(from, fromName, player.getInvitationEmail(), getSubjectByTemplateName(templateName, locale), body);
     }
 
     protected String calculateTemplateName(boolean isUserExistent, boolean isFirstEmail) {
@@ -289,5 +311,57 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
             }
         }
         return templateName;
+    }
+
+    public void removeConnection(Integer user1Id, Integer user2Id) {
+        List<Player> players = dao.findByNamedQuery("playerByOwnerAndAssociated", user1Id, user2Id);
+        players.get(0).setAssociation(null);
+        players.get(0).setInvitationDate(null);
+        dao.saveOrUpdate(players.get(0));
+
+        players = dao.findByNamedQuery("playerByOwnerAndAssociated", user2Id, user1Id);
+        players.get(0).setAssociation(null);
+        players.get(0).setInvitationDate(null);
+        dao.saveOrUpdate(players.get(0));
+    }
+
+    public Player findPlayerByInvitationHash(String invitationHash) {
+        List<Player> players = dao.findByNamedQuery("invitationPlayerByHash", invitationHash);
+        if (players.size() > 0) {
+            return players.get(0);
+        }
+        return null;
+    }
+
+    public void ignoreInvitation(User loggedUser, String invitationHash) {
+        Player player = findPlayerByInvitationHash(invitationHash);
+
+        player.setInvitationResponse(InvitationResponseEnum.IGNORED);
+        dao.saveOrUpdate(loggedUser);
+    }
+
+    public boolean hasConnection(Integer user1Id, Integer user2Id) {
+       return dao.findByNamedQuery("playerByOwnerAndAssociated", user1Id, user2Id).size() > 0;
+    }
+
+    public void acceptInvitation(User user1, String invitationHash) {
+        Player player2 = findPlayerByInvitationHash(invitationHash);
+        User user2 = player2.getOwner();
+
+        connect(user1, new Player(), user2, player2);
+    }
+
+    private void connect(User user1, Player player1, User user2, Player player2) {
+        player1.setAssociation(user2);
+        player1.setName(user2.getFullName());
+        player1.setOwner(user1);
+        player1.setInvitationResponse(InvitationResponseEnum.ACCEPTED);
+        dao.saveOrUpdate(player1);
+
+        player2.setAssociation(user1);
+        player2.setName(user1.getFullName());
+        player2.setOwner(user2);
+        player2.setInvitationResponse(InvitationResponseEnum.ACCEPTED);
+        dao.saveOrUpdate(player2);
     }
 }

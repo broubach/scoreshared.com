@@ -2,6 +2,7 @@ package com.scoreshared.business.persistence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -57,25 +58,37 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     }
 
     public List findByNamedQuery(String namedQuery, Object... paramValues) {
-        return getHibernateTemplate().findByNamedQuery(namedQuery, paramValues);
+        return findByNamedQueryWithLimits(namedQuery, null, null, paramValues);
     }
 
-    public List findByNamedQueryWithLimits(String namedQuery, int firstResult, int maxResults, Object... paramValues) {
+    public List findByNamedQueryWithLimits(String namedQuery, Integer firstResult, Integer maxResults, Object... paramValues) {
         Session session = null;
         try {
             session = getHibernateTemplate().getSessionFactory().openSession();
-            org.hibernate.Query query = session.getNamedQuery(namedQuery);
-            query.setFirstResult(firstResult);
-            query.setMaxResults(maxResults);
-            if (paramValues != null) {
-                for (int i = 0; i < query.getNamedParameters().length; i++) {
-                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
-                }
-            }
+            Query query = session.getNamedQuery(namedQuery);
+            populateQuery(firstResult, maxResults, query, paramValues);
             return query.list();
         } finally {
             if (session != null) {
                 session.close();
+            }
+        }
+    }
+
+    private void populateQuery(Integer firstResult, Integer maxResults, Query query, Object... paramValues) {
+        if (firstResult != null) {
+            query.setFirstResult(firstResult);
+        }
+        if (maxResults != null) {
+            query.setMaxResults(maxResults);
+        }
+        if (paramValues != null) {
+            for (int i = 0; i < query.getNamedParameters().length; i++) {
+                if (paramValues[i] instanceof Collection) {
+                    query.setParameterList(query.getNamedParameters()[i], (Collection) paramValues[i]);
+                } else {
+                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
+                }
             }
         }
     }
@@ -183,11 +196,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
             session = getHibernateTemplate().getSessionFactory().openSession();
             t = session.beginTransaction();
             Query query = session.getNamedQuery(namedQuery);
-            if (paramValues != null) {
-                for (int i = 0; i < query.getNamedParameters().length; i++) {
-                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
-                }
-            }
+            populateQuery(null, null, query, paramValues);
             query.executeUpdate();
             t.commit();
 
@@ -201,13 +210,12 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         }
     }
 
-    public List findByQueryWithLimits(String queryStr, int firstResult, int maxResults) {
+    public List findByQueryWithLimits(String queryStr, Integer firstResult, Integer maxResults, Object... paramValues) {
         Session session = null;
         try {
             session = getHibernateTemplate().getSessionFactory().openSession();
-            org.hibernate.Query query = session.createQuery(queryStr);
-            query.setFirstResult(firstResult);
-            query.setMaxResults(maxResults);
+            Query query = session.createQuery(queryStr);
+            populateQuery(firstResult, maxResults, query, paramValues);
             return query.list();
         } finally {
             if (session != null) {

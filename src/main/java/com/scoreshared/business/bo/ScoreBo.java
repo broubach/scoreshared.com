@@ -1,12 +1,15 @@
 package com.scoreshared.business.bo;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.scoreshared.business.persistence.ApprovalResponseEnum;
 import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
@@ -17,24 +20,44 @@ public class ScoreBo extends BaseBo<Score> {
 
     private static final int PAGE_SIZE = 25;
 
-    public void save(User loggedUser, Score score, Comment comment) {
-        score.setOwner(loggedUser);
+    public void save(User owner, Score score, Comment comment) {
+        if (score.getId() == null) {
+            for (Player player : score.getAllPlayers()) {
+                if (player.getAssociation() != null) {
+                    Score newScore = (Score) score.clone();
+                    Comment newComment = null;
+                    if (comment != null) {
+                        newComment = (Comment) comment.clone();
+                    }
+                    newScore.setApprovalResponse(ApprovalResponseEnum.WAITING);
+                    consistAndSave(player.getAssociation(), newScore, newComment);
+                }
+            }
+        }
+
+        consistAndSave(owner, score, comment);
+        score.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+
+        // TODO: post in twitter or facebook
+    }
+
+    private void consistAndSave(User owner, Score score, Comment comment) {
+        score.setOwner(owner);
         score.setWinnerDefined(score.hasWinner());
-        replaceExistentPlayersAndSetLoggedUser(loggedUser, score.getLeftPlayers());
-        replaceExistentPlayersAndSetLoggedUser(loggedUser, score.getRightPlayers());
+        replaceExistentPlayersAndSetOwner(owner, score.getLeftPlayers());
+        replaceExistentPlayersAndSetOwner(owner, score.getRightPlayers());
 
         if (comment != null) {
             comment.setScore(score);
-            comment.setOwner(loggedUser);
+            comment.setOwner(owner);
             dao.saveOrUpdate(comment);
         } else {
 
             dao.saveOrUpdate(score);
         }
-        // TODO: post in twitter or facebook
     }
 
-    private void replaceExistentPlayersAndSetLoggedUser(User loggedUser, Set<Player> players) {
+    private void replaceExistentPlayersAndSetOwner(User loggedUser, Set<Player> players) {
         Set<Player> replacedPlayers = new HashSet<Player>();
         Player player = null;
         for (Iterator<Player> it = players.iterator(); it.hasNext(); ) {
@@ -68,8 +91,56 @@ public class ScoreBo extends BaseBo<Score> {
         return !dao.findByNamedQuery("hasScoreWithOwnerId", loggedUser.getId()).isEmpty();
     }
 
-    public List<Object[]> findScores(Integer pageNumber, String orderField, Boolean ascending) {
-        String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score order by score.").append(orderField).append(ascending ? " asc" : " desc").toString();
-        return dao.findByQueryWithLimits(query, (pageNumber - 1) * PAGE_SIZE, PAGE_SIZE);
+    public List<Object[]> findScores(Integer pageNumber, Boolean ascending, User owner) {
+        String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score where score.deleted = 0 and score.owner.id = :ownerId order by cast(score.date as date)").append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
+        return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
 	}
+
+    public Score findById(Integer scoreId) {
+        return dao.findByPk(Score.class, scoreId);
+    }
+
+    public Comment findCommentByScoreId(Integer scoreId) {
+        List<Comment> comments = dao.findByNamedQuery("commentByScoreIdQuery", scoreId);
+        return comments.size() > 0 ? comments.get(0) : null;
+    }
+
+    public void deleteScores(String[] ids) {
+        for (String id : ids) {
+            dao.remove(new Score(Integer.valueOf(id)));
+        }
+    }
+
+    public Integer[] calculateWinLoss(Integer ownerId) {
+        List<Score> scores = dao.findByNamedQuery("scoresForWinLossQuery", ownerId);
+        populateLeftPlayers(scores);
+
+        Integer win = 0;
+        Integer loss = 0;
+        for (Score score : scores) {
+            if (score.hasWinner(ownerId)) {
+                win++;
+            } else {
+                loss++;
+            }
+        }
+
+        return new Integer[] { win, loss };
+    }
+
+    private void populateLeftPlayers(List<Score> scores) {
+        if (scores.size() <= 0) {
+            return;
+        }
+        Map<Integer, Score> scoresById = new HashMap<Integer, Score>();
+        for (Score score : scores) {
+            scoresById.put(score.getId(), score);
+            score.setLeftPlayers(new HashSet<Player>());
+        }
+        Object[] scoreIdAndPlayer = null;
+        for (Object obj : dao.findByNamedQuery("scoreIdAndLeftPlayerQuery", new Object[] {scoresById.keySet()})) {
+            scoreIdAndPlayer = (Object[]) obj;
+            scoresById.get(scoreIdAndPlayer[0]).getLeftPlayers().add((Player) scoreIdAndPlayer[1]);
+        }
+    }
 }

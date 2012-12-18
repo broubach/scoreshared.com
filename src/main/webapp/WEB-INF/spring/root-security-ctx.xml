@@ -13,6 +13,7 @@
 	<http pattern="/js/*" security="none"/>
 	<http pattern="/app/captcha" security="none" />
 	<http pattern="/app/signin*/**" security="none"/>
+	<http pattern="/app/receiveInvitation*/**" security="none"/>
 
 	<http use-expressions="true">
 		<!-- Authentication policy -->

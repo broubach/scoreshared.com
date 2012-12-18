@@ -1,5 +1,6 @@
 package com.scoreshared.business.persistence;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,11 +15,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.http.client.utils.CloneUtils;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 
 @Entity
 @Table(name = "score")
-@NamedQueries({ @NamedQuery(name = "hasScoreWithOwnerId", query = "select 1 from Score score where score.owner.id = ?") })
-public class Score extends BaseEntity {
+@NamedQueries({
+        @NamedQuery(name = "hasScoreWithOwnerId", query = "select 1 from Score score where score.owner.id = :id"),
+        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score where score.owner.id = :id and score.winnerDefined = 1"),
+        @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)") })
+@SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
+@Where(clause="deleted <> 1")
+public class Score extends BaseEntity implements Cloneable {
     private Date date;
     private Date time;
 
@@ -50,6 +63,31 @@ public class Score extends BaseEntity {
     private Set<Player> rightPlayers;
 
     private boolean winnerDefined;
+    
+    @Transient
+    private Comment comment;
+    private ApprovalResponseEnum approvalResponse;
+
+    public Score() {
+    }
+
+    public Score(Integer id) {
+        setId(id);
+    }
+
+    public Score(Integer id, Integer set1Left, Integer set1Right, Integer set2Left, Integer set2Right, Integer set3Left, Integer set3Right, Integer set4Left, Integer set4Right, Integer set5Left, Integer set5Right) {
+        this(id);
+        this.set1Left = set1Left;
+        this.set1Right = set1Right;
+        this.set2Left = set1Left;
+        this.set2Right = set1Right;
+        this.set3Left = set1Left;
+        this.set3Right = set1Right;
+        this.set4Left = set1Left;
+        this.set4Right = set1Right;
+        this.set5Left = set1Left;
+        this.set5Right = set1Right;
+    }
 
     public Date getDate() {
         return date;
@@ -187,6 +225,22 @@ public class Score extends BaseEntity {
         this.winnerDefined = winnerDefined;
     }
 
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public ApprovalResponseEnum getApprovalResponse() {
+        return approvalResponse;
+    }
+
+    public void setApprovalResponse(ApprovalResponseEnum approvalResponse) {
+        this.approvalResponse = approvalResponse;
+    }
+
     /**
      * True if left is really a winner. False if there is no winner or if right is the winner.
      */
@@ -241,9 +295,9 @@ public class Score extends BaseEntity {
         return getFinalScore(true);
     }
 
-    public boolean hasWinner(User user) {
+    public boolean hasWinner(Integer userId) {
         for (Player player : leftPlayers) {
-            if (player.getAssociation() != null && player.getAssociation().getId().equals(user.getId())) {
+            if (player.getAssociation() != null && player.getAssociation().getId().equals(userId)) {
                 return true;
             }
         }
@@ -261,5 +315,36 @@ public class Score extends BaseEntity {
             }
         }
         return null;
+    }
+
+    public Set<Player> getOppositePlayers(Integer loggedUserId) {
+        if (hasWinner(loggedUserId)) {
+            return rightPlayers;
+        } else if (hasWinner()) {
+            return leftPlayers;
+        }
+        return new HashSet<Player>();
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return BeanUtils.cloneBean(this);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Set<Player> getAllPlayers() {
+        Set<Player> result = new HashSet<Player>();
+        result.addAll(leftPlayers);
+        result.addAll(rightPlayers);
+        return result;
     }
 }

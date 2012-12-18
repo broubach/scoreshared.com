@@ -17,6 +17,8 @@
 	        <list>
 	            <bean class="com.scoreshared.webapp.dto.ScoreConverter"/>
 	            <bean class="com.scoreshared.webapp.dto.CommentConverter"/>
+	            <bean class="com.scoreshared.webapp.dto.ScoreModelConverter"/>
+	            <bean class="com.scoreshared.webapp.dto.UserConverter"/>
 	        </list>
 	    </property>
 	</bean>

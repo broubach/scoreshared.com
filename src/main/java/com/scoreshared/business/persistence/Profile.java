@@ -7,20 +7,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 @Entity
 @Table(name = "profile")
 @NamedQuery(name = "profileDetailsQuery", query = "from User user where (:city is null or user.profile.city like :city) and (:country is null or user.profile.country like :country) and (:firstName is null or user.firstName like :firstName) and (:lastName is null or user.lastName like :lastName)")
+@SQLDelete(sql="UPDATE profile SET deleted = 1 WHERE id = ?")
+@Where(clause="deleted <> 1")
 public class Profile extends BaseEntity {
 
     private String city;
     private String country;
-    private String club;
+    private String academy;
     private Boolean leftHanded;
     private String coach;
     private Boolean showContactInfoToFriends;
     private String phone;
     private String avatarHash;
     private String style;
+    private String site;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private File avatar;
@@ -44,12 +50,12 @@ public class Profile extends BaseEntity {
         this.country = country;
     }
 
-    public String getClub() {
-        return club;
+    public String getAcademy() {
+        return academy;
     }
 
-    public void setClub(String club) {
-        this.club = club;
+    public void setAcademy(String club) {
+        this.academy = club;
     }
 
     public Boolean getLeftHanded() {
@@ -125,5 +131,13 @@ public class Profile extends BaseEntity {
             return country;
         }
         return "";
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 }

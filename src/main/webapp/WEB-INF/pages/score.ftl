@@ -35,6 +35,8 @@
 			<@spring.formCheckbox "score.postInTwitter"/> <label for="postInTwitter"><@spring.message code="label.post_in_twitter"/></label>
 			<@spring.formCheckbox "score.postInFacebook"/> <label for="postInFacebook"><@spring.message code="label.post_in_facebook"/></label>
 			<input type="button" value="<@spring.message code="label.save"/>"/>
+			<@spring.formHiddenInput "score.commentId", ""/>
+			<@spring.formHiddenInput "score.id", ""/>
 		</form>
 
 		<div id="dialog-confirm" style="display:none"></div>
@@ -67,20 +69,7 @@
 			</form>
 		</div>
 
-		<div id="dialog-friendRequest" title="<@spring.message code="label.association"/>">
-			<form id="friendRequest-form">
-				<input type="hidden" name="playerName" />
-				<input type="hidden" name="email" />
-				<dl id="requested">
-					<dt></dt>
-					<dd></dd>
-				</dl>
-				<dl id="requester">
-					<dt><textarea name="message"></textarea></dt>
-					<dd></dd>
-				</dl>
-			</form>
-		</div>
+		<#include "dialogFriendRequestSnippet.ftl">
 
 		<div id="dialog-friendListRequest" title="<@spring.message code="label.association"/>" style="display: none">
 			<table>
@@ -115,6 +104,7 @@
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.min.js"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js?6"/>"></script>
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/friendRequestUtil.js"/>"></script>
 <script type="text/javascript">
 function split( val ) {
 	return val.split( /,\s*/ );

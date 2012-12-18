@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,6 +57,38 @@ public class ScoreController extends BaseController {
         try {
             ModelAndView mav = new ModelAndView("score");
             mav.addObject("score", new ScoreModel());
+            mav.addObject("search", new SearchModel());
+
+            StringWriter playersList = new StringWriter();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(playersList, scoreBo.listPlayersName(loggedUser));
+            mav.addObject("playersList", playersList.toString());
+            return mav;
+        } catch (JsonGenerationException e) {
+            throw new RuntimeException(e);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "{scoreId}", method = RequestMethod.GET)
+    public ModelAndView edit(@LoggedUser User loggedUser, @PathVariable Integer scoreId) {
+        try {
+            ModelAndView mav = new ModelAndView("score");
+            
+            Score score = scoreBo.findById(scoreId);
+            if (score == null) {
+                return show(loggedUser);
+            }
+
+            Comment comment = scoreBo.findCommentByScoreId(scoreId);
+            score.setComment(comment);
+
+            ScoreModel scoreModel = conversionService.convert(score, ScoreModel.class);
+
+            mav.addObject("score", scoreModel);
             mav.addObject("search", new SearchModel());
 
             StringWriter playersList = new StringWriter();
@@ -121,14 +154,8 @@ public class ScoreController extends BaseController {
 
     private List<Object[]> toArrayList(List<User> users) {
         List<Object[]> result = new ArrayList<Object[]>();
-        Object[] item = null;
         for (User user : users) {
-            item = new Object[4];
-            item[0] = user.getEmail();
-            item[1] = user.getProfile().getAvatarHash();
-            item[2] = user.getFullName();
-            item[3] = user.getProfile().getLocation();
-            result.add(item);
+            result.add((Object[])conversionService.convert(user, Object[].class));
         }
         return result;
     }

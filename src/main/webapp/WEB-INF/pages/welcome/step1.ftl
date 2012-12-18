@@ -40,8 +40,8 @@
 		</dl>
 
 		<dl>
-			<dt><label for="profile.club"><@spring.message code="label.which_club_do_you_play_most"/></label></dt>
-			<dd><@spring.formInput "welcomeStep1Form.profile.club", "maxlength='45'", "text"/></dd>
+			<dt><label for="profile.academy"><@spring.message code="label.which_academy_do_you_play_most"/></label></dt>
+			<dd><@spring.formInput "welcomeStep1Form.profile.academy", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>
@@ -52,6 +52,16 @@
 				<#assign leftHandedHash = {"false":label_handed_right, "true":label_handed_left} />
 				<@spring.formRadioButtons "welcomeStep1Form.profile.leftHanded", leftHandedHash, "", "" />
 			</dd>
+		</dl>
+
+		<dl>
+			<dt><label for="profile.coach"><@spring.message code="label.who_is_your_coach"/></label></dt>
+			<dd><@spring.formInput "welcomeStep1Form.profile.coach", "maxlength='45'", "text"/></dd>
+		</dl>
+
+		<dl>
+			<dt><label for="profile.site"><@spring.message code="label.what_is_your_website"/></label></dt>
+			<dd><@spring.formInput "welcomeStep1Form.profile.site", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>

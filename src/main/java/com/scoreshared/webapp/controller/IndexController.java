@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.UserBo;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.SecurityHelper;
 import com.scoreshared.webapp.dto.SignupForm;
@@ -51,6 +53,19 @@ public class IndexController extends BaseController {
 
     @Inject
     private SecurityHelper securityHelper;
+
+    @RequestMapping(value = "/receiveInvitation/{invitationHash}", method = RequestMethod.GET)
+    public ModelAndView receiveInvitation(HttpServletRequest request, @PathVariable String invitationHash) {
+        ModelAndView mav = index(request);
+        Player player = userBo.findPlayerByInvitationHash(invitationHash);
+        if (player != null) {
+            SignupForm form = (SignupForm) mav.getModel().get("signupForm");
+            form.setInvitationHash(invitationHash);
+            form.setEmail(player.getInvitationEmail());
+            form.setEmailConfirmation(player.getInvitationEmail());
+        }
+        return mav;
+    }
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
@@ -181,7 +196,7 @@ public class IndexController extends BaseController {
             if (captcha.isCorrect(captchaAnswer)) {
                 User user = form.toUser();
                 user.setPassword(passwordEncoder.encodePassword(form.getPassword(), form.getEmail()));
-                userBo.save(user);
+                userBo.saveNewUser(user, form.getInvitationHash());
 
                 securityHelper.authenticateUserWithPassword(request, response, form.getEmail(), form.getPassword());
 
