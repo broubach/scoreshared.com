@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import com.scoreshared.business.persistence.Player;
@@ -20,7 +21,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             Score dest = new Score();
             dest.setId(src.getId());
             dest.setDate(getDate(src.getDate()));
-            if (src.getTime() != null) {
+            if (!StringUtils.isEmpty(src.getTime())) {
                 dest.setTime(getTime(src.getTime()));
             }
             dest.setSet1Left(src.getSet1Left());
@@ -36,13 +37,17 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
 
             Set<Player> leftPlayers = new HashSet<Player>();
             for (String playerLeft : src.getPlayersLeft().trim().split(",")) {
-                leftPlayers.add(new Player(playerLeft.trim(), src.getOwner()));
+                if (!StringUtils.isEmpty(playerLeft)) {
+                    leftPlayers.add(new Player(playerLeft.trim(), src.getOwner()));
+                }
             }
             dest.setLeftPlayers(leftPlayers);
 
             Set<Player> rightPlayers = new HashSet<Player>();
             for (String playerRight : src.getPlayersRight().trim().split(",")) {
-                rightPlayers.add(new Player(playerRight.trim(), src.getOwner()));
+                if (!StringUtils.isEmpty(playerRight)) {
+                    rightPlayers.add(new Player(playerRight.trim(), src.getOwner()));
+                }
             }
             dest.setRightPlayers(rightPlayers);
 

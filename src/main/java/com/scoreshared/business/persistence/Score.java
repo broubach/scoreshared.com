@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.http.client.utils.CloneUtils;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -27,7 +26,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "score")
 @NamedQueries({
         @NamedQuery(name = "hasScoreWithOwnerId", query = "select 1 from Score score where score.owner.id = :id"),
-        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score where score.owner.id = :id and score.winnerDefined = 1"),
+        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score where score.owner.id = :id and score.winnerDefined = 1 and score.approvalResponse = 1"),
         @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)") })
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -329,7 +328,16 @@ public class Score extends BaseEntity implements Cloneable {
     @Override
     public Object clone() {
         try {
-            return BeanUtils.cloneBean(this);
+            Score newScore = (Score) BeanUtils.cloneBean(this);
+            if (leftPlayers != null) {
+                newScore.setLeftPlayers(new HashSet());
+                newScore.getLeftPlayers().addAll(leftPlayers);
+            }
+            if (rightPlayers != null) {
+                newScore.setRightPlayers(new HashSet());
+                newScore.getRightPlayers().addAll(rightPlayers);
+            }
+            return newScore;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {

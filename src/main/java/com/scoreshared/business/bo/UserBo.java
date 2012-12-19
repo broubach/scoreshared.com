@@ -308,6 +308,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
                 templateName = "reminderToAlreadyRegistered";
             } else {
                 templateName = "reminderToNotRegistered";
+                
             }
         }
         return templateName;
@@ -342,6 +343,14 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 
     public boolean hasConnection(Integer user1Id, Integer user2Id) {
        return dao.findByNamedQuery("playerByOwnerAndAssociated", user1Id, user2Id).size() > 0;
+    }
+    
+    public Player findPlayerByAssociationAndOwner(Integer userAssociationId, Integer ownerId) {
+        List<Player> result = dao.findByNamedQuery("playerByOwnerAndAssociated", userAssociationId, ownerId);
+        if (result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
     }
 
     public void acceptInvitation(User user1, String invitationHash) {

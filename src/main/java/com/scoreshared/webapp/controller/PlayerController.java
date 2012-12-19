@@ -1,7 +1,9 @@
 package com.scoreshared.webapp.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,17 +77,24 @@ public class PlayerController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value ="/userInfo/{userToAddId}", method = RequestMethod.GET)
-    public Object[] getUserInfo(@LoggedUser User loggedUser, @PathVariable Integer userToAddId) {
+    public Map<String, Object> getUserInfo(@LoggedUser User loggedUser, @PathVariable Integer userToAddId, HttpServletRequest request) {
         User user = userBo.findByPk(userToAddId);
-
-        return conversionService.convert(user, Object[].class);
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Object[]> playerListContent = new ArrayList<Object[]>();
+        playerListContent.add(conversionService.convert(user, Object[].class));
+        result.put("playerList", playerListContent);
+        result.put("playerNameInScore", playerListContent.get(0)[2]);
+        result.put("invitationMessage", messageResource.getMessage("label.association_request",
+                new Object[] { playerListContent.get(0)[2] }, localeResolver.resolveLocale(request)));
+        return result;
     }
 
     @ResponseBody
-    @RequestMapping(value ="/connect/{userToAddId}", method = RequestMethod.GET)
-    public Object[] connect(@LoggedUser User loggedUser, @PathVariable Integer userToAddId) {
-        User user = userBo.findByPk(userToAddId);
-
-        return conversionService.convert(user, Object[].class);
+    @RequestMapping(value ="/connect", method = RequestMethod.POST)
+    public Boolean connect(@LoggedUser User loggedUser, HttpServletRequest request,
+            @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
+            @ModelAttribute("message") String invitationMessage) {
+        userBo.inviteUser(loggedUser, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
+        return true;
     }
 }

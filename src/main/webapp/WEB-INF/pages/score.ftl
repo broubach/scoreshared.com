@@ -9,14 +9,30 @@
 	</head>
 	<body>
 		<a href="<@spring.url relativeUrl="/j_spring_security_logout"/>">logout</a><br/>
-		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
+	    <@spring.bind "score" />
+		<#if (spring.status.errors.fieldErrorCount > 0)>
+			<ul>
+		    <@spring.bind "score.date" />
+	        <#list spring.status.errorMessages as error>
+	            <li>${error}</li>
+	        </#list>
+		    <@spring.bind "score.playersLeft" />
+	        <#list spring.status.errorMessages as error>
+	            <li>${error}</li>
+	        </#list>
+	        </ul>
+        </#if>
+   		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
 			<dl>
 				<dt><label for="date"><@spring.message code="label.date"/></label></dt>
 				<dd><@spring.formInput "score.date", "", "text"/> <@spring.formInput "score.time", "", "text"/></dd>
 			</dl>
-			<div id="playersPane">
-				<@spring.formInput "score.playersLeft", "", "text"/> <@spring.formInput "score.playersRight", "", "text"/>
-			</div>
+			<dl id="playersPane">
+				<dl>
+					<dt><label for="playersLeft"><@spring.message code="label.players"/></label></dt>
+					<dd><@spring.formInput "score.playersLeft", "", "text"/> x <@spring.formInput "score.playersRight", "", "text"/></dd>
+				</dl>
+			</dl>
 			<dl id="setsPane">
 				<dt><label for="set1Left"></label></dt>
 				<dd><@spring.formInput "score.set1Left", "", "text"/> <@spring.formInput "score.set1Right", "", "text"/> <a href="javascript:Sets.increase();">+ <@spring.message code="label.set"/></a></dd>
@@ -163,6 +179,8 @@ $(function() {
 				return false;
 			}
 		});
+	
+	$("#playersRight").focus();
 });
 
 </script>

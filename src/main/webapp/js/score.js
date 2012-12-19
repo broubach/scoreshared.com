@@ -209,9 +209,6 @@ var NewPlayerWizard = {
 		options['loggedUserAvatarUrl'] = (options['loggedUserAvatarUrl'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarUrl']);
 		// TODO: start passing over the correct url
 		if (options['continueWithSavingProcessCallback'] == undefined) {
-			// TODO: implement validations:
-			// - date mandatory 
-			// - must have at least 1 player
 			options.continueWithSavingProcessCallback = function() {
 				$("#score-form").submit();
 			};
@@ -355,7 +352,7 @@ var NewPlayerWizard = {
 
 	step3b: function(data) {
         console.log('step3b');
-        FriendRequestUtil.openFriendRequestDialog(data);
+        FriendRequestUtil.openFriendRequestDialog(data, NewPlayerWizard.options.loggedUserAvatarUrl);
 	},
 
 	step3c: function(data) {

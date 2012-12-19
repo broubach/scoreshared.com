@@ -98,7 +98,9 @@ $(function() {
             '<@spring.message code="label.delete_all_items"/>': function() {
             	var selected = new Array();
             	$('input:checked').each(function() {
-            	    selected.push($(this).attr('id'));
+            		if ($(this).attr('id') != 'master') {
+            	    	selected.push($(this).attr('id'));
+            		}
             	});
 
             	$.ajax({

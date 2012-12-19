@@ -13,7 +13,7 @@
 	<input type="button" id="sendMessage" value="<@spring.message code="label.send_message"/>">
 	<#if player.connected>
 		<input type="button" id="remove" value="<@spring.message code="label.remove_from_player_list"/>">
-	<#else>
+	<#elseif // TODO: RESUME FROM HERE.. how to tell if the logged user already requested a connection?>
 		<input type="button" id="connect" value="<@spring.message code="label.connect"/>">
 	</#if>
 	<br>
@@ -121,9 +121,19 @@ $(function() {
 		modal: true,
 		buttons: {
 			'<@spring.message code="label.yes"/>': function() {
+				$.ajax({
+					url: '<@spring.url relativeUrl="/app/player/connect/" />',
+					data: $('#friendRequest-form').serialize(),
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: function(data) {
+		            	$('#dialog-friendRequest').dialog("close");
+					}
+				});
 			},
 			'<@spring.message code="label.no"/>': function() {
-            	$('#dialog-confirm').dialog("close");
+            	$('#dialog-friendRequest').dialog("close");
             }
 		}
 	});
@@ -134,7 +144,7 @@ $(function() {
 
 	$('#connect').click(function(e) {
 		$.ajax({
-			url: '<@spring.url relativeUrl="/app/player/connect/${player.user.id}" />',
+			url: '<@spring.url relativeUrl="/app/player/userInfo/${player.user.id}" />',
 			type: 'GET',
 			cache: false,
 			success: function(data) {
