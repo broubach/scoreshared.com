@@ -27,7 +27,7 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
     private Date birthday;
     private String password;
-    private String gender;
+    private char gender;
 
     @OneToOne
     private Profile profile;
@@ -81,11 +81,11 @@ public class User extends BaseEntity implements UserDetails {
         this.birthday = birthday;
     }
 
-    public String getGender() {
+    public char getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(char gender) {
         this.gender = gender;
     }
 
