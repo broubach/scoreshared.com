@@ -108,7 +108,7 @@ public class SignupForm {
         birthday.set(Calendar.YEAR, this.birthYear);
         result.setBirthday(birthday.getTime());
 
-        result.setGender(gender);
+        result.setGender(gender.trim().charAt(0));
         return result;
     }
 }
