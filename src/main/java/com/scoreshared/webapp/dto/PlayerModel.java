@@ -2,24 +2,26 @@ package com.scoreshared.webapp.dto;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.User;
 
 public class PlayerModel {
 
-    public User user;
+    private User user;
     private MessageSource messageResource;
     private Locale locale;
     private DateFormat dateFormat;
-    private boolean associated;
+    private Player associatedPlayer;
 
-    public PlayerModel(User user, boolean connected, MessageSource messageResource, Locale locale) {
+    public PlayerModel(User user, Player associationPlayer, MessageSource messageResource, Locale locale) {
         this.user = user;
-        this.associated = connected;
+        this.associatedPlayer = associationPlayer;
         this.messageResource = messageResource;
         this.locale = locale;
         
@@ -38,11 +40,19 @@ public class PlayerModel {
     public User getUser() {
         return user;
     }
-
+    
     public boolean isConnected() {
-        return associated;
+        return associatedPlayer != null && associatedPlayer.isConnected(); 
+    }
+    
+    public Date getInvitationDate() {
+        return associatedPlayer != null ? associatedPlayer.getInvitationDate() : null;
     }
 
+    public Integer getId() {
+        return associatedPlayer != null ? associatedPlayer.getId() : null;
+    }
+    
     public String getAge() {
         StringBuilder age = new StringBuilder();
         age.append(user.getAge());

@@ -17,14 +17,13 @@ import org.hibernate.annotations.Where;
 
 /**
  * Players are considered to be the edges in the graph model implemented at scoreshared, because it connects an owner and an associated user. 
- * Both owner and associated user are nodes (or vertexes) represented by the User object.
+ * Both owner and associated user are nodes (or vertexes) represented by the User object. This association is only valid when there is an accepted invitation.
  */
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerByNameAndOwner", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerByNameAndOwnerAndAssociated", query = "select player from Player player join player.association where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
         @NamedQuery(name = "playerNameByOwner", query = "select player.name from Player player where player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerByOwnerAndAssociated", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
+        @NamedQuery(name = "playerByAssociationAndOwner", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
         @NamedQuery(name = "invitationPlayerByHash", query = "from Player player where player.invitationHash = :invitationHash")})
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
@@ -35,14 +34,14 @@ public class Player extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User owner;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
     private User association;
 
     private String invitationHash;
     private String invitationEmail;
+
     private String invitationMessage;
     private Date invitationDate;
-    private Date invitationPreviousDate;
     private InvitationResponseEnum invitationResponse;
 
     public Player() {
@@ -101,14 +100,6 @@ public class Player extends BaseEntity {
         this.invitationDate = invitationDate;
     }
 
-    public Date getInvitationPreviousDate() {
-        return invitationPreviousDate;
-    }
-
-    public void setInvitationPreviousDate(Date invitationPreviousDate) {
-        this.invitationPreviousDate = invitationPreviousDate;
-    }
-
     public String getInvitationHash() {
         return invitationHash;
     }
@@ -146,5 +137,9 @@ public class Player extends BaseEntity {
     public int hashCode() {
         Integer ownerId = owner != null ? owner.getId() : null;
         return new HashCodeBuilder(17, 37).append(name).append(ownerId).toHashCode();
+    }
+
+    public boolean isConnected() {
+        return association != null && InvitationResponseEnum.ACCEPTED.equals(invitationResponse);
     }
 }

@@ -196,6 +196,7 @@ var NewPlayerWizard = {
 	stepSucceeded: false,
 	breadCrumb: [],
 	step3aData: [],
+	currentScorePlayerId: undefined,
 
 	applyDefaults: function(options){
 		options['contextPath'] = (options['contextPath'] == undefined ? '/scoreshared' : options['contextPath']);
@@ -248,8 +249,8 @@ var NewPlayerWizard = {
 		NewPlayerWizard.stepSucceeded = false;
 		if (NewPlayerWizard.currentScorePlayer < NewPlayerWizard.scorePlayers.length) {
 			$.ajax({
-				url: NewPlayerWizard.options.contextPath+"/app/score/isAssociated",
-				data: {'player': NewPlayerWizard.scorePlayers[NewPlayerWizard.currentScorePlayer++]},
+				url: NewPlayerWizard.options.contextPath+"/app/score/shouldPlayerBeInvited",
+				data: {'playerName': NewPlayerWizard.scorePlayers[NewPlayerWizard.currentScorePlayer++]},
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
@@ -263,6 +264,7 @@ var NewPlayerWizard = {
 	step1: function(data) {
 		console.log('step1');
 		if (data.proceedWithConfirmation == 'true') {
+			NewPlayerWizard.currentScorePlayerId = data.playerId;
 			$("#dialog-confirm").attr('title', data.title);
 			$("#dialog-confirm").dialog({
 				resizable: false,
@@ -317,7 +319,7 @@ var NewPlayerWizard = {
 
 		$("#dialog-friendListRequest table tbody").html('');
 		for ( var i = 0; i < data.playerList.length; i++) {
-            var row = "<tr><td><a href='"+data.playerList[i][0]+"'>";
+            var row = "<tr><td><a href='"+i+"'>";
             row += "<img src='" + NewPlayerWizard.options.contextPath + "/app/avatar?hash="
                     + data.playerList[i][1] + "&small'/>";
             row += "</a></td><td><a href='"+data.playerList[i][0]+"'>";
@@ -330,20 +332,16 @@ var NewPlayerWizard = {
             $("#dialog-friendListRequest table tbody tr:eq(" + i + ") a").click(function(e) {
                 e.preventDefault();
         		NewPlayerWizard.storeBreadcrumb('step3a', undefined, NewPlayerWizard.step3aData);
-                $.ajax({
-                    url: NewPlayerWizard.options.contextPath + "/app/score/searchUser",
-                    type: 'POST',
-                    data: {'email': $(this).attr('href')},
-                    dataType: 'json',
-                    cache: false,
-                    success: function(data) {
-                        NewPlayerWizard.stepSucceeded = true;
-                        $("#dialog-friendListRequest").dialog("close");
 
-                        NewPlayerWizard.stepSucceeded = true;
-                        NewPlayerWizard.step3(data);
-                    }
-                });
+        		NewPlayerWizard.stepSucceeded = true;
+                $("#dialog-friendListRequest").dialog("close");
+
+                NewPlayerWizard.stepSucceeded = true;
+        		var newData = {'playerList': [NewPlayerWizard.step3aData.playerList[$(this).attr('href')]],
+        				'playerFound': true,
+        				'invitationMessage': NewPlayerWizard.step3aData.invitationMessage,
+        				'playerNameInScore' : NewPlayerWizard.step3aData.playerNameInScore};
+        		NewPlayerWizard.step3(newData);
             });
         }
 
@@ -430,6 +428,7 @@ var NewPlayerWizard = {
 				text: NewPlayerWizard.options.label_send_request,
 				click: function() {
 					NewPlayerWizard.stepSucceeded = true;
+					$("#friendRequest-form input[name='playerId']").val(NewPlayerWizard.currentScorePlayerId);
 					$.ajax({
 						url: NewPlayerWizard.options.contextPath+"/app/score/newFriendRequest",
 						data: $('#friendRequest-form').serialize(),

@@ -9,7 +9,7 @@ public class UserConverter extends BaseConverter implements Converter<User, Obje
     @Override
     public Object[] convert(User user) {
         Object[] item = new Object[4];
-        item[0] = user.getEmail();
+        item[0] = user.getId();
         item[1] = user.getProfile().getAvatarHash();
         item[2] = user.getFullName();
         item[3] = user.getProfile().getLocation();

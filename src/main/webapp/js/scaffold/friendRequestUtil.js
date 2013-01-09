@@ -1,7 +1,7 @@
 var FriendRequestUtil = {
 
 	openFriendRequestDialog: function(data, loggedUserAvatarUrl) {
-        $("#dialog-friendRequest input[name='email']").val(data.playerList[0][0]); // email
+        $("#dialog-friendRequest input[name='userId']").val(data.playerList[0][0]); // userId
         $("#requested dt").text(data.playerList[0][1]); // avatarHash
         if (data.playerList[0][3] != undefined) {
             $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]); // fullName + location

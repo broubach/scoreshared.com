@@ -27,6 +27,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.User;
@@ -41,6 +42,9 @@ public class IndexController extends BaseController {
 
     @Inject
     private UserBo userBo;
+    
+    @Inject
+    private GraphBo graphBo;
 
     @Inject
     private MessageSource messageResource;
@@ -57,7 +61,7 @@ public class IndexController extends BaseController {
     @RequestMapping(value = "/receiveInvitation/{invitationHash}", method = RequestMethod.GET)
     public ModelAndView receiveInvitation(HttpServletRequest request, @PathVariable String invitationHash) {
         ModelAndView mav = index(request);
-        Player player = userBo.findPlayerByInvitationHash(invitationHash);
+        Player player = graphBo.findPlayerByInvitationHash(invitationHash);
         if (player != null) {
             SignupForm form = (SignupForm) mav.getModel().get("signupForm");
             form.setInvitationHash(invitationHash);

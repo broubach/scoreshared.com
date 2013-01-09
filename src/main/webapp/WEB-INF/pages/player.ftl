@@ -10,11 +10,11 @@
 </head>
 <body>
 	<img src="<@spring.url relativeUrl="/app/avatar?hash=${player.avatarHash}"/>">${player.user.fullName}
-	<input type="button" id="sendMessage" value="<@spring.message code="label.send_message"/>">
+	<input type="button" id="sendMessage" value="<@spring.message code="label.send_message"/>"/>
 	<#if player.connected>
-		<input type="button" id="remove" value="<@spring.message code="label.remove_from_player_list"/>">
-	<#elseif // TODO: RESUME FROM HERE.. how to tell if the logged user already requested a connection?>
-		<input type="button" id="connect" value="<@spring.message code="label.connect"/>">
+		<input type="button" id="remove" value="<@spring.message code="label.remove_from_player_list"/>"/>
+	<#elseif !player.invitationDate??>
+		<input type="button" id="connect" value="<@spring.message code="label.connect"/>"/>
 	</#if>
 	<br>
 	<div>
@@ -103,8 +103,11 @@ $(function() {
         			type: 'DELETE',
 					cache: false,
        			    success: function(result) {
-       			    	$('#remove').after('<input type="button" id="add" value="<@spring.message code="label.add_player"/>">');
+       			    	$('#remove').after('<input type="button" id="connect" value="<@spring.message code="label.connect"/>">');
        			    	$('#remove').remove();
+						$('#connect').click(function(e) {
+							openFriendRequestDialog();
+						});
        			    	$('#dialog-confirm').dialog("close");
        			    }
         		});
@@ -143,14 +146,23 @@ $(function() {
 	});
 
 	$('#connect').click(function(e) {
-		$.ajax({
-			url: '<@spring.url relativeUrl="/app/player/userInfo/${player.user.id}" />',
-			type: 'GET',
-			cache: false,
-			success: function(data) {
-				FriendRequestUtil.openFriendRequestDialog(data);
-			}
-		});
+		openFriendRequestDialog();
 	});
 });
+
+function openFriendRequestDialog() {
+	<#if player.id??>
+		$("#friendRequest-form input[name='playerId']").val(${player.id});
+	</#if>
+
+	$.ajax({
+		url: '<@spring.url relativeUrl="/app/player/userInfo/${player.user.id}" />',
+		type: 'GET',
+		cache: false,
+		success: function(data) {
+			FriendRequestUtil.openFriendRequestDialog(data);
+		}
+	});
+}
+
 </script>

@@ -10,7 +10,6 @@ import org.springframework.context.MessageSource;
 
 import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.Profile;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -37,7 +36,8 @@ public class ScoreItemModel {
 
         timeFormat = DateFormat.getInstance();
         String timePattern = messageResource.getMessage("system.time_format", null, locale);
-        ((SimpleDateFormat) timeFormat).applyPattern(timePattern);}
+        ((SimpleDateFormat) timeFormat).applyPattern(timePattern);
+    }
 
     public String getDetailText() {
         StringBuilder result = new StringBuilder();
@@ -78,32 +78,6 @@ public class ScoreItemModel {
         return result.toString();
     }
 
-    public String getSampleOpponentAvatar() {
-        Player opponent = getSampleOpponent();
-        if (opponent != null && opponent.getAssociation() != null) {
-            Profile profile = opponent.getAssociation().getProfile();
-
-            return (profile != null && profile.getAvatarHash() != null) ? profile.getAvatarHash() : "";
-        }
-        return "";
-    }
-
-    private Player getSampleOpponent() {
-        List<Player> opponents = new ArrayList<Player>();
-        if (score.hasWinner(loggedUser.getId())) {
-            opponents.addAll(score.getRightPlayers());
-
-        } else {
-            opponents.addAll(score.getLeftPlayers());
-        }
-
-        if (!opponents.isEmpty()) {
-            return opponents.get(0);
-        }
-
-        return null;
-    }
-    
     public Comment getComment() {
         return comment;
     }
@@ -121,5 +95,9 @@ public class ScoreItemModel {
             result.append(timeFormat.format(score.getTime()));
         }
         return result.toString().trim();
+    }
+
+    public String getSampleOpponentAvatar() {
+        return score.getSampleOpponentAvatar(loggedUser);
     }
 }

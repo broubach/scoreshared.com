@@ -1,8 +1,10 @@
 package com.scoreshared.business.persistence;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -34,7 +36,7 @@ public class Score extends BaseEntity implements Cloneable {
     private Date date;
     private Date time;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     private User owner;
 
     private Integer set1Left;
@@ -62,10 +64,11 @@ public class Score extends BaseEntity implements Cloneable {
     private Set<Player> rightPlayers;
 
     private boolean winnerDefined;
-    
+
     @Transient
     private Comment comment;
     private ApprovalResponseEnum approvalResponse;
+    private String revisionMessage;
 
     public Score() {
     }
@@ -240,6 +243,14 @@ public class Score extends BaseEntity implements Cloneable {
         this.approvalResponse = approvalResponse;
     }
 
+    public String getRevisionMessage() {
+        return revisionMessage;
+    }
+
+    public void setRevisionMessage(String revisionMessage) {
+        this.revisionMessage = revisionMessage;
+    }
+
     /**
      * True if left is really a winner. False if there is no winner or if right is the winner.
      */
@@ -355,4 +366,37 @@ public class Score extends BaseEntity implements Cloneable {
         result.addAll(rightPlayers);
         return result;
     }
+
+	public Player getSampleOpponent(User loggedUser) {
+	    List<Player> opponents = new ArrayList<Player>();
+	    if (hasWinner(loggedUser.getId())) {
+	        opponents.addAll(rightPlayers);
+	
+	    } else {
+	        opponents.addAll(leftPlayers);
+	    }
+	
+	    Player result = null;
+	    for (Player player : opponents) {
+	    	if (player.isConnected()) {
+	    		result = player;
+	    		break;
+	    	}
+	    }
+	    if (result == null && opponents.size() > 0) {
+	    	result = opponents.get(0);
+	    }
+	
+	    return result;
+	}
+
+	public String getSampleOpponentAvatar(User loggedUser) {
+	    Player opponent = getSampleOpponent(loggedUser);
+	    if (opponent != null && opponent.isConnected()) {
+	        Profile profile = opponent.getAssociation().getProfile();
+	
+	        return (profile != null && profile.getAvatarHash() != null) ? profile.getAvatarHash() : "";
+	    }
+	    return "";
+	}
 }

@@ -3,12 +3,12 @@ package com.scoreshared.webapp.controller;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.scoreshared.business.bo.UserBo;
+import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
 
@@ -16,19 +16,19 @@ import com.scoreshared.scaffold.LoggedUser;
 public class InvitationController extends BaseController {
 
     @Inject
-    private UserBo bo;
+    private GraphBo bo;
 
     @ResponseBody
-    @RequestMapping(value = "/invitation/accept/{invitationHash}", method = RequestMethod.GET)
-    public String acceptInvitation(@LoggedUser User loggedUser, @PathVariable String invitationHash) {
-        bo.acceptInvitation(loggedUser, invitationHash);
+    @RequestMapping(value = "/accept/invitation/", method = RequestMethod.POST)
+    public String acceptInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id) {
+        bo.acceptRegisteredUserInvitation(loggedUser, user2Id);
         return "ok";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/invitation/ignore/{invitationHash}", method = RequestMethod.GET)
-    public String ignoreInvitation(@LoggedUser User loggedUser, @PathVariable String invitationHash) {
-        bo.ignoreInvitation(loggedUser, invitationHash);
+    @RequestMapping(value = "/ignore/invitation/", method = RequestMethod.POST)
+    public String ignoreInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id) {
+        bo.ignoreRegisteredUserInvitation(loggedUser, user2Id);
         return "ok";
     }
 }

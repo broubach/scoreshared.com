@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Comment;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -40,6 +43,9 @@ public class PlayerController extends BaseController {
 
     @Inject
     private ScoreBo scoreBo;
+    
+    @Inject
+    private GraphBo graphBo;
 
     @Inject
     private MessageSource messageResource;
@@ -50,9 +56,10 @@ public class PlayerController extends BaseController {
     @RequestMapping(value = "{userId}", method = RequestMethod.GET)
     public ModelAndView show(@LoggedUser User loggedUser, HttpServletRequest request, @PathVariable Integer userId) {
         ModelAndView mav = new ModelAndView("player");
+
         User user = userBo.findByPk(userId);
-        boolean isConnected = userBo.hasConnection(loggedUser.getId(), user.getId());
-        mav.addObject("player", new PlayerModel(user, isConnected, messageResource, localeResolver.resolveLocale(request)));
+        Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(user.getId(), loggedUser.getId());
+        mav.addObject("player", new PlayerModel(user, associatedPlayer, messageResource, localeResolver.resolveLocale(request)));
 
         List<Object[]> scores = scoreBo.findScores(null, false, user);
         List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
@@ -71,7 +78,7 @@ public class PlayerController extends BaseController {
     @ResponseBody
     @RequestMapping(value ="/remove/{userToRemoveId}", method = RequestMethod.DELETE)
     public Boolean remove(@LoggedUser User loggedUser, @PathVariable Integer userToRemoveId) {
-        userBo.removeConnection(loggedUser.getId(), userToRemoveId);
+    	graphBo.removeConnection(loggedUser.getId(), userToRemoveId);
         return Boolean.TRUE;
     }
 
@@ -90,11 +97,12 @@ public class PlayerController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value ="/connect", method = RequestMethod.POST)
+    @RequestMapping(value ="/connect/", method = RequestMethod.POST)
     public Boolean connect(@LoggedUser User loggedUser, HttpServletRequest request,
-            @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
+            @ModelAttribute("playerId") String playerId, @ModelAttribute("userId") Integer userId,
             @ModelAttribute("message") String invitationMessage) {
-        userBo.inviteUser(loggedUser, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
+        graphBo.inviteRegisteredUser(loggedUser, userId, StringUtils.isEmpty(playerId) ? null : Integer.valueOf(playerId),
+                invitationMessage, localeResolver.resolveLocale(request));
         return true;
     }
 }

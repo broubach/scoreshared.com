@@ -98,8 +98,10 @@ public class WelcomeController extends BaseController {
                 step3Form.setAvatarUploaded(Boolean.FALSE);
                 return "welcome/step3";
             }
-            bo.cropResizeAndSaveAvatars(loggedUser, getSavedAvatar(session), step3Form.getX().intValue(), step3Form
-                    .getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
+            if (getSavedAvatar(session) != null) {
+                bo.cropResizeAndSaveAvatars(loggedUser, getSavedAvatar(session), step3Form.getX().intValue(), step3Form
+                        .getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
+            }
 
             status.setComplete();
 

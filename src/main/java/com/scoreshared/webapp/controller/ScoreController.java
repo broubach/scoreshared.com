@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -31,6 +32,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Comment;
@@ -56,6 +58,9 @@ public class ScoreController extends BaseController {
     private UserBo userBo;
 
     @Inject
+    private GraphBo graphBo;
+
+    @Inject
     private MessageSource messageResource;
 
     @Inject
@@ -74,7 +79,7 @@ public class ScoreController extends BaseController {
         try {
             ModelAndView mav = new ModelAndView("score");
             ScoreModel score = new ScoreModel();
-            Player associatedPlayer = userBo.findPlayerByAssociationAndOwner(loggedUser.getId(), loggedUser.getId());
+            Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(loggedUser.getId(), loggedUser.getId());
             session.setAttribute("associatedPlayer", associatedPlayer);
             // TODO: since it's going to stay in session, why not do it at login?
             score.setPlayersLeft(associatedPlayer.getName());
@@ -161,17 +166,19 @@ public class ScoreController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/isAssociated", method = RequestMethod.POST)
+    @RequestMapping(value = "/shouldPlayerBeInvited", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> isAssociated(@LoggedUser User loggedUser, @ModelAttribute("player") String player,
+    public Map<String, String> shouldPlayerBeInvited(@LoggedUser User loggedUser, @ModelAttribute("playerName") String playerName,
             HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
-        if (scoreBo.hasAlreadyAssociatedPlayer(loggedUser, player)) {
-            result.put("proceedWithConfirmation", "false");
-        } else {
-            result.put("proceedWithConfirmation", "true");
+        Object[] shouldPlayerBeInvited = graphBo.shouldPlayerBeInvited(playerName, loggedUser);
+        result.put("proceedWithConfirmation", shouldPlayerBeInvited[0].toString());
+        if ((Boolean) shouldPlayerBeInvited[0]) {
             result.put("title", messageResource.getMessage("label.associate_to_anyone_registered",
-                    new String[] { player }, localeResolver.resolveLocale(request)));
+                    new String[] { playerName }, localeResolver.resolveLocale(request)));
+            if (shouldPlayerBeInvited.length > 1) {
+                result.put("playerId", ((Player) shouldPlayerBeInvited[1]).getId().toString());
+            }
         }
         return result;
     }
@@ -208,10 +215,13 @@ public class ScoreController extends BaseController {
 
     @RequestMapping(value = "/newFriendRequest", method = RequestMethod.POST)
     @ResponseBody
-    public void postFriendRequest(HttpServletRequest request, @LoggedUser User user,
-            @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
-            @ModelAttribute("message") String invitationMessage) {
-        userBo.inviteUser(user, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
+    public void postFriendRequest(HttpServletRequest request, @LoggedUser User loggedUser,
+            @ModelAttribute("userId") Integer userId, @ModelAttribute("playerId") String playerId, @ModelAttribute("message") String message) {
+        if (StringUtils.isEmpty(playerId)) {
+            graphBo.inviteRegisteredUser(loggedUser, userId, null, message, localeResolver.resolveLocale(request));
+        } else {
+            graphBo.inviteRegisteredUser(loggedUser, userId, Integer.valueOf(playerId), message, localeResolver.resolveLocale(request));
+        }
     }
 
     @RequestMapping(value = "/newInvitation", method = RequestMethod.POST)
@@ -219,7 +229,6 @@ public class ScoreController extends BaseController {
     public void postInvitation(HttpServletRequest request, @LoggedUser User user,
             @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
             @ModelAttribute("message") String invitationMessage) {
-        userBo.invitePlayer(user, playerName, invitationMail, invitationMessage, false,
-                localeResolver.resolveLocale(request));
+        graphBo.inviteUnregisteredUser(user, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
     }
 }

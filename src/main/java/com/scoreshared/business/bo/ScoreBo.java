@@ -97,10 +97,6 @@ public class ScoreBo extends BaseBo<Score> {
         players.addAll(replacedPlayers);
     }
 
-    public boolean hasAlreadyAssociatedPlayer(User user, String playerName) {
-        return !dao.findByNamedQuery("playerByNameAndOwnerAndAssociated", playerName, user.getId()).isEmpty();
-    }
-
     public List<String> listPlayersName(User loggedUser) {
         return dao.findByNamedQuery("playerNameByOwner", loggedUser.getId());
     }
@@ -160,5 +156,23 @@ public class ScoreBo extends BaseBo<Score> {
             scoreIdAndPlayer = (Object[]) obj;
             scoresById.get(scoreIdAndPlayer[0]).getLeftPlayers().add((Player) scoreIdAndPlayer[1]);
         }
+    }
+
+    public void acceptScore(Integer scoreId) {
+        Score score = findById(scoreId);
+        score.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+        saveScoreOrComment(score, null);
+    }
+
+    public void ignoreScore(Integer scoreId) {
+        Score score = findById(scoreId);
+        score.setApprovalResponse(ApprovalResponseEnum.IGNORED);
+        saveScoreOrComment(score, null);
+    }
+
+    public void reviewScore(Integer scoreId, String message) {
+        Score score = findById(scoreId);
+        score.setRevisionMessage(message);
+        saveScoreOrComment(score, null);
     }
 }
