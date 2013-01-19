@@ -17,7 +17,7 @@
 
 	<http use-expressions="true">
 		<!-- Authentication policy -->
-		<form-login login-page="/app/index" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true" />
+		<form-login login-page="/app/index" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true" authentication-details-source-ref="authenticationDetailsSource"/>
 		<access-denied-handler ref="accessDeniedHandler" />
 		<logout delete-cookies="JSESSIONID" />
 		<intercept-url pattern="/app/index" access="isAnonymous()" method="GET"/>
@@ -26,6 +26,8 @@
 		<intercept-url pattern="/app/signup/data" access="isAnonymous()"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
+
+	<beans:bean id="authenticationDetailsSource" class="com.scoreshared.scaffold.CustomWebAuthenticationDetailsSource"/>
 
 	<beans:bean id="accessDeniedHandler" class="com.scoreshared.scaffold.AccessDeniedHandlerImpl">
 		<beans:constructor-arg name="anonymousResources">

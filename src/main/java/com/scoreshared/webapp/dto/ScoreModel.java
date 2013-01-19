@@ -1,6 +1,7 @@
 package com.scoreshared.webapp.dto;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.scoreshared.business.persistence.User;
@@ -10,8 +11,8 @@ public class ScoreModel {
     private Integer id;
     private String date;
     private String time;
-    private String playersLeft;
-    private String playersRight;
+    private List<String> playersLeft;
+    private List<String> playersRight;
     private Integer set1Left;
     private Integer set1Right;
     private Integer set2Left;
@@ -27,10 +28,13 @@ public class ScoreModel {
     private boolean pvt;
     private boolean postInTwitter;
     private boolean postInFacebook;
+    private String coach;
+    private Integer sportId;
+    private List<String> newPlayersNotToBeRemembered;
 
     // field used exclusively to allow the copy of owner to the resulting players ScoreConverter
     private User owner;
-
+    
     public Integer getId() {
         return id;
     }
@@ -55,19 +59,19 @@ public class ScoreModel {
         this.time = time;
     }
 
-    public String getPlayersLeft() {
+    public List<String> getPlayersLeft() {
         return playersLeft;
     }
 
-    public void setPlayersLeft(String playersLeft) {
+    public void setPlayersLeft(List<String> playersLeft) {
         this.playersLeft = playersLeft;
     }
 
-    public String getPlayersRight() {
+    public List<String> getPlayersRight() {
         return playersRight;
     }
 
-    public void setPlayersRight(String playersRight) {
+    public void setPlayersRight(List<String> playersRight) {
         this.playersRight = playersRight;
     }
 
@@ -191,7 +195,23 @@ public class ScoreModel {
         this.postInFacebook = postInFacebook;
     }
 
-    public User getOwner() {
+    public String getCoach() {
+		return coach;
+	}
+
+	public void setCoach(String coach) {
+		this.coach = coach;
+	}
+
+	public Integer getSportId() {
+		return sportId;
+	}
+
+	public void setSportId(Integer sportId) {
+		this.sportId = sportId;
+	}
+
+	public User getOwner() {
         return owner;
     }
 
@@ -212,5 +232,13 @@ public class ScoreModel {
         result.put("set5Left", set5Left != null ? String.valueOf(set5Left) : null);
         result.put("set5Right", set5Right != null ? String.valueOf(set5Right) : null);
         return result;
+    }
+
+    public List<String> getNewPlayersNotToBeRemembered() {
+        return newPlayersNotToBeRemembered;
+    }
+
+    public void setNewPlayersNotToBeRemembered(List<String> newPlayersNotToBeRemembered) {
+        this.newPlayersNotToBeRemembered = newPlayersNotToBeRemembered;
     }
 }

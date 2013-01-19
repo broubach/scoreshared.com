@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.7.1.min.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.8.3.min.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.Jcrop.min.js"/>"></script>
 	<link rel="stylesheet" href="<@spring.url relativeUrl="/css/jquery.Jcrop.min.css"/>" type="text/css" />
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/welcome.js"/>"></script>

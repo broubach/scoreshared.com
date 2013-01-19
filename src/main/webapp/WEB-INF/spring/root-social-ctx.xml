@@ -55,7 +55,7 @@
 		<!-- TODO: implement the redirect to a SignUp form in case the user connection was not found -->
 	</bean>
 	
-	<bean class="com.scoreshared.scaffold.ScoreSharedConnectController">
+	<bean class="com.scoreshared.scaffold.CustomConnectController">
 		<constructor-arg ref="connectionRepository"/>
 		<constructor-arg ref="connectionFactoryLocator"/>
 	</bean>

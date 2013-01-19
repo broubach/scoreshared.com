@@ -36,17 +36,26 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             dest.setSet5Right(src.getSet5Right());
 
             Set<Player> leftPlayers = new HashSet<Player>();
-            for (String playerLeft : src.getPlayersLeft().trim().split(",")) {
+            Player player = null;
+            for (String playerLeft : src.getPlayersLeft()) {
                 if (!StringUtils.isEmpty(playerLeft)) {
-                    leftPlayers.add(new Player(playerLeft.trim(), src.getOwner()));
+                    player = new Player(playerLeft.trim(), src.getOwner());
+                    leftPlayers.add(player);
+                    if (src.getNewPlayersNotToBeRemembered().contains(playerLeft.trim())) {
+                        player.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                    }
                 }
             }
             dest.setLeftPlayers(leftPlayers);
 
             Set<Player> rightPlayers = new HashSet<Player>();
-            for (String playerRight : src.getPlayersRight().trim().split(",")) {
+            for (String playerRight : src.getPlayersRight()) {
                 if (!StringUtils.isEmpty(playerRight)) {
-                    rightPlayers.add(new Player(playerRight.trim(), src.getOwner()));
+                    player = new Player(playerRight.trim(), src.getOwner());
+                    rightPlayers.add(player);
+                    if (src.getNewPlayersNotToBeRemembered().contains(playerRight.trim())) {
+                        player.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                    }
                 }
             }
             dest.setRightPlayers(rightPlayers);

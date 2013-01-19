@@ -37,5 +37,5 @@
 	    <beans:property name="maxUploadSize" value="10000000"/>
 	</beans:bean>
 	
-	<beans:bean class="com.scoreshared.scaffold.ScoreSharedContextListener"/>
+	<beans:bean class="com.scoreshared.scaffold.CustomContextListener"/>
 </beans:beans>

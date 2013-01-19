@@ -44,6 +44,8 @@ public class Player extends BaseEntity {
     private Date invitationDate;
     private InvitationResponseEnum invitationResponse;
 
+    private Boolean invitationShouldNotBeRemembered;
+
     public Player() {
     }
 
@@ -141,5 +143,13 @@ public class Player extends BaseEntity {
 
     public boolean isConnected() {
         return association != null && InvitationResponseEnum.ACCEPTED.equals(invitationResponse);
+    }
+
+    public Boolean getInvitationShouldNotBeRemembered() {
+        return invitationShouldNotBeRemembered;
+    }
+
+    public void setInvitationShouldNotBeRemembered(Boolean invitationShouldNotBeRemembered) {
+        this.invitationShouldNotBeRemembered = invitationShouldNotBeRemembered;
     }
 }

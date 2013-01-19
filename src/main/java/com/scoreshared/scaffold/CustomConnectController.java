@@ -8,9 +8,9 @@ import org.springframework.social.connect.web.ConnectController;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
-public class ScoreSharedConnectController extends ConnectController {
+public class CustomConnectController extends ConnectController {
 
-    public ScoreSharedConnectController(ConnectionFactoryLocator connectionFactoryLocator,
+    public CustomConnectController(ConnectionFactoryLocator connectionFactoryLocator,
             ConnectionRepository connectionRepository) {
         super(connectionFactoryLocator, connectionRepository);
     }

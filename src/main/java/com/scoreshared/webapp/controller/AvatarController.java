@@ -46,13 +46,7 @@ public class AvatarController extends BaseController {
 
         try {
             HttpHeaders httpHeaders = createCacheHeaders(hash, smallSizeRequested);
-            if ("default".equals(hash) || "".equals(hash)) {
-                if (smallSizeRequested) {
-                    return outputAvatar(httpHeaders, getSmallDefaultAvatar(session.getServletContext()));
-                } else {
-                    return outputAvatar(httpHeaders, getDefaultAvatar(session.getServletContext()));
-                }
-            } else if (StringUtils.hasText(hash)) {
+            if (StringUtils.hasText(hash) && !hash.equals("default")) {
                 List<Integer> avatarIds = null;
                 if (smallSizeRequested) {
                     avatarIds = bo.getSmallAvatarIdsByHash(hash);
@@ -74,6 +68,10 @@ public class AvatarController extends BaseController {
             } else if (session.getAttribute("savedFile") != null) {
                 File avatar = (File) session.getAttribute("savedFile");
                 return outputAvatar(httpHeaders, avatar);
+            }
+
+            if (smallSizeRequested) {
+                return outputAvatar(httpHeaders, getSmallDefaultAvatar(session.getServletContext()));
             }
 
             return outputAvatar(httpHeaders, getDefaultAvatar(session.getServletContext()));

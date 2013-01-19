@@ -2,7 +2,7 @@ package com.scoreshared.scaffold;
 
 import org.springframework.jms.core.JmsTemplate;
 
-public class ScoreSharedJmsTemplate extends JmsTemplate {
+public class CustomJmsTemplate extends JmsTemplate {
 
     private Boolean enabled = true;
 

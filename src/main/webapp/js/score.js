@@ -146,57 +146,16 @@ var Sets = {
 	}
 };
 
-/**
- * Graph representing the steps in the wizard
- *
- * #1/4                     |startForCurrentPlayer  |step1
- * startForCurrentPlayer    |                       |/app/score/isAssociated, step1
- * step1                    |                       |
- * step2                    |                       |
- * step3                    |                       |
- * step3a                   |                       |
- * step3b                   |                       |
- * step3c                   |                       |
- * step4a                   |startForCurrentPlayer  |
- * step4b                   |startForCurrentPlayer  |
- *
- * #2/4                     |step2                            |step3  |step3a
- * startForCurrentPlayer    |                                 |       |
- * step1                    |step2, UI, /app/score/searchUser |       |
- * step2                    |                                 |step3  |
- * step3                    |                                 |       |step3a, UI, /app/score/searchUser (with BACK!!)
- * step3a                   |                                 |step3  |
- * step3b                   |                                 |       |
- * step3c                   |                                 |       |
- *
- * #3/4                     |step3b                                                |step3c
- * startForCurrentPlayer    |                                                      |
- * step1                    |                                                      |
- * step2                    |                                                      |
- * step3                    |step3b, UI, /app/score/newFriendRequest (with BACK!!) |step3c, UI, /app/score/newInvitation (with BACK!!)
- * step3a                   |                                                      |
- * step3b                   |                                                      |
- * step3c                   |                                                      |
- *
- * #4/4                     |step4a                         |step4b
- * startForCurrentPlayer    |                               |
- * step1                    |                               |
- * step2                    |                               |
- * step3                    |                               |
- * step3a                   |                               |
- * step3b                   |step4a, startForCurrentPlayer  |
- * step3c                   |                               |step4b, startForCurrentPlayer
- *
- * Back buttons in: #dialog-friendListRequest (step3a); #dialog-friendRequest (step3b); #dialog-invitation (step3c)
- **/
 var NewPlayerWizard = {
-	options: {},
-	scorePlayers: [],
-	currentScorePlayer: 0,
-	stepSucceeded: false,
+	context: {
+		options: {},
+		players: [],
+		currentPlayer: 0,
+		currentPlayerId: undefined
+	},
+	steps: {},
+	nextStep: '',
 	breadCrumb: [],
-	step3aData: [],
-	currentScorePlayerId: undefined,
 
 	applyDefaults: function(options){
 		options['contextPath'] = (options['contextPath'] == undefined ? '/scoreshared' : options['contextPath']);
@@ -207,7 +166,7 @@ var NewPlayerWizard = {
 		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
 		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
 		options['label_back'] = (options['label_back'] == undefined ? 'back' : options['label_back']);
-		options['loggedUserAvatarUrl'] = (options['loggedUserAvatarUrl'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarUrl']);
+		options['loggedUserAvatarHash'] = (options['loggedUserAvatarHash'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarHash']);
 		// TODO: start passing over the correct url
 		if (options['continueWithSavingProcessCallback'] == undefined) {
 			options.continueWithSavingProcessCallback = function() {
@@ -217,290 +176,77 @@ var NewPlayerWizard = {
 		return options;
 	},
 
-	start: function(choosenPlayers) {
-		NewPlayerWizard.scorePlayers = NewPlayerWizard.createList(choosenPlayers);
-
-		NewPlayerWizard.currentScorePlayer = 0;
-		NewPlayerWizard.startForCurrentPlayer();
+	start: function(nextStep, data) {
+		console.log('start: ' + nextStep);
+		var step = null;
+		do {
+			step = NewPlayerWizard.steps[nextStep];
+			if (step.storeInBreadCrumbs()) {
+				NewPlayerWizard.breadCrumb.push([nextStep, data]);
+			}
+			step.execute(NewPlayerWizard.context, data);
+			nextStep = step.getNextStep();
+		} while (nextStep != undefined && !step.isSuspensive());
+		console.log('exited start: ' + nextStep);
+		NewPlayerWizard.nextStep = nextStep;
 	},
 
-	createList : function(choosenPlayers) {
-		var choosenPlayers = NewPlayerWizard.trimList(choosenPlayers);
-		var choosenPlayersList = choosenPlayers.split(',');
-		for ( var i = 0; i < choosenPlayersList.length; i++) {
-			if (choosenPlayersList[i] == '') {
-				choosenPlayersList.splice(i, 1);
-				i--;
+	resume: function(data) {
+		console.log('resume');
+		NewPlayerWizard.start(NewPlayerWizard.nextStep, data);
+	},
+
+	goBack: function(steps, data) {
+		if (!steps) {
+			steps = 1;
+		}
+		if (NewPlayerWizard.breadCrumb.length < steps) {
+			return;
+		}
+		var stepName = NewPlayerWizard.breadCrumb[NewPlayerWizard.breadCrumb.length - steps][0];
+		var step = null;
+		for (var i = NewPlayerWizard.breadCrumb.length - 1; i >= 0; i--) {
+			step = NewPlayerWizard.breadCrumb.pop();
+			if (step[0] == stepName) {
+				break;
 			}
 		}
-		return choosenPlayersList;
-	},
-
-	trimList: function(commaSeparatedString) {
-		var result = commaSeparatedString.split(',');
-		for (var i = 0; i<result.length; i++) {
-			result[i] = $.trim(result[i]);
+		if (!step) {
+			return;
 		}
-		return result.join(',');
-	},
-
-	startForCurrentPlayer: function() {
-		console.log('startForCurrentPlayer');
-		NewPlayerWizard.stepSucceeded = false;
-		if (NewPlayerWizard.currentScorePlayer < NewPlayerWizard.scorePlayers.length) {
-			$.ajax({
-				url: NewPlayerWizard.options.contextPath+"/app/score/shouldPlayerBeInvited",
-				data: {'playerName': NewPlayerWizard.scorePlayers[NewPlayerWizard.currentScorePlayer++]},
-				type: 'POST',
-				dataType: 'json',
-				cache: false,
-				success: NewPlayerWizard.step1
-			});
-		} else {
-			NewPlayerWizard.options.continueWithSavingProcessCallback();
+		if (step[3]) {
+		    $(step[2]).values(step[3]);
 		}
-	},
-
-	step1: function(data) {
-		console.log('step1');
-		if (data.proceedWithConfirmation == 'true') {
-			NewPlayerWizard.currentScorePlayerId = data.playerId;
-			$("#dialog-confirm").attr('title', data.title);
-			$("#dialog-confirm").dialog({
-				resizable: false,
-				modal: true,
-				close : function() {
-					$("#dialog-confirm").dialog("destroy");
-					NewPlayerWizard.dialogCloseCallback();
-				},
-				buttons : [ {
-					text : NewPlayerWizard.options.label_yes,
-					click : function() {
-						NewPlayerWizard.stepSucceeded = true;
-						$("#dialog-confirm").dialog("close");
-						$('#search-form input').val('');
-						NewPlayerWizard.step2();
-					}
-				}, {
-					text : NewPlayerWizard.options.label_no,
-					click : function() {
-						$("#dialog-confirm").dialog("close");
-					}
-				} ]
-			});
-		} else {
-			NewPlayerWizard.startForCurrentPlayer();
+		if (!data) {
+			data = step[1];
 		}
-	},
-
-	step2: function() {
-		console.log('step2');
-		$("#dialog-search").dialog("open");
-	},
-
-	step3: function(data) {
-		console.log('step3');
-		$("#dialog-search").dialog( "close" );
-		if (data.playerFound) {
-		    if (data.playerList.length > 1) {
-		        NewPlayerWizard.step3a(data);
-
-		    } else {
-		        NewPlayerWizard.step3b(data);
-		    }
-		} else {
-		    NewPlayerWizard.step3c(data);
-		}
-	},
-
-	step3a: function(data) {
-        console.log('step3a');
-        NewPlayerWizard.step3aData = data;
-
-		$("#dialog-friendListRequest table tbody").html('');
-		for ( var i = 0; i < data.playerList.length; i++) {
-            var row = "<tr><td><a href='"+i+"'>";
-            row += "<img src='" + NewPlayerWizard.options.contextPath + "/app/avatar?hash="
-                    + data.playerList[i][1] + "&small'/>";
-            row += "</a></td><td><a href='"+data.playerList[i][0]+"'>";
-            row += data.playerList[i][2];
-            row += "</a></td><td><a href='"+data.playerList[i][0]+"'>";
-            row += data.playerList[i][3];
-            row += "</a></td></tr>";
-            $("#dialog-friendListRequest table tbody").append(row);
-
-            $("#dialog-friendListRequest table tbody tr:eq(" + i + ") a").click(function(e) {
-                e.preventDefault();
-        		NewPlayerWizard.storeBreadcrumb('step3a', undefined, NewPlayerWizard.step3aData);
-
-        		NewPlayerWizard.stepSucceeded = true;
-                $("#dialog-friendListRequest").dialog("close");
-
-                NewPlayerWizard.stepSucceeded = true;
-        		var newData = {'playerList': [NewPlayerWizard.step3aData.playerList[$(this).attr('href')]],
-        				'playerFound': true,
-        				'invitationMessage': NewPlayerWizard.step3aData.invitationMessage,
-        				'playerNameInScore' : NewPlayerWizard.step3aData.playerNameInScore};
-        		NewPlayerWizard.step3(newData);
-            });
-        }
-
-        $("#dialog-friendListRequest").dialog("open");
-	},
-
-	step3b: function(data) {
-        console.log('step3b');
-        FriendRequestUtil.openFriendRequestDialog(data, NewPlayerWizard.options.loggedUserAvatarUrl);
-	},
-
-	step3c: function(data) {
-        console.log('step3c');
-        $("#invitation-form input[name='playerName']").val(data.playerNameInScore); // playerName
-        $("#invitation-form dt:eq(0)").html(data.playerNameInScore + " " + NewPlayerWizard.options.label_user_not_found + '<br/>' + NewPlayerWizard.options.label_take_the_opportunity_to_invite); // fullName + location
-        $("#invitation-form textarea").text(data.invitationMessage); // invitationMessage
-        $("#invitation-form input[name='email']").val(data.email); // email
-        $("#dialog-invitation").dialog("open");
-	},
-
-	step4a: function() {
-		console.log('step4a');
-		$("#dialog-friendRequest").dialog( "close" );
-		NewPlayerWizard.startForCurrentPlayer();
-	},
-
-	step4b: function() {
-		console.log('step4b');
-		$("#dialog-invitation").dialog( "close" );
-		NewPlayerWizard.startForCurrentPlayer();
-	},
-
-	dialogCloseCallback: function() {
-		if (!NewPlayerWizard.stepSucceeded) {
-			NewPlayerWizard.startForCurrentPlayer();
-		} else {
-			NewPlayerWizard.stepSucceeded = false;
-		}
+		NewPlayerWizard.start(step[0], data);
 	},
 
 	init: function(options) {
-		NewPlayerWizard.options = NewPlayerWizard.applyDefaults(options);
+		NewPlayerWizard.context.options = NewPlayerWizard.applyDefaults(options);
 
-		$(':button').click(function() {
-			NewPlayerWizard.start($("#playersLeft").val() + ',' + $("#playersRight").val());
-		});
+		NewPlayerWizard.steps['first'] = ProvidePlayerListStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[CheckIfPlayerShouldBeInvitedStep.name] = CheckIfPlayerShouldBeInvitedStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[UserConfirmationStep.name] = UserConfirmationStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[OpenSearchDialogStep.name] = OpenSearchDialogStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[ProcessSearchResultStep.name] = ProcessSearchResultStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[ChoosePlayerFromListStep.name] = ChoosePlayerFromListStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[InviteRegisteredUserStep.name] = InviteRegisteredUserStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[InviteUnregisteredUserStep.name] = InviteUnregisteredUserStep.init(NewPlayerWizard.context);
+		NewPlayerWizard.steps[EndStep.name] = EndStep.init(NewPlayerWizard.context);
 
-		$( "#dialog-search" ).dialog({
-            resizable: true,
-			autoOpen: false,
-			modal: true,
-			close : NewPlayerWizard.dialogCloseCallback,
-			buttons: [{
-				text: NewPlayerWizard.options.label_associate,
-				click: function() {
-					NewPlayerWizard.storeBreadcrumb('step2', '#search-form');
-					NewPlayerWizard.stepSucceeded = true;
-					$('#playerNameInScore').val(NewPlayerWizard.scorePlayers[NewPlayerWizard.currentScorePlayer - 1]);
-					$.ajax({
-						url: NewPlayerWizard.options.contextPath+"/app/score/searchUser",
-						data: $('#search-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: NewPlayerWizard.step3
-					});
-				}
-			}]
-		});
-
-		$( "#dialog-friendRequest" ).dialog({
-            resizable: true,
-			autoOpen: false,
-			modal: true,
-			close : NewPlayerWizard.dialogCloseCallback,
-			buttons: [{
-                text: NewPlayerWizard.options.label_back,
-                click: function() {
-                    NewPlayerWizard.stepSucceeded = true;
-            		$("#dialog-friendRequest").dialog( "close" );
-            		NewPlayerWizard.goBack();
-                }
-            },{
-				text: NewPlayerWizard.options.label_send_request,
-				click: function() {
-					NewPlayerWizard.stepSucceeded = true;
-					$("#friendRequest-form input[name='playerId']").val(NewPlayerWizard.currentScorePlayerId);
-					$.ajax({
-						url: NewPlayerWizard.options.contextPath+"/app/score/newFriendRequest",
-						data: $('#friendRequest-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: NewPlayerWizard.step4a
-					});
-				}
-			}]
-		});
-
-        $( "#dialog-friendListRequest" ).dialog({
-            resizable: true,
-            autoOpen: false,
-            modal: true,
-            close : NewPlayerWizard.dialogCloseCallback,
-            buttons: [{
-                text: NewPlayerWizard.options.label_back,
-                click: function() {
-                    NewPlayerWizard.stepSucceeded = true;
-            		$("#dialog-friendListRequest").dialog( "close" );
-            		NewPlayerWizard.goBack();
-                }
-            }]
-        });
-
-		$( "#dialog-invitation" ).dialog({
-            resizable: true,
-			autoOpen: false,
-			modal: true,
-			close : NewPlayerWizard.dialogCloseCallback,
-			buttons: [{
-                text: NewPlayerWizard.options.label_back,
-                click: function() {
-                    NewPlayerWizard.stepSucceeded = true;
-            		$("#dialog-invitation").dialog( "close" );
-            		NewPlayerWizard.goBack();
-                }
-            }, {
-				text: NewPlayerWizard.options.label_invite,
-				click: function() {
-					NewPlayerWizard.stepSucceeded = true;
-					$.ajax({
-						url: NewPlayerWizard.options.contextPath+"/app/score/newInvitation",
-						data: $('#invitation-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: NewPlayerWizard.step4b
-					});
-				}
-			}]
+		$('#save').click(function() {
+			NewPlayerWizard.breadCrumb = [];
+			NewPlayerWizard.start('first');
 		});
 	},
 
-	storeBreadcrumb: function(functionName, formName, data) {
-		if (data != undefined) {
-		    NewPlayerWizard.breadCrumb.push([functionName, undefined, data]);
-		} else {
-		    NewPlayerWizard.breadCrumb.push([functionName, formName, $(formName).values()]);
-		}
-	},
-
-	goBack: function() {
-	    var lastCrumb = NewPlayerWizard.breadCrumb.pop();
-	    if (lastCrumb[1] == undefined) {
-	    	eval("NewPlayerWizard." + lastCrumb[0] + "(" + JSON.stringify(lastCrumb[2]) + ")");
-	    } else {
-		    $(lastCrumb[1]).values(lastCrumb[2]);
-		    eval("NewPlayerWizard." + lastCrumb[0] + "()");
-	    }
+	storeFormDataInBreadCrumbs: function(formName) {
+		var lastCrumb = NewPlayerWizard.breadCrumb.pop();
+	    lastCrumb[2] = formName;
+	    lastCrumb[3] = $(formName).values();
+		NewPlayerWizard.breadCrumb.push(lastCrumb);
 	}
 };
 

@@ -13,7 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.jms.core.MessageCreator;
 
 import com.scoreshared.business.persistence.GenericOperationsDao;
-import com.scoreshared.scaffold.ScoreSharedJmsTemplate;
+import com.scoreshared.scaffold.CustomJmsTemplate;
 import com.scoreshared.scaffold.FreemarkerTemplateParser;
 
 public class BaseBo<T> {
@@ -22,7 +22,7 @@ public class BaseBo<T> {
     protected GenericOperationsDao dao;
 
     @Inject
-    protected ScoreSharedJmsTemplate jmsTemplate;
+    protected CustomJmsTemplate jmsTemplate;
 
     @Inject
     protected MessageSource messageResource;

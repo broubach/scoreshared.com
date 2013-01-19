@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-	<bean id="jmsTemplate" class="com.scoreshared.scaffold.ScoreSharedJmsTemplate">
+	<bean id="jmsTemplate" class="com.scoreshared.scaffold.CustomJmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="defaultDestination" ref="queue" />
 		<property name="enabled" value="false" />

@@ -173,7 +173,7 @@ public class GraphBo extends BaseBo<Player> {
             Player player = players.get(0);
 
             if (!(player.getAssociation() != null && player.getAssociation().getId().equals(owner.getId()))
-                    && player.getInvitationDate() == null) {
+                    && (player.getInvitationDate() == null && player.getInvitationShouldNotBeRemembered() == null)) {
                 return new Object[] { true, player };
             }
             return new Object[] { false };

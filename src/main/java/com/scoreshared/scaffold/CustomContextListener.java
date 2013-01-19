@@ -7,7 +7,7 @@ import org.springframework.web.context.ServletContextAware;
 
 import com.scoreshared.business.bo.UserBo;
 
-public class ScoreSharedContextListener implements ServletContextAware {
+public class CustomContextListener implements ServletContextAware {
 
     @Inject
     private UserBo userBo;

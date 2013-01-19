@@ -3,7 +3,9 @@ package com.scoreshared.webapp.dto;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -36,17 +38,17 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             dest.setPostInTwitter(false);
             dest.setPostInFacebook(false);
 
-            StringBuilder leftPlayers = new StringBuilder();
+            List<String> leftPlayers = new ArrayList<String>();
             for (Player playerLeft : src.getLeftPlayers()) {
-                leftPlayers.append(playerLeft.getName()).append(",");
+                leftPlayers.add(playerLeft.getName());
             }
-            dest.setPlayersLeft(leftPlayers.toString());
+            dest.setPlayersLeft(leftPlayers);
 
-            StringBuilder rightPlayers = new StringBuilder();
+            List<String> rightPlayers = new ArrayList<String>();
             for (Player playerRight : src.getRightPlayers()) {
-                rightPlayers.append(playerRight.getName()).append(",");
+                rightPlayers.add(playerRight.getName());
             }
-            dest.setPlayersRight(rightPlayers.toString());
+            dest.setPlayersRight(rightPlayers);
 
             return dest;
         } catch (ParseException e) {

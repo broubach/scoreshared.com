@@ -40,6 +40,7 @@ import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.ScoreModel;
 import com.scoreshared.webapp.dto.SearchModel;
 import com.scoreshared.webapp.validation.ScoreModelValidator;
@@ -69,7 +70,7 @@ public class ScoreController extends BaseController {
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
         if (binder.getTarget() instanceof ScoreModel) {
-            Player player = (Player) request.getAttribute("associatedPlayer", WebRequest.SCOPE_SESSION);
+            Player player = (Player) request.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER, WebRequest.SCOPE_SESSION);
             binder.setValidator(new ScoreModelValidator(player, messageResource, localeResolver.resolveLocale(((ServletWebRequest)request).getRequest())));
         }
     }
@@ -79,13 +80,13 @@ public class ScoreController extends BaseController {
         try {
             ModelAndView mav = new ModelAndView("score");
             ScoreModel score = new ScoreModel();
-            Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(loggedUser.getId(), loggedUser.getId());
-            session.setAttribute("associatedPlayer", associatedPlayer);
-            // TODO: since it's going to stay in session, why not do it at login?
-            score.setPlayersLeft(associatedPlayer.getName());
+            score.setPlayersLeft(new ArrayList<String>());
+            Player associatedPlayer = (Player) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
+            score.getPlayersLeft().add(associatedPlayer.getName());
 
             mav.addObject("score", score);
             mav.addObject("search", new SearchModel());
+            mav.addObject("newPlayersNotToBeRememberedList", "");
 
             StringWriter playersList = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();
@@ -174,7 +175,7 @@ public class ScoreController extends BaseController {
         Object[] shouldPlayerBeInvited = graphBo.shouldPlayerBeInvited(playerName, loggedUser);
         result.put("proceedWithConfirmation", shouldPlayerBeInvited[0].toString());
         if ((Boolean) shouldPlayerBeInvited[0]) {
-            result.put("title", messageResource.getMessage("label.associate_to_anyone_registered",
+            result.put("title", messageResource.getMessage("label.invite_to_your_contacts",
                     new String[] { playerName }, localeResolver.resolveLocale(request)));
             if (shouldPlayerBeInvited.length > 1) {
                 result.put("playerId", ((Player) shouldPlayerBeInvited[1]).getId().toString());

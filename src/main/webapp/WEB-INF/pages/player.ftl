@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
-	<link type="text/css" href="<@spring.url relativeUrl="/css/le-frog/jquery-ui-1.8.17.custom.css"/>" rel="Stylesheet" />	
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.7.1.min.js"/>"></script>
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.8.17.custom.min.js"/>"></script>
+	<link type="text/css" href="<@spring.url relativeUrl="/css/le-frog/jquery-ui-1.9.2.custom.min.css"/>" rel="Stylesheet" />	
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.8.3.min.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/friendRequestUtil.js"/>"></script>
 </head>
 <body>
@@ -160,7 +160,7 @@ function openFriendRequestDialog() {
 		type: 'GET',
 		cache: false,
 		success: function(data) {
-			FriendRequestUtil.openFriendRequestDialog(data);
+			FriendRequestUtil.openFriendRequestDialog(data, '<@spring.url relativeUrl="/"/>', ${loggedUserAvatarHash});
 		}
 	});
 }

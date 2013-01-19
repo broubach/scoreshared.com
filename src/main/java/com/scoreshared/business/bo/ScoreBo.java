@@ -84,6 +84,7 @@ public class ScoreBo extends BaseBo<Score> {
             List<Player> result = dao.findByNamedQuery("playerByNameAndOwner", player.getName(), owner.getId());
             if (result.size() > 0) {
                 // replaces the user object just to garantee the graph is concise
+                result.get(0).setInvitationShouldNotBeRemembered(player.getInvitationShouldNotBeRemembered());
                 result.get(0).setOwner(owner);
                 if (result.get(0).getAssociation() != null && result.get(0).getAssociation().getId().equals(owner.getId())) {
                     result.get(0).setAssociation(owner);
