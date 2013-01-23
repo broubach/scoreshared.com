@@ -51,9 +51,9 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
-    public String getStep1(@LoggedUser User loggedUser, ModelMap modelMap) {
+    public String getStep1(ModelMap modelMap) {
         if (!modelMap.containsAttribute("welcomeStep1Form")) {
-            modelMap.addAttribute(new WelcomeStep1Form(loggedUser));
+            modelMap.addAttribute(new WelcomeStep1Form());
         }
         return "welcome/step1";
     }
@@ -64,8 +64,7 @@ public class WelcomeController extends BaseController {
         if (result.hasErrors()) {
             return "welcome/step1";
         }
-        bo.save(form.getProfile());
-        bo.save(loggedUser);
+        bo.saveProfile(loggedUser, form.getProfile(), form.getCoach());
         return getStep2(modelMap);
     }
 

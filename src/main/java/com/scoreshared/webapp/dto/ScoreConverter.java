@@ -12,6 +12,7 @@ import org.springframework.core.convert.converter.Converter;
 
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
+import com.scoreshared.business.persistence.SportEnum;
 
 public class ScoreConverter extends BaseConverter implements Converter<ScoreModel, Score> {
 
@@ -59,6 +60,18 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
                 }
             }
             dest.setRightPlayers(rightPlayers);
+
+            if (!StringUtils.isEmpty(src.getCoach())) {
+                Player coach = new Player(src.getCoach().trim(), src.getOwner());
+                dest.setCoach(coach);
+                if (src.getNewPlayersNotToBeRemembered().contains(src.getCoach().trim())) {
+                    coach.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                }
+            }
+
+            if (src.getSportId() != null) {
+                dest.setSport(SportEnum.values()[src.getSportId()]);
+            }
 
             return dest;
         } catch (ParseException e) {

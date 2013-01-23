@@ -21,10 +21,11 @@ import org.hibernate.annotations.Where;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "playerByNameAndOwner", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerNameByOwner", query = "select player.name from Player player where player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerByAssociationAndOwner", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
-        @NamedQuery(name = "invitationPlayerByHash", query = "from Player player where player.invitationHash = :invitationHash")})
+        @NamedQuery(name = "playerByNameAndOwnerQuery", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
+        @NamedQuery(name = "playerNameByOwnerQuery", query = "select player.name from Player player where player.owner.id = :ownerId"),
+        @NamedQuery(name = "playerByAssociationAndOwnerQuery", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
+        @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitationHash = :invitationHash"),
+        @NamedQuery(name = "pendingInvitationsQuery", query= "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitationDate is not null and p.invitationResponse is null" )})
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -151,5 +152,14 @@ public class Player extends BaseEntity {
 
     public void setInvitationShouldNotBeRemembered(Boolean invitationShouldNotBeRemembered) {
         this.invitationShouldNotBeRemembered = invitationShouldNotBeRemembered;
+    }
+
+    public String getAvatar() {
+        if (isConnected()) {
+            Profile profile = getAssociation().getProfile();
+    
+            return (profile != null && profile.getAvatarHash() != null) ? profile.getAvatarHash() : "default";
+        }
+        return "default";
     }
 }

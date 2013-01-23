@@ -3,7 +3,11 @@ package com.scoreshared.webapp.validation;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -52,8 +56,8 @@ public class ScoreModelValidator implements Validator {
                 new Object[] { messageResource.getMessage("label.validation_players_at_left", null, locale) });
 
         // the current logged user must be listed among the players
+        String allPlayers = new StringBuilder().append(errors.getFieldValue("playersLeft")).append(", ").append(errors.getFieldValue("playersRight")).toString();
         if (errors.getFieldError("playersLeft") == null) {
-            String allPlayers = new StringBuilder().append(errors.getFieldValue("playersLeft")).append(", ").append(errors.getFieldValue("playersRight")).toString();
             boolean userNotPresent = true;
             for (String player : allPlayers.trim().split(",")) {
                 if (player.trim().equalsIgnoreCase(associatedPlayer.getName())) {
@@ -65,5 +69,18 @@ public class ScoreModelValidator implements Validator {
                 errors.rejectValue("playersLeft", "error.please_make_sure_you_are_listed_among_the_players");
             }
         }
+
+        // check to see if the same player is typed twice
+        Set<String> players = new HashSet<String>();
+        List<String> duplicatedPlayers = new ArrayList<String>();
+        for (String player : allPlayers.trim().split(",")) {
+            if (!players.add(player.trim())) {
+                duplicatedPlayers.add(player.trim());
+            }
+        }
+        if (!duplicatedPlayers.isEmpty()) {
+            errors.rejectValue("playersLeft", "error.please_make_sure_each_player_is_listed_only_once");
+        }
+        
     }
 }

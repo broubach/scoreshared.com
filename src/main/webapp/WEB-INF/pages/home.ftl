@@ -53,7 +53,9 @@
 
 <div>
 	<form>
-		<img /> <input type="image">
+		<input type="button" value="Compartilhar resultado!">
+		
+		<img title="stats"/>
 	</form>
 </div>
 

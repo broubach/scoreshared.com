@@ -83,10 +83,17 @@ public class ScoreController extends BaseController {
             score.setPlayersLeft(new ArrayList<String>());
             Player associatedPlayer = (Player) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
             score.getPlayersLeft().add(associatedPlayer.getName());
+            if (loggedUser.getProfile() != null) {
+                if (loggedUser.getProfile().getCoach() != null) {
+                    score.setCoach(loggedUser.getProfile().getCoach().getName());
+                }
+                if (loggedUser.getProfile().getSport() != null) {
+                    score.setSportId(loggedUser.getProfile().getSport().ordinal());
+                }
+            }
 
             mav.addObject("score", score);
             mav.addObject("search", new SearchModel());
-            mav.addObject("newPlayersNotToBeRememberedList", "");
 
             StringWriter playersList = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();

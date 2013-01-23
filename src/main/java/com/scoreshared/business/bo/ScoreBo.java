@@ -33,7 +33,6 @@ public class ScoreBo extends BaseBo<Score> {
                     if (comment != null) {
                         newComment = (Comment) comment.clone();
                     }
-                    newScore.setApprovalResponse(ApprovalResponseEnum.WAITING);
                     consistAndSave(player.getAssociation(), newScore, newComment);
                     if (groupingId == null) {
                         groupingId = newScore.getId();
@@ -55,12 +54,32 @@ public class ScoreBo extends BaseBo<Score> {
         consist(owner, score, comment);
         saveScoreOrComment(score, comment);
     }
-    
+
     private void consist(User owner, Score score, Comment comment) {
         score.setOwner(owner);
         score.setWinnerDefined(score.hasWinner());
-        replaceExistentPlayersAndSetOwner(owner, score.getLeftPlayers());
-        replaceExistentPlayersAndSetOwner(owner, score.getRightPlayers());
+        replaceExistentPlayersAndKeepProperties(owner, score.getLeftPlayers());
+        replaceExistentPlayersAndKeepProperties(owner, score.getRightPlayers());
+        if (score.getCoach() != null) {
+            Player coach = null;
+            if (!score.getLeftPlayers().contains(score.getCoach()) && !score.getRightPlayers().contains(score.getCoach())) {
+                coach = findExistentPlayerAndKeepProperties(owner, score.getCoach());
+            } else {
+                Set<Player> source = new HashSet<Player>();
+                if (score.getLeftPlayers().contains(score.getCoach())) {
+                    source.addAll(score.getLeftPlayers());
+                } else {
+                    source.addAll(score.getRightPlayers());
+                }
+                for (Player playerInSource : source) {
+                    if (playerInSource.equals(score.getCoach())) {
+                        coach = playerInSource;
+                        break;
+                    }
+                }
+            }
+            score.setCoach(coach);
+        }
         if (comment != null) {
             comment.setScore(score);
             comment.setOwner(owner);
@@ -75,35 +94,43 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    private void replaceExistentPlayersAndSetOwner(User owner, Set<Player> players) {
+    private void replaceExistentPlayersAndKeepProperties(User owner, Set<Player> players) {
         Set<Player> replacedPlayers = new HashSet<Player>();
         Player player = null;
         for (Iterator<Player> it = players.iterator(); it.hasNext(); ) {
             player = it.next();
 
-            List<Player> result = dao.findByNamedQuery("playerByNameAndOwner", player.getName(), owner.getId());
-            if (result.size() > 0) {
-                // replaces the user object just to garantee the graph is concise
-                result.get(0).setInvitationShouldNotBeRemembered(player.getInvitationShouldNotBeRemembered());
-                result.get(0).setOwner(owner);
-                if (result.get(0).getAssociation() != null && result.get(0).getAssociation().getId().equals(owner.getId())) {
-                    result.get(0).setAssociation(owner);
-                }
-
+            Player existentPlayer = findExistentPlayerAndKeepProperties(owner, player);
+            if (existentPlayer != null) {
                 it.remove();
-                replacedPlayers.add(result.get(0));
+                replacedPlayers.add(existentPlayer);
             }
         }
-        
+
         players.addAll(replacedPlayers);
     }
 
+    private Player findExistentPlayerAndKeepProperties(User owner, Player player) {
+        List<Player> result = dao.findByNamedQuery("playerByNameAndOwnerQuery", player.getName(), owner.getId());
+        if (result.size() > 0) {
+            // update the player found with some properties from the "old" player
+            result.get(0).setInvitationShouldNotBeRemembered(player.getInvitationShouldNotBeRemembered());
+            result.get(0).setOwner(owner);
+            if (result.get(0).getAssociation() != null && result.get(0).getAssociation().getId().equals(owner.getId())) {
+                result.get(0).setAssociation(owner);
+            }
+            
+            return result.get(0);
+        }
+        return null;
+    }
+
     public List<String> listPlayersName(User loggedUser) {
-        return dao.findByNamedQuery("playerNameByOwner", loggedUser.getId());
+        return dao.findByNamedQuery("playerNameByOwnerQuery", loggedUser.getId());
     }
 
     public boolean hasScores(User loggedUser) {
-        return !dao.findByNamedQuery("hasScoreWithOwnerId", loggedUser.getId()).isEmpty();
+        return !dao.findByNamedQuery("hasScoreWithOwnerIdQuery", loggedUser.getId()).isEmpty();
     }
 
     public List<Object[]> findScores(Integer pageNumber, Boolean ascending, User owner) {
@@ -175,5 +202,9 @@ public class ScoreBo extends BaseBo<Score> {
         Score score = findById(scoreId);
         score.setRevisionMessage(message);
         saveScoreOrComment(score, null);
+    }
+
+    public List<Score> findPendingScoreApprovals(Integer ownerId) {
+        return dao.findByNamedQuery("pendingScoreApprovalsQuery", ownerId);
     }
 }

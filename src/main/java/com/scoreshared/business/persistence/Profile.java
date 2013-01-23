@@ -21,7 +21,10 @@ public class Profile extends BaseEntity {
     private String country;
     private String academy;
     private Boolean leftHanded;
-    private String coach;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    private Player coach;
+
     private Boolean showContactInfoToFriends;
     private String phone;
     private String avatarHash;
@@ -33,6 +36,7 @@ public class Profile extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private File smallAvatar;
+    private SportEnum sport;
 
     public String getCity() {
         return city;
@@ -66,11 +70,11 @@ public class Profile extends BaseEntity {
         this.leftHanded = leftHanded;
     }
 
-    public String getCoach() {
+    public Player getCoach() {
         return coach;
     }
 
-    public void setCoach(String coach) {
+    public void setCoach(Player coach) {
         this.coach = coach;
     }
 
@@ -139,5 +143,13 @@ public class Profile extends BaseEntity {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public SportEnum getSport() {
+        return sport;
+    }
+
+    public void setSport(SportEnum sport) {
+        this.sport = sport;
     }
 }

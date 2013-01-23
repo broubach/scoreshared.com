@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
@@ -42,7 +41,7 @@ public class SecurityHelper {
         HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
         contextRepository.loadContext(holder);
 
-        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        token.setDetails(new CustomWebAuthenticationDetailsSource().buildDetails(request));
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

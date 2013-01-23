@@ -56,7 +56,7 @@
 
 		<dl>
 			<dt><label for="profile.coach"><@spring.message code="label.who_is_your_coach"/></label></dt>
-			<dd><@spring.formInput "welcomeStep1Form.profile.coach", "maxlength='45'", "text"/></dd>
+			<dd><@spring.formInput "welcomeStep1Form.coach", "maxlength='45'", "text"/></dd>
 		</dl>
 
 		<dl>

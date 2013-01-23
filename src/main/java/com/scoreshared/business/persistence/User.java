@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -29,7 +31,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private char gender;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Profile profile;
 
     public String getFirstName() {

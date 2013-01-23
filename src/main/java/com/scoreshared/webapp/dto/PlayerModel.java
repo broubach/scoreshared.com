@@ -89,8 +89,8 @@ public class PlayerModel {
     }
 
     public String getCoach() {
-        if (user.getProfile() != null && !StringUtils.isEmpty(user.getProfile().getCoach())) {
-            return user.getProfile().getCoach();
+        if (user.getProfile() != null && user.getProfile().getCoach() != null) {
+            return user.getProfile().getCoach().getName();
         }
         return messageResource.getMessage("label.undefined", null, locale);
     }

@@ -23,6 +23,7 @@
 	        </#list>
 	        </ul>
         </#if>
+        
    		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
 			<@spring.formHiddenInput "score.commentId", ""/>
 			<@spring.formHiddenInput "score.id", ""/>
@@ -186,8 +187,8 @@ $(function() {
 		playersList: ${playersList}
 	};
 	NewPlayerWizard.init(newPlayerWizardOptions);
-
-	$( "#playersLeft,#playersRight,#coach" ).bind( "keydown", function( event ) {
+	
+	$( "#playersLeft,#playersRight" ).bind( "keydown", function( event ) {
 			if ( event.keyCode === $.ui.keyCode.TAB &&
 					$( this ).data( "autocomplete" ).menu.active ) {
 				event.preventDefault();
@@ -218,6 +219,10 @@ $(function() {
 		});
 
 	$("#playersRight").focus();
+
+	$( "#coach" ).autocomplete({
+		source: ${playersList}
+	});
 });
 
 </script>

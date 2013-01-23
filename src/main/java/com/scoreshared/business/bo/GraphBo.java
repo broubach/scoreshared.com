@@ -52,7 +52,7 @@ public class GraphBo extends BaseBo<Player> {
 	    Map<String, Integer> params = new HashMap<String, Integer>();
 	    params.put("ownerId", ownerId);
 	    params.put("associationId", userAssociationId);
-        List<Player> result = dao.findByNamedQueryAndNamedParam("playerByAssociationAndOwner", params);
+        List<Player> result = dao.findByNamedQueryAndNamedParam("playerByAssociationAndOwnerQuery", params);
         if (result.size() > 0) {
             return result.get(0);
         }
@@ -60,7 +60,7 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     public void inviteUnregisteredUser(User owner, String playerName, String email, String message, Locale locale) {
-        List<Player> players = dao.findByNamedQuery("playerByNameAndOwner", playerName, owner.getId());
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwnerQuery", playerName, owner.getId());
         Player player = null;
         if (players.size() > 0) {
             player = players.get(0);
@@ -123,10 +123,10 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     public void ignoreRegisteredUserInvitation(User user1, Integer user2Id) {
-        Player player = findPlayerByAssociationAndOwner(user2Id, user1.getId());
+        Player player = findPlayerByAssociationAndOwner(user1.getId(), user2Id);
         if (player != null) {
             player.setInvitationResponse(InvitationResponseEnum.IGNORED);
-            dao.saveOrUpdate(user1);
+            dao.saveOrUpdate(player);
         }
     }
 
@@ -138,7 +138,7 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     public Player findPlayerByInvitationHash(String invitationHash) {
-        List<Player> players = dao.findByNamedQuery("invitationPlayerByHash", invitationHash);
+        List<Player> players = dao.findByNamedQuery("invitationPlayerByHashQuery", invitationHash);
         if (players.size() > 0) {
             return players.get(0);
         }
@@ -168,7 +168,7 @@ public class GraphBo extends BaseBo<Player> {
      * there is no corresponding player
      */
     public Object[] shouldPlayerBeInvited(String playerName, User owner) {
-        List<Player> players = dao.findByNamedQuery("playerByNameAndOwner", playerName, owner.getId());
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwnerQuery", playerName, owner.getId());
         if (!players.isEmpty()) {
             Player player = players.get(0);
 
@@ -180,5 +180,9 @@ public class GraphBo extends BaseBo<Player> {
         }
 
         return new Object[] { true };
+    }
+
+    public List<Object[]> findPendingInvitations(Integer id) {
+        return dao.findByNamedQuery("pendingInvitationsQuery", id);
     }
 }

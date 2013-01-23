@@ -367,7 +367,10 @@ var InviteRegisteredUserStep = {
 						type: 'POST',
 						dataType: 'json',
 						cache: false,
-						success: NewPlayerWizard.resume
+						success: function(data) {
+			        		$("#dialog-registeredInvitation").dialog( "close" );
+							NewPlayerWizard.resume(data);
+						}
 					});
 				}
 			}, {

@@ -27,9 +27,10 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "score")
 @NamedQueries({
-        @NamedQuery(name = "hasScoreWithOwnerId", query = "select 1 from Score score where score.owner.id = :id"),
+        @NamedQuery(name = "hasScoreWithOwnerIdQuery", query = "select 1 from Score score where score.owner.id = :id"),
         @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score where score.owner.id = :id and score.winnerDefined = 1 and score.approvalResponse = 1"),
-        @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)") })
+        @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)"),
+        @NamedQuery(name = "pendingScoreApprovalsQuery", query = "from Score s where s.approvalResponse is null and owner.id = :ownerId and s.revisionMessage is null")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
 public class Score extends BaseEntity implements Cloneable {
@@ -64,6 +65,11 @@ public class Score extends BaseEntity implements Cloneable {
     private Set<Player> rightPlayers;
 
     private boolean winnerDefined;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    private Player coach;
+    
+    private SportEnum sport;
 
     @Transient
     private Comment comment;
@@ -227,6 +233,22 @@ public class Score extends BaseEntity implements Cloneable {
         this.winnerDefined = winnerDefined;
     }
 
+    public Player getCoach() {
+        return coach;
+    }
+
+    public void setCoach(Player coach) {
+        this.coach = coach;
+    }
+    
+    public SportEnum getSport() {
+        return sport;
+    }
+
+    public void setSport(SportEnum sport) {
+        this.sport = sport;
+    }
+
     public Comment getComment() {
         return comment;
     }
@@ -388,15 +410,5 @@ public class Score extends BaseEntity implements Cloneable {
 	    }
 	
 	    return result;
-	}
-
-	public String getSampleOpponentAvatar(User loggedUser) {
-	    Player opponent = getSampleOpponent(loggedUser);
-	    if (opponent != null && opponent.isConnected()) {
-	        Profile profile = opponent.getAssociation().getProfile();
-	
-	        return (profile != null && profile.getAvatarHash() != null) ? profile.getAvatarHash() : "";
-	    }
-	    return "";
 	}
 }

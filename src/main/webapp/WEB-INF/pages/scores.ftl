@@ -91,9 +91,9 @@ $(function() {
 	});
 
 	$('#dialog-confirm').dialog({
-        resizable: true,
         modal: true,
 		autoOpen: false,
+		width: 'auto',
         buttons: {
             '<@spring.message code="label.delete_all_items"/>': function() {
             	var selected = new Array();

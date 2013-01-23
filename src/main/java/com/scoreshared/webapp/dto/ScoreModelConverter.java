@@ -21,7 +21,9 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             
             dest.setId(src.getId());
             dest.setDate(getDate(src.getDate()));
-            dest.setTime(getTime(src.getTime()));
+            if (src.getTime() != null) {
+                dest.setTime(getTime(src.getTime()));
+            }
             dest.setSet1Left(src.getSet1Left());
             dest.setSet1Right(src.getSet1Right());
             dest.setSet2Left(src.getSet2Left());
@@ -49,6 +51,20 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
                 rightPlayers.add(playerRight.getName());
             }
             dest.setPlayersRight(rightPlayers);
+            
+            if (src.getCoach() != null) {
+                dest.setCoach(src.getCoach().getName());
+
+            } else if (src.getOwner().getProfile() != null && src.getOwner().getProfile().getCoach() != null) {
+                dest.setCoach(src.getOwner().getProfile().getCoach().getName());
+            }
+
+            if (src.getSport() != null) {
+                dest.setSportId(src.getSport().ordinal());
+
+            } else if (src.getOwner().getProfile() != null && src.getOwner().getProfile().getSport() != null) {
+                dest.setSportId(src.getOwner().getProfile().getSport().ordinal());
+            }
 
             return dest;
         } catch (ParseException e) {

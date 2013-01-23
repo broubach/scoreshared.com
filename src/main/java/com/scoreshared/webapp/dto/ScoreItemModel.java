@@ -96,8 +96,20 @@ public class ScoreItemModel {
         }
         return result.toString().trim();
     }
-
+    
+    public String getSampleOpponentName() {
+        Player sampleOpponent = score.getSampleOpponent(loggedUser);
+        if (sampleOpponent != null) {
+            return sampleOpponent.getName();
+        }
+        return "";
+    }
+    
     public String getSampleOpponentAvatar() {
-        return score.getSampleOpponentAvatar(loggedUser);
+        Player sampleOpponent = score.getSampleOpponent(loggedUser);
+        if (sampleOpponent != null) {
+            return sampleOpponent.getAvatar();
+        }
+        return "default";
     }
 }
