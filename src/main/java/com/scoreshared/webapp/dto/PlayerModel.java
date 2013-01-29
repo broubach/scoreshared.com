@@ -69,6 +69,20 @@ public class PlayerModel {
         }
         return messageResource.getMessage("label.undefined", null, locale);
     }
+    
+    public boolean getShowContactInfoToFriends() {
+        if (user.getProfile() != null && Boolean.TRUE.equals(user.getProfile().getShowContactInfoToFriends())) {
+            return true;
+        }
+        return false;
+    }
+    
+    public String getPhoneNumber() {
+        if (user.getProfile() != null && !StringUtils.isEmpty(user.getProfile().getPhone())) {
+            return user.getProfile().getPhone();
+        }
+        return "";
+    }
 
     public String getAcademy() {
         if (user.getProfile() != null && !StringUtils.isEmpty(user.getProfile().getAcademy())) {

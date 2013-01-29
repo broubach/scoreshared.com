@@ -45,14 +45,6 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     @Inject
     private Md5PasswordEncoder hashEncoder;
 
-    public void save(User user) {
-        dao.saveOrUpdate(user);
-    }
-
-    public void save(Profile profile) {
-        dao.saveOrUpdate(profile);
-    }
-
     public boolean checkEmailExists(String email) {
         return !dao.findByNamedQuery("existentEmailQuery", email).isEmpty();
     }

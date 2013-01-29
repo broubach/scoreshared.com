@@ -29,13 +29,13 @@ import org.hibernate.annotations.Where;
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
-public class Player extends BaseEntity {
+public class Player extends BaseEntity implements PlayerBehavior {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User owner;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User association;
 
     private String invitationHash;
@@ -55,6 +55,7 @@ public class Player extends BaseEntity {
         this.owner = owner;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -63,6 +64,7 @@ public class Player extends BaseEntity {
         this.name = name;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
@@ -71,6 +73,7 @@ public class Player extends BaseEntity {
         this.owner = owner;
     }
 
+    @Override
     public User getAssociation() {
         return association;
     }
@@ -130,7 +133,7 @@ public class Player extends BaseEntity {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        Player other = (Player) obj;
+        PlayerBehavior other = (PlayerBehavior) obj;
         Integer ownerId = owner != null ? owner.getId() : null;
         Integer objOwnerId = other.getOwner() != null ? other.getOwner().getId() : null;
         return new EqualsBuilder().append(name, other.getName()).append(ownerId, objOwnerId).isEquals();
@@ -142,6 +145,7 @@ public class Player extends BaseEntity {
         return new HashCodeBuilder(17, 37).append(name).append(ownerId).toHashCode();
     }
 
+    @Override
     public boolean isConnected() {
         return association != null && InvitationResponseEnum.ACCEPTED.equals(invitationResponse);
     }
@@ -150,10 +154,12 @@ public class Player extends BaseEntity {
         return invitationShouldNotBeRemembered;
     }
 
+    @Override
     public void setInvitationShouldNotBeRemembered(Boolean invitationShouldNotBeRemembered) {
         this.invitationShouldNotBeRemembered = invitationShouldNotBeRemembered;
     }
 
+    @Override
     public String getAvatar() {
         if (isConnected()) {
             Profile profile = getAssociation().getProfile();

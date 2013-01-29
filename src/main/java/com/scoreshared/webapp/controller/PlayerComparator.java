@@ -3,7 +3,7 @@ package com.scoreshared.webapp.controller;
 import java.util.Comparator;
 import java.util.Set;
 
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -22,8 +22,8 @@ final class PlayerComparator implements Comparator<Object[]> {
         Score score2 = (Score) o2[0];
 
         // get the list of opposite players
-        Set<Player> oppositePlayers1 = score1.getOppositePlayers(loggedUser.getId());
-        Set<Player> oppositePlayers2 = score2.getOppositePlayers(loggedUser.getId());
+        Set<PlayerPermission> oppositePlayers1 = score1.getOppositePlayers(loggedUser.getId());
+        Set<PlayerPermission> oppositePlayers2 = score2.getOppositePlayers(loggedUser.getId());
 
         if (oppositePlayers1.isEmpty()) { return 1 * (ascending ? 1 : -1); }
         if (oppositePlayers2.isEmpty()) { return -1 * (ascending ? 1 : -1); }

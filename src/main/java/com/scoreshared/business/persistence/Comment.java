@@ -17,7 +17,7 @@ import org.apache.commons.beanutils.BeanUtils;
 @NamedQueries({ @NamedQuery(name = "commentByScoreIdQuery", query = "from Comment comment where comment.score.id = :scoreId") })
 public class Comment extends BaseEntity implements Cloneable {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private User owner;
 
     private boolean pvt; //pvt used because private is a reserved word

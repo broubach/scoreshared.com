@@ -1,7 +1,8 @@
-delete from score_player_left;
-delete from score_player_right;
+delete from score_playerpermission_left;
+delete from score_playerpermission_right;
 delete from score;
 delete from comment;
+delete from playerpermission;
 delete from player;
 update user set profile_id = null;
 delete from profile;

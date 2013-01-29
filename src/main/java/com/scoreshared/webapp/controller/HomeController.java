@@ -1,5 +1,7 @@
 package com.scoreshared.webapp.controller;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
@@ -22,13 +24,16 @@ public class HomeController extends BaseController {
     public ModelAndView home(@LoggedUser User loggedUser) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("userFirstName", loggedUser.getFirstName());
+        mav.addObject("messages", new ArrayList());
+        mav.addObject("scores", new ArrayList());
+        mav.addObject("win", 0);
+        mav.addObject("loss", 0);
 
-        // TODO: remove comments after home page is ready
-        //        if (scoreBo.hasMatches(loggedUser)) {
-        //            mav.setViewName("home");
-        //        } else {
-        mav.setViewName("homeNewUser");
-        //        }
+        if (scoreBo.hasMatches(loggedUser)) {
+            mav.setViewName("home");
+        } else {
+            mav.setViewName("homeNewUser");
+        }
         return mav;
     }
 }

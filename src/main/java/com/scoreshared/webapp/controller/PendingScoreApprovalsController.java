@@ -50,18 +50,18 @@ public class PendingScoreApprovalsController extends BaseController {
     @RequestMapping(value = "/accept/score/", method = RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.OK)
     public void acceptScore(@LoggedUser User loggedUser, @ModelAttribute("scoreId") Integer scoreId) {
-        scoreBo.acceptScore(scoreId);
+        scoreBo.acceptScore(loggedUser.getId(), scoreId);
     }
 
     @RequestMapping(value = "/ignore/score/", method = RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.OK)
     public void ignoreScore(@LoggedUser User loggedUser, @ModelAttribute("scoreId") Integer scoreId) {
-        scoreBo.ignoreScore(scoreId);
+        scoreBo.ignoreScore(loggedUser.getId(), scoreId);
     }
 
     @RequestMapping(value = "/review/score/", method = RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.OK)
     public void reviewScore(@LoggedUser User loggedUser, @ModelAttribute("scoreId") Integer scoreId, @ModelAttribute("message") String message) {
-        scoreBo.reviewScore(scoreId, message);
+        scoreBo.reviewScore(loggedUser.getId(), scoreId, message);
     }
 }

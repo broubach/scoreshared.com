@@ -35,7 +35,7 @@
 </tr>
 <tfoot>
 <tr>
-	<td colspan="5"><a href="#">+ <@spring.message code="label.results"/></a></td>
+	<td colspan="5"><a href="<@spring.url relativeUrl="/app/scores/1/date/true"/>">+ <@spring.message code="label.results"/></a></td>
 </tr>
 <tfoot>
 </table>

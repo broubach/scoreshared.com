@@ -8,12 +8,7 @@
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
 </head>
 <body>
-	<ul>
-		<li><@spring.message code="label.contact"/> (4)</li>
-		<li><@spring.message code="label.approval"/> (3)</li>
-		<li><@spring.message code="label.revision"/> (3)</li>
-		<li><@spring.message code="label.commentary"/> (0)</li>
-	</ul>
+    <#include "messagesSnippet.ftl">
 	<table>
 		<#list pendingScores as item>
 		<tr>
@@ -26,13 +21,7 @@
 		</#list>
 	</table>
 
-	<div id="dialog-revision" style="display:none" title="<@spring.message code="label.score_revision"/>">
-		<form id="revision-form">
-			<p id="info"></p>
-			<div class="error-panel"></div>
-			<textarea id="message" name="message" ></textarea>
-		</form>
-	</div>
+	<#include "../dialogRevisionSnippet.ftl">
 </html>
 
 <script type="text/javascript">

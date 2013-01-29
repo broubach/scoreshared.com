@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -53,16 +53,16 @@ public class ScoreItemModelTest {
         score.setId(1);
         score.setOwner(user1);
 
-        Set<Player> leftPlayers = new HashSet<Player>();
-        Player player = new Player(user1.getFullName(), user1);
-        player.setAssociation(user1);
-        leftPlayers.add(player);
+        Set<PlayerPermission> leftPlayers = new HashSet<PlayerPermission>();
+        PlayerPermission playerPermission = new PlayerPermission(user1.getFullName(), user1);
+        playerPermission.setAssociation(user1);
+        leftPlayers.add(playerPermission);
         score.setLeftPlayers(leftPlayers);
 
-        Set<Player> rightPlayers = new HashSet<Player>();
-        player = new Player("Andre Agassi", user2);
-        player.setAssociation(user2);
-        rightPlayers.add(player);
+        Set<PlayerPermission> rightPlayers = new HashSet<PlayerPermission>();
+        playerPermission = new PlayerPermission("Andre Agassi", user2);
+        playerPermission.setAssociation(user2);
+        rightPlayers.add(playerPermission);
         score.setRightPlayers(rightPlayers);
 
         score.setSet1Left(6);

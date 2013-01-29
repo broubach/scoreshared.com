@@ -37,6 +37,7 @@ import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerBehavior;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -70,7 +71,7 @@ public class ScoreController extends BaseController {
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
         if (binder.getTarget() instanceof ScoreModel) {
-            Player player = (Player) request.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER, WebRequest.SCOPE_SESSION);
+            PlayerBehavior player = (PlayerBehavior) request.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER, WebRequest.SCOPE_SESSION);
             binder.setValidator(new ScoreModelValidator(player, messageResource, localeResolver.resolveLocale(((ServletWebRequest)request).getRequest())));
         }
     }
@@ -81,7 +82,7 @@ public class ScoreController extends BaseController {
             ModelAndView mav = new ModelAndView("score");
             ScoreModel score = new ScoreModel();
             score.setPlayersLeft(new ArrayList<String>());
-            Player associatedPlayer = (Player) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
+            PlayerBehavior associatedPlayer = (PlayerBehavior) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
             score.getPlayersLeft().add(associatedPlayer.getName());
             if (loggedUser.getProfile() != null) {
                 if (loggedUser.getProfile().getCoach() != null) {
@@ -160,9 +161,10 @@ public class ScoreController extends BaseController {
             scoreModel.setOwner(loggedUser);
             Score score = conversionService.convert(scoreModel, Score.class);
             Comment comment = conversionService.convert(scoreModel, Comment.class);
+            
             scoreBo.save(loggedUser, score, comment);
 
-            mav.setViewName("home");
+            mav.setViewName("redirect:/app/home");
 
             return mav;
         } catch (JsonGenerationException e) {

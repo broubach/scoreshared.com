@@ -60,6 +60,12 @@
 			<dt><@spring.message code="label.residence" />: </dt>
 			<dd>${player.residence}</dd>
 		</dl>
+		<#if player.showContactInfoToFriends>
+			<dl>
+				<dt><@spring.message code="label.phone_number" />: </dt>
+				<dd>${player.phoneNumber}</dd>
+			</dl>
+		</#if>
 		<dl>
 			<dt><@spring.message code="label.academy" />: </dt>
 			<dd>${player.academy}</dd>
@@ -86,7 +92,7 @@
 		<p><@spring.message code="label.the_association_with_this_player_will_be_deleted_are_you_sure" /></p>
 	</div>
 
-	<#include "dialogFriendRequestSnippet.ftl">
+	<#include "dialogRegisteredInvitationSnippet.ftl">
 </body>
 </html>
 
@@ -118,7 +124,7 @@ $(function() {
         }
     });
 
-	$( "#dialog-friendRequest" ).dialog({
+	$( "#dialog-registeredInvitation" ).dialog({
         resizable: true,
 		autoOpen: false,
 		modal: true,
@@ -126,17 +132,17 @@ $(function() {
 			'<@spring.message code="label.yes"/>': function() {
 				$.ajax({
 					url: '<@spring.url relativeUrl="/app/player/connect/" />',
-					data: $('#friendRequest-form').serialize(),
+					data: $('#registeredInvitation-form').serialize(),
 					type: 'POST',
 					dataType: 'json',
 					cache: false,
 					success: function(data) {
-		            	$('#dialog-friendRequest').dialog("close");
+		            	$('#dialog-registeredInvitation').dialog("close");
 					}
 				});
 			},
 			'<@spring.message code="label.no"/>': function() {
-            	$('#dialog-friendRequest').dialog("close");
+            	$('#dialog-registeredInvitation').dialog("close");
             }
 		}
 	});
@@ -152,7 +158,7 @@ $(function() {
 
 function openFriendRequestDialog() {
 	<#if player.id??>
-		$("#friendRequest-form input[name='playerId']").val(${player.id});
+		$("#registeredInvitation-form input[name='playerId']").val(${player.id});
 	</#if>
 
 	$.ajax({
@@ -160,7 +166,7 @@ function openFriendRequestDialog() {
 		type: 'GET',
 		cache: false,
 		success: function(data) {
-			FriendRequestUtil.openFriendRequestDialog(data, '<@spring.url relativeUrl="/"/>', ${loggedUserAvatarHash});
+			FriendRequestUtil.openFriendRequestDialog(data, '<@spring.url relativeUrl="/"/>', '${loggedUserAvatarHash}');
 		}
 	});
 }

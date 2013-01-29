@@ -13,7 +13,7 @@
 		<li><h4><@spring.message code="label.step1"/></h4></li>
 		<li><h6><@spring.message code="label.step2"/></h6></li>
 		<li><h6><@spring.message code="label.step3"/></h6></li>
-	<ul>
+	</ul>
 </div>
 
 <h3><@spring.message code="label.please_tell_us_more_about_you"/></h3>
@@ -37,6 +37,21 @@
 		<dl>
 			<dt><label for="profile.country"><@spring.message code="label.which_country"/></label></dt>
 			<dd><@spring.formInput "welcomeStep1Form.profile.country", "maxlength='45'", "text"/></dd>
+		</dl>
+
+		<dl>
+			<dt><label for="profile.sport"><@spring.message code="label.what_sport_is_this_score_for" /></label></dt>
+			<dd>
+				<#assign label_sport_tennis><@spring.message code="label.sport_tennis"/></#assign>
+				<#assign label_sport_table_tennis><@spring.message code="label.sport_table_tennis"/></#assign>
+				<#assign label_sport_badminton><@spring.message code="label.sport_badminton"/></#assign>
+				<#assign label_sport_squash><@spring.message code="label.sport_squash"/></#assign>
+				<#assign label_sport_beach_tennis><@spring.message code="label.sport_beach_tennis"/></#assign>
+				<#assign label_sport_paddle><@spring.message code="label.sport_paddle"/></#assign>
+				<#assign label_sport_other><@spring.message code="label.sport_other"/></#assign>
+				<#assign sportsHash = {"TENNIS":label_sport_tennis, "TABLE_TENNIS":label_sport_table_tennis, "BADMINTON":label_sport_badminton, "SQUASH":label_sport_squash, "BEACH_TENNIS":label_sport_beach_tennis, "PADDLE":label_sport_paddle, "OTHER":label_sport_other} >
+				<@spring.formSingleSelect "welcomeStep1Form.profile.sport", sportsHash, "" />
+			</dd>
 		</dl>
 
 		<dl>

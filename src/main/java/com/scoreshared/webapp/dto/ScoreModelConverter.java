@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
 
 public class ScoreModelConverter extends BaseConverter implements Converter<Score, ScoreModel> {
@@ -40,20 +40,30 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             dest.setPostInTwitter(false);
             dest.setPostInFacebook(false);
 
+            List<String> newPlayersNotToBeRemembered = new ArrayList<String>();
             List<String> leftPlayers = new ArrayList<String>();
-            for (Player playerLeft : src.getLeftPlayers()) {
+            for (PlayerPermission playerLeft : src.getLeftPlayers()) {
                 leftPlayers.add(playerLeft.getName());
+                if (Boolean.TRUE.equals(playerLeft.getInvitationShouldNotBeRemembered())) {
+                    newPlayersNotToBeRemembered.add(playerLeft.getName());
+                }
             }
             dest.setPlayersLeft(leftPlayers);
 
             List<String> rightPlayers = new ArrayList<String>();
-            for (Player playerRight : src.getRightPlayers()) {
+            for (PlayerPermission playerRight : src.getRightPlayers()) {
                 rightPlayers.add(playerRight.getName());
+                if (Boolean.TRUE.equals(playerRight.getInvitationShouldNotBeRemembered())) {
+                    newPlayersNotToBeRemembered.add(playerRight.getName());
+                }
             }
             dest.setPlayersRight(rightPlayers);
             
             if (src.getCoach() != null) {
                 dest.setCoach(src.getCoach().getName());
+                if (Boolean.TRUE.equals(src.getCoach().getInvitationShouldNotBeRemembered())) {
+                    newPlayersNotToBeRemembered.add(src.getCoach().getName());
+                }
 
             } else if (src.getOwner().getProfile() != null && src.getOwner().getProfile().getCoach() != null) {
                 dest.setCoach(src.getOwner().getProfile().getCoach().getName());
@@ -65,6 +75,8 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             } else if (src.getOwner().getProfile() != null && src.getOwner().getProfile().getSport() != null) {
                 dest.setSportId(src.getOwner().getProfile().getSport().ordinal());
             }
+
+            dest.setNewPlayersNotToBeRemembered(newPlayersNotToBeRemembered);
 
             return dest;
         } catch (ParseException e) {

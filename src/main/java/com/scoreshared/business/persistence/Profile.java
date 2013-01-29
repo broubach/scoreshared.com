@@ -22,7 +22,7 @@ public class Profile extends BaseEntity {
     private String academy;
     private Boolean leftHanded;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Player coach;
 
     private Boolean showContactInfoToFriends;

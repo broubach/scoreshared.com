@@ -8,11 +8,12 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -68,10 +69,13 @@ public class ScoresController extends BaseController {
 	}
 
     @RequestMapping(value="{scoreIds}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public String delete(@PathVariable String scoreIds) {
+    @ResponseStatus(value=HttpStatus.OK)
+    public void delete(@LoggedUser User loggedUser, @PathVariable String scoreIds) {
         String[] ids = scoreIds.split(",");
-        bo.deleteScores(ids);
-        return "ok";
+        Integer[] integerIds = new Integer[ids.length];
+        for (int i = 0; i<ids.length;i++) {
+            integerIds[i] = Integer.valueOf(ids[i]);
+        }
+        bo.deleteScores(integerIds, loggedUser.getId());
     }
 }

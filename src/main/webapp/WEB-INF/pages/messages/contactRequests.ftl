@@ -6,12 +6,9 @@
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.8.3.min.js"/>"></script>
 </head>
 <body>
-	<ul>
-		<li><@spring.message code="label.contact"/> (4)</li>
-		<li><@spring.message code="label.approval"/> (3)</li>
-		<li><@spring.message code="label.revision"/> (3)</li>
-		<li><@spring.message code="label.commentary"/> (0)</li>
-	</ul>
+
+    <#include "messagesSnippet.ftl">
+
 	<table>
 		<#list contacts as item>
 		<tr>

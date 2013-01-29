@@ -71,7 +71,8 @@
 						<#assign label_sport_squash><@spring.message code="label.sport_squash"/></#assign>
 						<#assign label_sport_beach_tennis><@spring.message code="label.sport_beach_tennis"/></#assign>
 						<#assign label_sport_paddle><@spring.message code="label.sport_paddle"/></#assign>
-						<#assign sportsHash = {"1":label_sport_tennis, "2":label_sport_table_tennis, "3":label_sport_badminton, "4":label_sport_squash, "5":label_sport_beach_tennis, "6":label_sport_paddle} >
+						<#assign label_sport_other><@spring.message code="label.sport_other"/></#assign>
+						<#assign sportsHash = {"0":label_sport_tennis, "1":label_sport_table_tennis, "2":label_sport_badminton, "3":label_sport_squash, "4":label_sport_beach_tennis, "5":label_sport_paddle, "6":label_sport_other} >
 						<@spring.formSingleSelect "score.sportId", sportsHash, "" />
 					</dd>
 				</dl>

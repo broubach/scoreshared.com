@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.SportEnum;
 
@@ -36,26 +37,26 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             dest.setSet5Left(src.getSet5Left());
             dest.setSet5Right(src.getSet5Right());
 
-            Set<Player> leftPlayers = new HashSet<Player>();
-            Player player = null;
+            Set<PlayerPermission> leftPlayers = new HashSet<PlayerPermission>();
+            PlayerPermission playerPermission = null;
             for (String playerLeft : src.getPlayersLeft()) {
                 if (!StringUtils.isEmpty(playerLeft)) {
-                    player = new Player(playerLeft.trim(), src.getOwner());
-                    leftPlayers.add(player);
+                    playerPermission = new PlayerPermission(playerLeft.trim(), src.getOwner());
+                    leftPlayers.add(playerPermission);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerLeft.trim())) {
-                        player.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                        playerPermission.setInvitationShouldNotBeRemembered(Boolean.TRUE);
                     }
                 }
             }
             dest.setLeftPlayers(leftPlayers);
 
-            Set<Player> rightPlayers = new HashSet<Player>();
+            Set<PlayerPermission> rightPlayers = new HashSet<PlayerPermission>();
             for (String playerRight : src.getPlayersRight()) {
                 if (!StringUtils.isEmpty(playerRight)) {
-                    player = new Player(playerRight.trim(), src.getOwner());
-                    rightPlayers.add(player);
+                    playerPermission = new PlayerPermission(playerRight.trim(), src.getOwner());
+                    rightPlayers.add(playerPermission);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerRight.trim())) {
-                        player.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                        playerPermission.setInvitationShouldNotBeRemembered(Boolean.TRUE);
                     }
                 }
             }
