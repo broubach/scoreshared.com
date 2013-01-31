@@ -159,6 +159,11 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
 	}
 
+    public List<Object[]> findScores(Integer pageNumber, Boolean ascending) {
+        String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.visible = 1) or (rp.approvalResponse = 0 and rp.visible = 1)) order by cast(score.date as date)").append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
+        return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null);
+    }
+
     public Score findById(Integer scoreId) {
         return dao.findByPk(Score.class, scoreId);
     }
@@ -257,10 +262,5 @@ public class ScoreBo extends BaseBo<Score> {
         for (PlayerPermission playerPermission : score.getAllPlayers()) {
             playerPermission.setRevisionMessage(null);
         }
-    }
-
-    public boolean hasMatches(User loggedUser) {
-        List<Long> result = dao.findByNamedQuery("playerPermissionCountQuery", loggedUser.getId());
-        return result.size() > 0 && result.get(0) > 0L;
     }
 }

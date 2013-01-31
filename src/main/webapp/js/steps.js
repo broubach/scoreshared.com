@@ -432,7 +432,10 @@ var InviteUnregisteredUserStep = {
 						type: 'POST',
 						dataType: 'json',
 						cache: false,
-						success: NewPlayerWizard.resume
+						success: function() {
+		            		$("#dialog-unregisteredInvitation").dialog( "close" );
+							NewPlayerWizard.resume();
+						}
 					});
 				}
 			}, {

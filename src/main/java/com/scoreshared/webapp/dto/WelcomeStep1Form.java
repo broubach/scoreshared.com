@@ -6,7 +6,6 @@ public class WelcomeStep1Form {
 
     private Profile profile;
     private String coach;
-    private Boolean agree;
 
     public WelcomeStep1Form() {
         this.profile = new Profile();
@@ -26,13 +25,5 @@ public class WelcomeStep1Form {
 
     public void setCoach(String coach) {
         this.coach = coach;
-    }
-
-    public Boolean getAgree() {
-        return agree;
-    }
-
-    public void setAgree(Boolean agree) {
-        this.agree = agree;
     }
 }

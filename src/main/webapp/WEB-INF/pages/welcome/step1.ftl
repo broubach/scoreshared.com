@@ -40,7 +40,7 @@
 		</dl>
 
 		<dl>
-			<dt><label for="profile.sport"><@spring.message code="label.what_sport_is_this_score_for" /></label></dt>
+			<dt><label for="profile.sport"><@spring.message code="label.what_sport_do_you_intend_to_score" /></label></dt>
 			<dd>
 				<#assign label_sport_tennis><@spring.message code="label.sport_tennis"/></#assign>
 				<#assign label_sport_table_tennis><@spring.message code="label.sport_table_tennis"/></#assign>
@@ -98,16 +98,6 @@
 			<dt><label for="profile.phone"><@spring.message code="label.phone_number"/></label></dt>
 			<dd>
 				<@spring.formInput "welcomeStep1Form.profile.phone", "maxlength='45'", "text"/>
-			</dd>
-		</dl>
-
-		<dl>
-			<dt>
-				<label for="agree0"><@spring.message code="label.i_have_read_and_agreed_with_the_service_license"/> *</label><br/>
-				<a href="#"><@spring.message code="label.click_to_read_the_service_license"/></a>
-			</dt>
-			<dd>
-				<@spring.formRadioButtons "welcomeStep1Form.agree", yesNoHash, "", "" />
 			</dd>
 		</dl>
 

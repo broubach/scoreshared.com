@@ -12,9 +12,6 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,9 +23,9 @@ import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.File;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.WelcomeStep1Form;
 import com.scoreshared.webapp.dto.WelcomeStep3Form;
-import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
 
 @Controller
 @RequestMapping(value = "/welcome")
@@ -41,15 +38,6 @@ public class WelcomeController extends BaseController {
     @Inject
     private ConnectionRepository connectionRepository;
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        if (binder.getTarget() instanceof WelcomeStep1Form) {
-            binder.setValidator(new WelcomeStep1FormValidator());
-        }
-
-        // TODO: will there be a validator for the Step3Form (image size)?
-    }
-
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
     public String getStep1(ModelMap modelMap) {
         if (!modelMap.containsAttribute("welcomeStep1Form")) {
@@ -60,10 +48,7 @@ public class WelcomeController extends BaseController {
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
     public String validateAndSaveStep1(@LoggedUser User loggedUser, ModelMap modelMap,
-            @ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
-        if (result.hasErrors()) {
-            return "welcome/step1";
-        }
+            @ModelAttribute @Valid WelcomeStep1Form form) {
         bo.saveProfile(loggedUser, form.getProfile(), form.getCoach());
         return getStep2(modelMap);
     }
@@ -100,6 +85,7 @@ public class WelcomeController extends BaseController {
             if (getSavedAvatar(session) != null) {
                 bo.cropResizeAndSaveAvatars(loggedUser, getSavedAvatar(session), step3Form.getX().intValue(), step3Form
                         .getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
+                session.setAttribute(UserLoggedListener.LOGGED_USER_AVATAR_HASH, loggedUser.getProfile().getAvatarHash());
             }
 
             status.setComplete();

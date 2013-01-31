@@ -1,5 +1,7 @@
 package com.scoreshared.scaffold;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.bo.GraphBo;
+import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.PlayerBehavior;
 import com.scoreshared.business.persistence.User;
 
@@ -19,6 +22,9 @@ public class UserLoggedListener implements ApplicationListener<AuthenticationSuc
 
     @Inject
     private GraphBo graphBo;
+    
+    @Inject
+    private UserBo userBo;
 
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent appEvent) {
@@ -36,5 +42,9 @@ public class UserLoggedListener implements ApplicationListener<AuthenticationSuc
         } else {
             details.getSession().setAttribute(LOGGED_USER_AVATAR_HASH, "default");
         }
+
+        user.setBeforeLastAccess(user.getLastAccess());
+        user.setLastAccess(new Date());
+        userBo.updateUser(user);
     }
 }

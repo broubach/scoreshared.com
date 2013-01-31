@@ -21,7 +21,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th colspan="4"><@spring.message code="label.results"/></th>
+					<th colspan="4"><@spring.message code="label.scores"/></th>
 				</tr>
 			</thead>
 			<tbody>

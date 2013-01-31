@@ -1,10 +1,8 @@
 package com.scoreshared.business.persistence;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -369,25 +367,60 @@ public class Score extends BaseEntity implements Cloneable {
     }
 
 	public PlayerPermission getSampleOpponent(User loggedUser) {
-	    List<PlayerPermission> opponents = new ArrayList<PlayerPermission>();
+	    Set<PlayerPermission> opponents = new HashSet<PlayerPermission>();
 	    if (hasWinner(loggedUser.getId())) {
 	        opponents.addAll(rightPlayers);
 	
 	    } else {
 	        opponents.addAll(leftPlayers);
 	    }
-	
-	    PlayerPermission result = null;
-	    for (PlayerPermission player : opponents) {
-	    	if (player.isConnected()) {
-	    		result = player;
-	    		break;
-	    	}
-	    }
-	    if (result == null && opponents.size() > 0) {
-	    	result = opponents.get(0);
-	    }
-	
-	    return result;
+
+	    return getSamplePlayer(opponents);
 	}
+
+    public PlayerPermission getSampleLeftPlayer() {
+        return getSamplePlayer(leftPlayers);
+    }
+
+    public PlayerPermission getSampleRightPlayer() {
+        return getSamplePlayer(rightPlayers);
+    }
+
+    public PlayerPermission getSamplePlayer() {
+        return getSamplePlayer(getAllPlayers());
+    }
+
+    public PlayerPermission getSamplePlayer(Set<PlayerPermission> players) {
+        PlayerPermission result = null;
+        for (PlayerPermission player : players) {
+            if (player.isConnected()) {
+                result = player;
+                break;
+            }
+        }
+        if (result == null && players.size() > 0) {
+            result = players.iterator().next();
+        }
+
+        return result;
+    }
+
+    public String getLeftPlayerNames() {
+        return getPlayerNames(leftPlayers);
+    }
+
+    public String getRightPlayerNames() {
+        return getPlayerNames(rightPlayers);
+    }
+
+    public String getPlayerNames(Set<PlayerPermission> players) {
+        StringBuilder result = new StringBuilder();
+        for (PlayerPermission player : players) {
+            result.append(player.getName());
+            result.append(", ");
+        }
+
+        result.delete(result.length() - 2, result.length());
+        return result.toString();
+    }
 }

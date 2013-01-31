@@ -71,7 +71,7 @@ public class PlayerModel {
     }
     
     public boolean getShowContactInfoToFriends() {
-        if (user.getProfile() != null && Boolean.TRUE.equals(user.getProfile().getShowContactInfoToFriends())) {
+        if (user.getProfile() != null && Boolean.TRUE.equals(user.getProfile().getShowContactInfoToFriends()) && isConnected()) {
             return true;
         }
         return false;

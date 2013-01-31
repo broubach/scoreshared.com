@@ -80,6 +80,7 @@
 			<@spring.formSingleSelect "signupForm.birthYear", yearHash, "" />
 		</dd>
 	</dl>
+	<@spring.message code="label.clicking_over_signup_you_are_accepting_our_terms_and_conditions" /><br/>
 	<button type="button"><@spring.message code="label.signup"/></button>
 </form>
 <div id="messageConsole"></div>

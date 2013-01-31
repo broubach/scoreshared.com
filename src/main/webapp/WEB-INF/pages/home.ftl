@@ -3,38 +3,16 @@
 <!DOCTYPE html>
 <head>
 	<title><@spring.message code="label.scoreshared"/></title>
+	<link type="text/css" href="<@spring.url relativeUrl="/css/le-frog/jquery-ui-1.9.2.custom.min.css"/>" rel="Stylesheet" />	
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.8.3.min.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
 </head>
 <body>
 
-<div>
-	<@spring.message code="label.welcome" />,
-	<ul>
-		<li>${userFirstName}</li>
-		<li><@spring.message code="label.profile" /></li>
-		<li><@spring.message code="label.account_setup" /></li>
-		<li><a href="<@spring.url relativeUrl="/j_spring_security_logout"/>"><@spring.message code="label.exit" /></a></li>
-	</ul>
-	<img src="<@spring.url relativeUrl="/app/avatar?hash=${loggedUserAvatarHash}&small"/>"/>
-	<ul>
-		<li><@spring.message code="label.messages" /></li>
-		<#list messages as item>
-			<#if item.type = 'CONTACT'>
-				<li><@spring.message code="label.contact" />: ${item.sender} <a href="<@spring.url relativeUrl="/app/accept/invitation"/>"><@spring.message code="label.accept"/></a> <a href="<@spring.url relativeUrl="/app/ignore/invitation"/>"><@spring.message code="label.ignore"/></a></li>
-			<#elseif item.type = 'APPROVAL'>
-				<li><@spring.message code="label.approval"/>: ${item.sender} ${item.scoreText} <a href="<@spring.url relativeUrl="/app/accept/score"/>"><@spring.message code="label.accept"/></a> <a href="#"><@spring.message code="label.review"/></a> <a href="<@spring.url relativeUrl="/app/ignore/score"/>"><@spring.message code="label.ignore"/></a></li>
-			<#elseif item.type = 'REVISION'>
-				<li><@spring.message code="label.revision"/>: ${item.sender} ${item.scoreText} <a href="<@spring.url relativeUrl="/app/review/revision"/>"><@spring.message code="label.review"/></a> <a href="<@spring.url relativeUrl="/app/ignore/revision"/>"><@spring.message code="label.ignore"/></a></li>
-			<#else>
-				<li><@spring.message code="label.commentary"/>: ${item.sender} ${item.message} <a href="<@spring.url relativeUrl="/app/pendingComments"/>"><@spring.message code="label.see" /></a></li>
-			</#if>
-		</#list>
-		<li><a href="<@spring.url relativeUrl="/app/messages/contactRequests"/>"><@spring.message code="label.see_all_messages"/></a></li>
-	</ul>
-</div>
+<#include "userMenusSnippet.ftl" />
 
 <div>
-	<table>
+	<table id="scoresTable">
 		<thead>
 			<tr>
 				<td colspan="4"><@spring.message code="label.my_latest_scores"/></td>
@@ -59,8 +37,12 @@
 				</td>
 			</tr>
 		</#list>
+	<tfoot>
+	<tr>
+		<td colspan="4"><a href="<@spring.url relativeUrl="/app/scores/1/date/true"/>"><@spring.message code="label.see_all_scores"/></a></td>
+	</tr>
+	</tfoot>
 	</table>
-	<a href="<@spring.url relativeUrl="/app/scores/1/date/true"/>"><@spring.message code="label.see_all_scores"/></a>
 </div>
 
 <div>
@@ -76,12 +58,27 @@
 </body>
 </html>
 
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/playerDecorationUtil.js"/>"></script>
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/messageUtil.js"/>"></script>
+
 <script type="text/javascript">
+
+var ClickContext = {
+	tableLine: {},
+	currentId: {},
+	currentUrl: {}
+};
 
 $(function() {
 	$('#shareButton').click(function() {
 		document.location.href = '<@spring.url relativeUrl="/app/score"/>';
 	});
+	
+	PlayerDecorationUtil.addPlayerLinksTo('#messagesMenu,#scoresTable', ${players}, '<@spring.url relativeUrl="/"/>');
+
+	MessageUtil.addClickBehaviorToMessagesList('li a', '<@spring.url relativeUrl="/"/>', {
+		label_send_a_message_to_asking_for_revision_1_send_a_message_to: '<@spring.message code="label.send_a_message_to_asking_for_revision_1_send_a_message_to"/>',
+		label_send_a_message_to_asking_for_revision_2_asking_for_revision: '<@spring.message code="label.send_a_message_to_asking_for_revision_2_asking_for_revision"/>'});
 });
 
 </script>

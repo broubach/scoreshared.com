@@ -30,6 +30,8 @@ public class User extends BaseEntity implements UserDetails {
     private Date birthday;
     private String password;
     private char gender;
+    private Date lastAccess;
+    private Date beforeLastAccess;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Profile profile;
@@ -89,6 +91,22 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setGender(char gender) {
         this.gender = gender;
+    }
+
+    public Date getLastAccess() {
+        return lastAccess;
+    }
+
+    public void setLastAccess(Date lastAccess) {
+        this.lastAccess = lastAccess;
+    }
+
+    public Date getBeforeLastAccess() {
+        return beforeLastAccess;
+    }
+
+    public void setBeforeLastAccess(Date beforeLastAccess) {
+        this.beforeLastAccess = beforeLastAccess;
     }
 
     @Override

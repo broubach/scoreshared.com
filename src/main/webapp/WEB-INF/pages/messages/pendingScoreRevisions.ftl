@@ -26,6 +26,8 @@
 	</form>
 </html>
 
+<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/messageUtil.js"/>"></script>
+
 <script type="text/javascript">
 var ClickContext = {
 		tableLine: {},
@@ -37,22 +39,8 @@ $(function() {
 
 		var kind = $(this).attr('href').split(',')[0];
 		var id = $(this).attr('href').split(',')[1];
-		var url = '<@spring.url relativeUrl="/app/"/>' + kind + '/revision/';
-		if (kind != 'review') {
-	    	$.ajax({
-			    url: url,
-			    type: 'POST',
-			    data: {'playerPermissionId': id},
-			    dataType: 'json',
-			    success: function() {
-			    	ClickContext.tableLine.remove();
-			    }
-			});
 
-		} else {
-			$('#scoreId').val(id);
-			$('#review-form').submit();
-		}
+		MessageUtil.pendingScoreRevisionsHandleClick(id, kind, '<@spring.url relativeUrl="/"/>');
 	});
 });
 </script>

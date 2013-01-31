@@ -14,8 +14,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerPermissionLeftByPlayerAndScoreQuery", query = "select pp from Score s join s.leftPlayers pp where s.id = :scoreId and pp.player.id = :playerId"),
-        @NamedQuery(name = "playerPermissionRightByPlayerAndScoreQuery", query = "select pp from Score s join s.rightPlayers pp where s.id = :scoreId and pp.player.id = :playerId"),
-        @NamedQuery(name = "playerPermissionCountQuery", query = "select count(pp) from PlayerPermission pp where pp.approvalResponse = 0 and pp.player.association.id = :ownerId and pp.visible = 1")})
+        @NamedQuery(name = "playerPermissionRightByPlayerAndScoreQuery", query = "select pp from Score s join s.rightPlayers pp where s.id = :scoreId and pp.player.id = :playerId")})
 @Table(name = "playerpermission")
 public class PlayerPermission extends BaseEntity implements PlayerBehavior {
 
