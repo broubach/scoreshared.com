@@ -28,12 +28,6 @@
 		<property name="cache" value="true" />
 		<property name="prefix" value="" />
 		<property name="suffix" value=".ftl" />
+		<property name="requestContextAttribute" value="request" />
 	</bean>
-
-	<!-- Configures Handler Interceptors -->
-	<mvc:interceptors>
-		<!-- Changes the locale when a 'locale' request parameter	is sent; e.g. /?locale=de -->
-		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
-	</mvc:interceptors>
-
 </beans>

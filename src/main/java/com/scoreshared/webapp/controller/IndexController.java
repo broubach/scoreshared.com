@@ -16,6 +16,8 @@ import nl.captcha.Captcha;
 
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -75,7 +78,7 @@ public class IndexController extends BaseController {
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView mav = getSignupSnippet(request);
         mav.addObject(new SignupForm());
-        mav.setViewName("index");
+        mav.setViewName("index/index");
         return mav;
     }
 
@@ -217,6 +220,16 @@ public class IndexController extends BaseController {
             logger.severe(e.toString());
             result.put("severe", messageResource.getMessage("severe", null, localeResolver.resolveLocale(request)));
             return result;
+        }
+    }
+
+    @RequestMapping(value="/signup", method=RequestMethod.GET)
+    public SignupForm signupForm(WebRequest request) {
+        Connection<?> connection = ProviderSignInUtils.getConnection(request);
+        if (connection != null) {
+            return SignupForm.fromProviderUser(connection.fetchUserProfile());
+        } else {
+            return new SignupForm();
         }
     }
 }

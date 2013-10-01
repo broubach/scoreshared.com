@@ -2,6 +2,8 @@ package com.scoreshared.webapp.dto;
 
 import java.util.Calendar;
 
+import org.springframework.social.connect.UserProfile;
+
 import com.scoreshared.business.persistence.User;
 
 public class SignupForm {
@@ -110,5 +112,9 @@ public class SignupForm {
 
         result.setGender(gender.trim().charAt(0));
         return result;
+    }
+
+    public static SignupForm fromProviderUser(UserProfile fetchUserProfile) {
+        return new SignupForm();
     }
 }
