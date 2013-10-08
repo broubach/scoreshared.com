@@ -79,9 +79,6 @@
 
 <script type="text/javascript">
 	$(function(){
-		//SignupFlow.init('<@spring.url relativeUrl=""/>');
-		//SignupFlow.bindSignupDataPost();
-
 		$('.foto-banner span').hover(function(){
 			var id = $(this).data('sport');
 			$('.foto-banner img').prop('src',$('.foto-banner img').prop('src').replace(/\-\d/g,'-'+id));

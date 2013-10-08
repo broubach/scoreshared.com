@@ -1,74 +1,64 @@
 <#import "/spring.ftl" as spring />
 
 <!DOCTYPE html>
+<html>
 <head>
-	<title><@spring.message code="label.scoreshared"/></title>
-	<link type="text/css" href="<@spring.url relativeUrl="/css/le-frog/jquery-ui-1.9.2.custom.min.css"/>" rel="Stylesheet" />	
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.8.3.min.js"/>"></script>
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
+	<#assign head_title="ScoreShared: homeNewUser">
+	<#assign head_addition_css=[	"/css/vendor/magnific-popup.css",
+									"/css/vendor/select2.css",
+									"/css/vendor/pickadate/classic.css",
+									"/css/vendor/pickadate/classic.time.css",
+									"/css/vendor/pickadate/classic.date.css"
+									]>
+	<#assign head_additional_js=[	"/js/vendor/jquery.magnific-popup.min.js",
+									"/js/vendor/select2.js",
+									"/js/vendor/pickadate/legacy.js",
+									"/js/vendor/pickadate/picker.js",
+									"/js/vendor/pickadate/picker.date.js",
+									"/js/vendor/pickadate/picker.time.js",
+									"/js/app.js"
+									]>
+	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
 
-<#include "userMenusSnippet.ftl" />
+	<#assign header_snippet="/home/header_snippet.ftl">
+	<#include "/helper-snippets/basic-header.ftl">
 
-<h1><@spring.message code="label.you_dont_have_scores_shared"/></h1>
+	<a href="/scoreshared/pages/feedbackform" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>
+	<div class="row content">
+		<div class="small-6 large-centered columns">
+			<div class="centralizado">
+				<h2>Share your first result</h2>
+				<a href="/scoreshared/painel/registerScore" class="button">Compartilhar</a>
+			</div>
+			<div class="item-resultado">
+				<img src="<@spring.url relativeUrl="/img/avatars/user1.png"/>" class="avatar" alt="" /> <a href="#">João</a>
+				<span class="placar"> 1 x <span class="winner">5</span></span>
+				<a href="#">João</a> <img src="<@spring.url relativeUrl="/img/avatars/user1.png"/>" class="avatar" alt="" />
+			</div>
+			<div class="item-resultado">
+				<img src="<@spring.url relativeUrl="/img/avatars/user2.png"/>" class="avatar" alt="" /> <a href="#">Felipe</a>
+				<span class="placar"> 1 x <span class="winner">1</span></span>
+				<a href="#">Felipe</a> <img src="<@spring.url relativeUrl="/img/avatars/user2.png"/>" class="avatar" alt="" />
+			</div>
+			<div class="item-resultado">
+				<img src="<@spring.url relativeUrl="/img/avatars/user3.png"/>" class="avatar" alt="" /> <a href="#">Rodrigo</a> <span class="placar">
+				<span class="winner">6</span> x 1</span>
+				<a href="#">Rodrigo</a> <img src="<@spring.url relativeUrl="/img/avatars/user3.png"/>" class="avatar" alt="" />
+			</div>
+			<div class="item-resultado">
+				<img src="<@spring.url relativeUrl="/img/avatars/user4.png"/>" class="avatar" alt="" /> <a href="#">Felipe</a>
+				<span class="placar"> <span class="winner">4</span> x 3</span>
+				<a href="#">Felipe</a> <img src="<@spring.url relativeUrl="/img/avatars/user4.png"/>" class="avatar" alt="" />
+			</div>
+		</div>
+	</div>
 
-<div>
-	<h2><@spring.message code="label.see_who_already_registered_their_results"/></h2>
+	<div class="row content">
+		<br />
+	</div>
 
-	<table id="globalScoresTable">
-	<#list scores as item>
-	<tr>
-		<td>
-			<#if item.leftPlayerAvatar?has_content>
-				<img src="<@spring.url relativeUrl="/app/avatar?hash=${item.leftPlayerAvatar}&small"/>"/>
-			</#if>
-		</td>
-		<td>${item.leftPlayerName}</td>
-		<td>${item.scoreText}</td>
-		<td>${item.rightPlayerName}</td>
-		<td>
-			<#if item.rightPlayerAvatar?has_content>
-				<img src="<@spring.url relativeUrl="/app/avatar?hash=${item.rightPlayerAvatar}&small"/>"/>
-			</#if>
-		</td>
-	</tr>
-	</#list>
-	</table>
-</div>
-
-<div>
-	<form>
-		<input id="shareButton" type="button" value="<@spring.message code="label.share_score"/>">
-	</form>
-</div>
-
-<#include "dialogRevisionSnippet.ftl">
-
+	<#include "/helper-snippets/basic-footer.ftl">
 </body>
 </html>
-
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/playerDecorationUtil.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/messageUtil.js"/>"></script>
-
-<script type="text/javascript">
-
-var ClickContext = {
-	tableLine: {},
-	currentId: {},
-	currentUrl: {}
-};
-
-$(function() {
-	$('#shareButton').click(function() {
-		document.location.href = '<@spring.url relativeUrl="/app/score"/>';
-	});
-
-	PlayerDecorationUtil.addPlayerLinksTo('#messagesMenu,#globalScoresTable', ${players}, '<@spring.url relativeUrl="/"/>');
-
-	MessageUtil.addClickBehaviorToMessagesList('li a', '<@spring.url relativeUrl="/"/>', {
-		label_send_a_message_to_asking_for_revision_1_send_a_message_to: '<@spring.message code="label.send_a_message_to_asking_for_revision_1_send_a_message_to"/>',
-		label_send_a_message_to_asking_for_revision_2_asking_for_revision: '<@spring.message code="label.send_a_message_to_asking_for_revision_2_asking_for_revision"/>'});
-});
-
-</script>

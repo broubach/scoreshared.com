@@ -15,12 +15,12 @@ var SignupFlow = {
 
 			} else {
 				if (data.errorMessage instanceof Array) {
-					$('#messageConsole').text("");
+					$('#message-console').text("");
 					for (var i = 0; i<data.errorMessage.length; i++) {
-						$('#messageConsole').append(data.errorMessage[i] + '<br/>');
+						$('#message-console').append(data.errorMessage[i] + '<br/>');
 					}
 				} else {
-					$('#messageConsole').html(data.errorMessage);
+					$('#message-console').html(data.errorMessage);
 				}
 			}
 		},
@@ -39,7 +39,7 @@ var SignupFlow = {
 				});
 			});
 
-			$('#refreshCaptcha').click(function() {
+			$('#refresh-captcha').click(function() {
 				$('#captcha').attr('src', SignupFlow.context + '/app/captcha?' + (new Date()).getTime());
 			});
 
@@ -50,7 +50,7 @@ var SignupFlow = {
 			if (data.errorMessage == undefined) {
 				window.location.href = SignupFlow.context + '/app/welcome/step1';
 			} else {
-				$('#messageConsole').html(data.errorMessage);
+				$('#message-console').html(data.errorMessage);
 			}
 		},
 

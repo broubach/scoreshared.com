@@ -1,3 +1,4 @@
+		<div class="large-8 columns">
 			<ul class="inline-list links right">
 				<li class="login"><a href="#coaches" data-dropdown="login"><@spring.message code="label.login"/></a></li>
 				<li class="signup"><a href="<@spring.url relativeUrl="/app/signup"/>"><@spring.message code="label.signup"/></a></li>
@@ -25,3 +26,4 @@
 					</div>
 				</div>
 			</div>
+		</div>

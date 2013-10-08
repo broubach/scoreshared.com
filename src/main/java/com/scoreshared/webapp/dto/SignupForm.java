@@ -13,9 +13,9 @@ public class SignupForm {
     private String emailConfirmation;
     private String password;
     private String gender;
-    private int birthDay;
-    private int birthMonth;
-    private int birthYear;
+    private Integer birthDay = -1;
+    private Integer birthMonth = -1;
+    private Integer birthYear = -1;
     private String invitationHash;
 
     public String getFirstName() {
@@ -104,13 +104,18 @@ public class SignupForm {
         result.setLastName(lastName.trim());
         result.setEmail(email.trim());
 
-        Calendar birthday = Calendar.getInstance();
-        birthday.set(Calendar.DATE, this.birthDay);
-        birthday.set(Calendar.MONTH, this.birthMonth);
-        birthday.set(Calendar.YEAR, this.birthYear);
-        result.setBirthday(birthday.getTime());
+        if (birthDay != null && birthMonth != null && birthYear != null) {
+            Calendar birthday = Calendar.getInstance();
+            birthday.set(Calendar.DATE, birthDay);
+            birthday.set(Calendar.MONTH, birthMonth);
+            birthday.set(Calendar.YEAR, birthYear);
+            result.setBirthday(birthday.getTime());
+        }
+        
+        if (gender != null) {
+            result.setGender(gender.trim().charAt(0));
+        }
 
-        result.setGender(gender.trim().charAt(0));
         return result;
     }
 

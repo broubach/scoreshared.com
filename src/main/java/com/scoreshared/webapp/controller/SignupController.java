@@ -17,6 +17,7 @@ import nl.captcha.Captcha;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,14 +39,15 @@ import com.scoreshared.scaffold.SecurityHelper;
 import com.scoreshared.webapp.dto.SignupForm;
 
 @Controller
+@RequestMapping(value = "/signup")
 @SessionAttributes({ "signupForm" })
-public class IndexController extends BaseController {
+public class SignupController extends BaseController {
 
-    protected Logger logger = Logger.getLogger(IndexController.class.getName());
+    protected Logger logger = Logger.getLogger(SignupController.class.getName());
 
     @Inject
     private UserBo userBo;
-    
+
     @Inject
     private GraphBo graphBo;
 
@@ -63,7 +65,7 @@ public class IndexController extends BaseController {
 
     @RequestMapping(value = "/receiveInvitation/{invitationHash}", method = RequestMethod.GET)
     public ModelAndView receiveInvitation(HttpServletRequest request, @PathVariable String invitationHash) {
-        ModelAndView mav = index(request);
+        ModelAndView mav = signup(request);
         Player player = graphBo.findPlayerByInvitationHash(invitationHash);
         if (player != null) {
             SignupForm form = (SignupForm) mav.getModel().get("signupForm");
@@ -74,17 +76,40 @@ public class IndexController extends BaseController {
         return mav;
     }
 
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public ModelAndView index(HttpServletRequest request) {
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView signup(HttpServletRequest request) {
         ModelAndView mav = getSignupSnippet(request);
         mav.addObject(new SignupForm());
-        mav.setViewName("index/index");
+        mav.setViewName("signup/signup");
+
         return mav;
     }
 
-    @RequestMapping(value = "/signup/data", method = RequestMethod.GET)
+    @RequestMapping(value = "/connection", method = RequestMethod.GET)
+    public String signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request, HttpServletResponse response) {
+        Connection<?> connection = ProviderSignInUtils.getConnection(webRequest);
+        if (connection != null) {
+            SignupForm form = new SignupForm();
+            UserProfile userProfile = connection.fetchUserProfile();
+            form.setEmail(userProfile.getEmail());
+            form.setFirstName(userProfile.getFirstName());
+            form.setLastName(userProfile.getLastName());
+            userBo.saveNewUser(form.toUser(), null);
+
+            // TODO: fetch image from profile
+
+            ProviderSignInUtils.handlePostSignUp(userProfile.getEmail(), webRequest);
+            
+            securityHelper.authenticateUserWithSocialId(request, response, userProfile.getEmail(), connection.getKey()
+                    .getProviderId(), connection.getKey().getProviderUserId());
+
+        }
+        return "redirect:/app/welcome/step1";
+    }
+
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ModelAndView getSignupSnippet(HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("signupSnippet");
+        ModelAndView mav = new ModelAndView("signup/signup-snippet");
         Map<String, String> yearHash = new TreeMap<String, String>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -101,7 +126,7 @@ public class IndexController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/signup/data", method = RequestMethod.POST)
+    @RequestMapping(value = "/data", method = RequestMethod.POST)
     public Map<String, Object> validateUserData(HttpServletRequest request, @ModelAttribute SignupForm form) {
         Map<String, Object> result = new HashMap<String, Object>();
 
@@ -186,13 +211,13 @@ public class IndexController extends BaseController {
         return result;
     }
 
-    @RequestMapping(value = "/signup/captcha", method = RequestMethod.GET)
+    @RequestMapping(value = "/captcha", method = RequestMethod.GET)
     public String getCaptchaSnippet() {
-        return "captchaSnippet";
+        return "signup/captcha-snippet";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/signup/captcha", method = RequestMethod.POST)
+    @RequestMapping(value = "/captcha", method = RequestMethod.POST)
     public Map<String, Object> validateCaptcha(HttpServletRequest request, HttpServletResponse response,
             @ModelAttribute(value = "captchaAnswer") String captchaAnswer, @ModelAttribute SignupForm form,
             SessionStatus sessionStatus) {
@@ -220,16 +245,6 @@ public class IndexController extends BaseController {
             logger.severe(e.toString());
             result.put("severe", messageResource.getMessage("severe", null, localeResolver.resolveLocale(request)));
             return result;
-        }
-    }
-
-    @RequestMapping(value="/signup", method=RequestMethod.GET)
-    public SignupForm signupForm(WebRequest request) {
-        Connection<?> connection = ProviderSignInUtils.getConnection(request);
-        if (connection != null) {
-            return SignupForm.fromProviderUser(connection.fetchUserProfile());
-        } else {
-            return new SignupForm();
         }
     }
 }

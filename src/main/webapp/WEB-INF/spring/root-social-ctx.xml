@@ -55,9 +55,8 @@
 		<constructor-arg ref="usersConnectionRepository"/>
 		<constructor-arg ref="signinAdapter"/>
 		<property name="signInUrl" value="/app/login"/>
-		<property name="signUpUrl" value="/app/signup"/>
+		<property name="signUpUrl" value="/app/signup/connection"/>
 		<property name="applicationUrl" value="${application.url}"/>
-		<!-- TODO: implement the redirect to a SignUp form in case the user connection was not found -->
 	</bean>
 	
 	<bean class="com.scoreshared.scaffold.CustomConnectController">

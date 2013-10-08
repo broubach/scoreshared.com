@@ -20,6 +20,7 @@
 	<context:component-scan base-package="com.scoreshared" />
 
 	<view-controller path="/error" view-name="error" />
+	<view-controller path="/index" view-name="index/index" />
 
 	<beans:bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
