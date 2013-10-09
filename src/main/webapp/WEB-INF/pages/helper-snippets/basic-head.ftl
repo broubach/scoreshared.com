@@ -9,13 +9,13 @@
 	<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/css/foundation.min.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/css/normalize.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="/css/app.css"/>" />
-	<#if head_addition_css??>
-		<#list head_addition_css as css>
+	<#if head_additional_css??>
+		<#list head_additional_css as css>
 			<link rel="stylesheet" type="text/css" href="<@spring.url relativeUrl="${css}"/>" />
 		</#list>
 	</#if>
 
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/vendor/jquery.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.10.2.min.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/vendor/custom.modernizr.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/foundation.min.js"/>"></script>
 	<#if head_additional_js??>

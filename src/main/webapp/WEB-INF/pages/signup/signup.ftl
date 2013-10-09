@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: Sign up">
-	<#assign head_addition_css=["/css/vendor/select2.css"]>
+	<#assign head_additional_css=["/css/vendor/select2.css"]>
 	<#assign head_additional_js=["/js/vendor/select2.js", "/js/index.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>

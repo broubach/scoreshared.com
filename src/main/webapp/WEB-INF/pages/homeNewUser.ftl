@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: homeNewUser">
-	<#assign head_addition_css=[	"/css/vendor/magnific-popup.css",
+	<#assign head_additional_css=[	"/css/vendor/magnific-popup.css",
 									"/css/vendor/select2.css",
 									"/css/vendor/pickadate/classic.css",
 									"/css/vendor/pickadate/classic.time.css",

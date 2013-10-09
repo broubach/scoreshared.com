@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: Welcome1">
-	<#assign head_addition_css=["/css/vendor/select2.css"]>
+	<#assign head_additional_css=["/css/vendor/select2.css"]>
 	<#assign head_additional_js=["/js/vendor/select2.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -46,7 +46,7 @@
 			</#if>
 
 			<form action="<@spring.url relativeUrl="/app/welcome/step1"/>" method="post" accept-charset="utf-8">
-				<div class="input text"><label for="profile.city"><@spring.message code="label.which_city_do_you_live"/></label><@spring.formInput "welcomeStep1Form.profile.city", "maxlength='45'", "text"/></div>
+				<div class="input text"><label for="profile.city"><@spring.message code="label.in_which_city_do_you_live"/></label><@spring.formInput "welcomeStep1Form.profile.city", "maxlength='45'", "text"/></div>
 				<div class="input text"><label for="profile.country"><@spring.message code="label.which_country"/></label><@spring.formInput "welcomeStep1Form.profile.country", "maxlength='45'", "text"/></div>
 				<div class="input text">
 					<label for="profile.sport"><@spring.message code="label.what_sport_do_you_intend_to_score"/></label>
@@ -60,7 +60,7 @@
 					<#assign sportsHash = {"TENNIS":label_sport_tennis, "TABLE_TENNIS":label_sport_table_tennis, "BADMINTON":label_sport_badminton, "SQUASH":label_sport_squash, "BEACH_TENNIS":label_sport_beach_tennis, "PADDLE":label_sport_paddle, "OTHER":label_sport_other} >
 					<@spring.formSingleSelect "welcomeStep1Form.profile.sport", sportsHash, "style='width: 220px'" />
 				</div>
-				<div class="input text"><label for="profile.academy"><@spring.message code="label.which_academy_do_you_play_most"/></label><@spring.formInput "welcomeStep1Form.profile.academy", "maxlength='45'", "text"/></div>
+				<div class="input text"><label for="profile.academy"><@spring.message code="label.in_which_academy_do_you_play_most"/></label><@spring.formInput "welcomeStep1Form.profile.academy", "maxlength='45'", "text"/></div>
 				<div class="input text">
 					<label for="profile.leftHanded0"><@spring.message code="label.you_are"/></label>
 					<div class="switch">
