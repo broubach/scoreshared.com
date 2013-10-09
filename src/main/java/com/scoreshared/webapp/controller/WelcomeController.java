@@ -9,14 +9,19 @@ import javax.validation.Valid;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.scoreshared.business.bo.UserBo;
@@ -26,6 +31,7 @@ import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.WelcomeStep1Form;
 import com.scoreshared.webapp.dto.WelcomeStep3Form;
+import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
 
 @Controller
 @RequestMapping(value = "/welcome")
@@ -38,6 +44,13 @@ public class WelcomeController extends BaseController {
     @Inject
     private ConnectionRepository connectionRepository;
 
+    @InitBinder
+    protected void initBinder(WebDataBinder binder, WebRequest request) {
+        if (binder.getTarget() instanceof WelcomeStep1Form) {
+            binder.setValidator(new WelcomeStep1FormValidator());
+        }
+    }
+
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
     public String getStep1(ModelMap modelMap) {
         if (!modelMap.containsAttribute("welcomeStep1Form")) {
@@ -48,19 +61,30 @@ public class WelcomeController extends BaseController {
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
     public String validateAndSaveStep1(@LoggedUser User loggedUser, ModelMap modelMap,
-            @ModelAttribute @Valid WelcomeStep1Form form) {
+            @ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
+        if (result.hasErrors()) {
+            return "welcome/step1";
+        }
         bo.saveProfile(loggedUser, form.getProfile(), form.getCoach());
         return getStep2(modelMap);
     }
 
     @RequestMapping(value = "/step2", method = RequestMethod.GET)
     public String getStep2(ModelMap modelMap) {
-        Connection<Twitter> connection = connectionRepository.findPrimaryConnection(Twitter.class);
-        if (connection != null) {
-            modelMap.addAttribute("twitterAccount", connection.fetchUserProfile().getUsername());
+        Connection<Twitter> twitterConnection = connectionRepository.findPrimaryConnection(Twitter.class);
+        if (twitterConnection != null) {
+            modelMap.addAttribute("twitterAccount", twitterConnection.fetchUserProfile().getUsername());
             modelMap.addAttribute("twitterConnected", true);
         } else {
             modelMap.addAttribute("twitterConnected", false);
+        }
+
+        Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
+        if (facebookConnection != null) {
+            modelMap.addAttribute("facebookAccount", facebookConnection.fetchUserProfile().getUsername());
+            modelMap.addAttribute("facebookConnected", true);
+        } else {
+            modelMap.addAttribute("facebookConnected", false);
         }
         return "welcome/step2";
     }

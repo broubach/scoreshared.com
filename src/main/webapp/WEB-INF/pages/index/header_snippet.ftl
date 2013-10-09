@@ -9,15 +9,14 @@
 						<a href="#"><img src="<@spring.url relativeUrl="/img/buttons/button-login-fb.png"/>" alt="" /></a>
 					</div>
 					<div class="large-7 columns">
-						<form action="<@spring.url relativeUrl="/painel/home"/>" id="UserDisplayForm" method="post" accept-charset="utf-8">
-							<div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
-							<div class="input email"><label for="UserEmail"><@spring.message code="label.email"/></label><input name="data[User][email]" type="email" id="UserEmail"/></div>
-							<div class="input password"><label for="UserPassword"><@spring.message code="label.password"/></label><input name="data[User][password]" type="password" id="UserPassword"/></div>
+						<form action="<@spring.url relativeUrl="/j_spring_security_check"/>" id="login-form" method="POST" accept-charset="utf-8">
+							<div class="input email"><label for="j_username"><@spring.message code="label.email"/></label><input id="j_username" name="j_username" type="email" maxlength="45" id="UserEmail"/></div>
+							<div class="input password"><label for="j_password"><@spring.message code="label.password"/></label><input id="j_password" name="j_password" type="password" id="UserPassword"/></div>
 							<br/>
 						</form>
 						<div class="row">
 							<div class="columns large-4">
-								<div class="submit"><input class="button button-primary button-small" type="submit" value="<@spring.message code="label.login"/>"/></div>
+								<div class="submit"><input class="button button-primary button-small" id="login_button" type="button" value="<@spring.message code="label.login"/>"/></div>
 							</div>
 							<div class="columns large-8">
 								<a href="#" class="forgot-pass"><@spring.message code="label.forgotyourpassword"/></a>

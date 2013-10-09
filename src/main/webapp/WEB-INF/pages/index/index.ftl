@@ -96,5 +96,8 @@
 		},function(){
 			$(this).css('font-weight','normal');
 		});
+		$('#login_button').click(function() {
+			$('#login-form').submit();
+		});
 	});
 </script>

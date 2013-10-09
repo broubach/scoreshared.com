@@ -307,7 +307,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus
 	background-color:#fff;
 }
 
-.input .select2-container {
+.input .select2-container, textarea, .label {
 	margin-bottom: 14px;
 	paddin: 7px;
 }
