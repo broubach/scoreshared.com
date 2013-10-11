@@ -4,17 +4,64 @@ var Sets = {
 	setsPane: "",
 	nthSetLabel: "",
 	setLabel: "",
+	playersList: [],
+	loggedUserPlayerName: "",
 	count: 1,
 
-	init: function(playersPane, setsPane, nthSetLabel, setLabel) {
+	init: function(playersPane, setsPane, nthSetLabel, setLabel, playersList, loggedUserPlayerName) {
 		Sets.playersPane = playersPane;
 		Sets.setsPane = setsPane;
 		Sets.nthSetLabel = nthSetLabel;
 		Sets.setLabel = setLabel;
+		Sets.playersList = playersList;
+		Sets.loggedUserPlayerName = loggedUserPlayerName;
 		$('label', document.getElementById(Sets.setsPane)).append(Sets.count + Sets.nthSetLabel);
 		$('input', document.getElementById(Sets.setsPane)).blur(Sets.switchSidesIfNeeded);
 		Sets.updateAllSetsInfo();
 		Sets.switchSidesIfNeeded();
+		Sets.initDropDown();
+	},
+
+	initDropDown: function() {
+		$("#playersLeft,#playersRight").select2({
+			multiple : true,
+			tags: true,
+			tokenSeparators: [","],
+			query : function(query) {
+				var data = { results : [] };
+
+				$.each(Sets.playersList, function() {
+					// TODO: is it really necessary to include the name of the logged player within the playersList?
+					 if (query.term.length == 0 || this.toUpperCase().indexOf(query.term.toUpperCase()) >= 0) {
+						 data.results.push({id: this, text: this });
+					 }
+				});
+
+				query.callback(data);
+			},
+		    initSelection : function (element, callback) {
+		        var data = [];
+		        $(ProvidePlayerListStep.createList(element.val())).each(function () {
+		        	var isLocked = false;
+		        	if (Sets.loggedUserPlayerName.toUpperCase() == this.playerName.toUpperCase()) {
+		        		isLocked = true;
+		        	}
+		            data.push({id: this.playerName, text: this.playerName, locked: isLocked});
+		        });
+		        callback(data);
+		    },
+		    createSearchChoice : function(term, data) {
+		    	if ($(data).filter(function() {
+		    		  return this.text.localeCompare(term)===0;
+		    		}).length===0) {
+		    		return {id:term, text:term};
+		    	}
+		    }
+		});
+	},
+	
+	destroyDropDown: function() {
+		$('#playersLeft,#playersRight').select2("destroy");
 	},
 
 	increase: function() {
@@ -83,13 +130,7 @@ var Sets = {
 		$($('input', set).get(1)).attr('name', 'set' + nr + 'Right');
 		$('input', set).blur(Sets.switchSidesIfNeeded);
 
-		if (nr < Sets.count) {
-			$('dd a', set).remove();
-			$('dd', set).append('<a href="javascript:Sets.deleteY('+nr+');">-</a>');
-		} else {
-			$('dd a', set).remove();
-			$('dd', set).append('<a href="javascript:Sets.increase();">+ '+Sets.setLabel+'</a>');
-		}
+		$('div a', set).attr('href', 'javascript:Sets.deleteY('+nr+');');
 	},
 
 	switchSidesIfNeeded: function() {
@@ -140,9 +181,13 @@ var Sets = {
 			$('input:eq(1)', sets[i]).val(aux);
 		}
 
-		aux = $('input:first', '#' + Sets.playersPane).val();
-		$('input:first', '#' + Sets.playersPane).val($('input:eq(1)', '#' + Sets.playersPane).val());
-		$('input:eq(1)', '#' + Sets.playersPane).val(aux);
+		Sets.destroyDropDown();
+
+		aux = $('#playersLeft').val();
+		$('#playersLeft').val($('#playersRight').val());
+		$('#playersRight').val(aux);
+		
+		Sets.initDropDown();
 	}
 };
 

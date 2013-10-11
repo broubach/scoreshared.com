@@ -109,7 +109,7 @@ var UserConfirmationStep = {
 
 			$("#dialog-confirm input[type='checkbox']").attr('checked', false);
 			$("#confirmation-question").html(data.title);
-			$("#dialog-confirm").dialog("open");
+			//$("#dialog-confirm").dialog("open"); // TODO: replace dialog call
 		}
 	},
 
@@ -126,33 +126,34 @@ var UserConfirmationStep = {
 	},
 
 	init: function(context) {
-		$("#dialog-confirm").dialog({
-			autoOpen: false,
-			modal: true,
-			width:'auto',
-			buttons : [ {
-				text : context.options.label_yes,
-				click : function() {
-					$("#dialog-confirm").dialog("close");
-					$('#search-form input').val('');
-					if ($("#dialog-confirm input[type='checkbox']").is(':checked')) {
-						$("#score-form input[name='newPlayersNotToBeRemembered']").val($("#score-form input[name='newPlayersNotToBeRemembered']").val() + "," + context.players[context.currentPlayer].playerName);
-						console.log("checkbox was checked and user '" + context.players[context.currentPlayer].playerName + '" was added, resulting in: ' + $("#score-form input[name='newPlayersNotToBeRemembered']").val());
-					}
-					NewPlayerWizard.start(OpenSearchDialogStep.name);
-				}
-			}, {
-				text : context.options.label_save_without_invitation,
-				click : function() {
-					$("#dialog-confirm").dialog("close");
-					if ($("#dialog-confirm input[type='checkbox']").is(':checked')) {
-						$("#score-form input[name='newPlayersNotToBeRemembered']").val($("#score-form input[name='newPlayersNotToBeRemembered']").val() + "," + context.players[context.currentPlayer].playerName);
-						console.log('checkbox was checked and user "' + context.players[context.currentPlayer].playerName + '" was added, resulting in: ' + $("#score-form input[name='newPlayersNotToBeRemembered']").val());
-					}
-					NewPlayerWizard.resume();
-				}
-			} ]
-		});
+		// TODO: use other technology
+//		$("#dialog-confirm").dialog({
+//			autoOpen: false,
+//			modal: true,
+//			width:'auto',
+//			buttons : [ {
+//				text : context.options.label_yes,
+//				click : function() {
+//					$("#dialog-confirm").dialog("close"); //TODO: replace
+//					$('#search-form input').val('');
+//					if ($("#dialog-confirm input[type='checkbox']").is(':checked')) {
+//						$("#score-form input[name='newPlayersNotToBeRemembered']").val($("#score-form input[name='newPlayersNotToBeRemembered']").val() + "," + context.players[context.currentPlayer].playerName);
+//						console.log("checkbox was checked and user '" + context.players[context.currentPlayer].playerName + '" was added, resulting in: ' + $("#score-form input[name='newPlayersNotToBeRemembered']").val());
+//					}
+//					NewPlayerWizard.start(OpenSearchDialogStep.name);
+//				}
+//			}, {
+//				text : context.options.label_save_without_invitation,
+//				click : function() {
+//					$("#dialog-confirm").dialog("close"); // TODO: replace
+//					if ($("#dialog-confirm input[type='checkbox']").is(':checked')) {
+//						$("#score-form input[name='newPlayersNotToBeRemembered']").val($("#score-form input[name='newPlayersNotToBeRemembered']").val() + "," + context.players[context.currentPlayer].playerName);
+//						console.log('checkbox was checked and user "' + context.players[context.currentPlayer].playerName + '" was added, resulting in: ' + $("#score-form input[name='newPlayersNotToBeRemembered']").val());
+//					}
+//					NewPlayerWizard.resume();
+//				}
+//			} ]
+//		});
 		return UserConfirmationStep;
 	}
 };
@@ -163,7 +164,7 @@ var OpenSearchDialogStep = {
 	execute: function(context) {
 		$("#dialog-search .error-panel").html('');
         $('#search-for-username').html(context.options.label_search_for + " " + context.players[context.currentPlayer].playerName);
-        $("#dialog-search").dialog("open");
+//        $("#dialog-search").dialog("open"); // TODO: replace
 	},
 
 	getNextStep: function() {
@@ -179,40 +180,41 @@ var OpenSearchDialogStep = {
 	},
 
 	init: function(context) {
-		$( "#dialog-search" ).dialog({
-			autoOpen: false,
-			modal: true,
-			width:'auto',
-			buttons: [{
-				text: context.options.label_invite,
-				click: function() {
-					var hasAnyFilledField = $("#search-form input[type=text]").filter(function(){
-					    return $.trim($(this).val());
-					}).length > 0;
-					if (!hasAnyFilledField) {
-						$("#dialog-search .error-panel").html(context.options.error_please_fill_at_least_one_field_for_search);
-						return;
-					}
-					NewPlayerWizard.storeFormDataInBreadCrumbs('#search-form');
-					$('#playerNameInScore').val(context.players[context.currentPlayer].playerName);
-					$.ajax({
-						url: context.options.contextPath+"/app/score/searchUser",
-						data: $('#search-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: function(data) {
-							NewPlayerWizard.start(ProcessSearchResultStep.name, data);
-						}
-					});
-				}
-			},{
-				text: context.options.label_save_without_invitation,
-				click: function() {
-					NewPlayerWizard.resume();
-				}
-			}]
-		});
+		// TODO: replace
+//		$( "#dialog-search" ).dialog({
+//			autoOpen: false,
+//			modal: true,
+//			width:'auto',
+//			buttons: [{
+//				text: context.options.label_invite,
+//				click: function() {
+//					var hasAnyFilledField = $("#search-form input[type=text]").filter(function(){
+//					    return $.trim($(this).val());
+//					}).length > 0;
+//					if (!hasAnyFilledField) {
+//						$("#dialog-search .error-panel").html(context.options.error_please_fill_at_least_one_field_for_search);
+//						return;
+//					}
+//					NewPlayerWizard.storeFormDataInBreadCrumbs('#search-form');
+//					$('#playerNameInScore').val(context.players[context.currentPlayer].playerName);
+//					$.ajax({
+//						url: context.options.contextPath+"/app/score/searchUser",
+//						data: $('#search-form').serialize(),
+//						type: 'POST',
+//						dataType: 'json',
+//						cache: false,
+//						success: function(data) {
+//							NewPlayerWizard.start(ProcessSearchResultStep.name, data);
+//						}
+//					});
+//				}
+//			},{
+//				text: context.options.label_save_without_invitation,
+//				click: function() {
+//					NewPlayerWizard.resume();
+//				}
+//			}]
+//		});
 		return OpenSearchDialogStep;
 	}
 };
@@ -221,7 +223,7 @@ var ProcessSearchResultStep = {
 	name: 'processSearchResult',
 	data: {},
 	execute: function(context, data) {
-		$("#dialog-search").dialog( "close" );
+//		$("#dialog-search").dialog( "close" ); // TODO: replace
 		ProcessSearchResultStep.data = data;
 	},
 
@@ -272,7 +274,7 @@ var ChoosePlayerFromListStep = {
             $("#dialog-choosePlayerFromList table tbody tr:eq(" + i + ") a").click(function(e) {
                 e.preventDefault();
 
-                $("#dialog-choosePlayerFromList").dialog("close");
+//                $("#dialog-choosePlayerFromList").dialog("close"); // TODO: replace
 
         		var newData = {'playerList': [ChoosePlayerFromListStep.lastSearchResult.playerList[$(this).attr('href')]],
         				'playerFound': true,
@@ -282,7 +284,7 @@ var ChoosePlayerFromListStep = {
             });
         }
 
-        $("#dialog-choosePlayerFromList").dialog("open");
+//        $("#dialog-choosePlayerFromList").dialog("open"); // TODO: replace
 	},
 
 	getNextStep: function() {
@@ -298,24 +300,25 @@ var ChoosePlayerFromListStep = {
 	},
 
 	init: function(context) {
-	    $( "#dialog-choosePlayerFromList" ).dialog({
-	        autoOpen: false,
-	        modal: true,
-			width:'auto',
-	        buttons: [{
-	            text: context.options.label_back,
-	            click: function() {
-	        		$("#dialog-choosePlayerFromList").dialog( "close" );
-	        		NewPlayerWizard.goBack(2);
-	            }
-	        }, {
-	            text: context.options.label_save_without_invitation,
-	            click: function() {
-	        		$("#dialog-choosePlayerFromList").dialog( "close" );
-	        		NewPlayerWizard.resume();
-	            }
-	        }]
-	    });
+		// TODO: replace
+//	    $( "#dialog-choosePlayerFromList" ).dialog({
+//	        autoOpen: false,
+//	        modal: true,
+//			width:'auto',
+//	        buttons: [{
+//	            text: context.options.label_back,
+//	            click: function() {
+//	        		$("#dialog-choosePlayerFromList").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.goBack(2);
+//	            }
+//	        }, {
+//	            text: context.options.label_save_without_invitation,
+//	            click: function() {
+//	        		$("#dialog-choosePlayerFromList").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.resume();
+//	            }
+//	        }]
+//	    });
 	    return ChoosePlayerFromListStep;
 	}
 };
@@ -340,47 +343,48 @@ var InviteRegisteredUserStep = {
 	},
 
 	init: function(context) {
-		$( "#dialog-registeredInvitation" ).dialog({
-			autoOpen: false,
-			modal: true,
-			width:'auto',
-			buttons: [{
-                text: context.options.label_back,
-                click: function() {
-            		$("#dialog-registeredInvitation").dialog( "close" );
-	        		NewPlayerWizard.goBack();
-                }
-            },{
-				text: context.options.label_send_invitation,
-				click: function() {
-					var hasAnyFilledField = $("#registeredInvitation-form textarea").filter(function(){
-					    return $.trim($(this).val()) != "";
-					}).length > 0;
-					if (!hasAnyFilledField) {
-						$("#dialog-registeredInvitation .error-panel").html(context.options.error_please_enter_some_text);
-						return;
-					}
-					$("#registeredInvitation-form input[name='playerId']").val(context.currentPlayerId);
-					$.ajax({
-						url: context.options.contextPath+"/app/score/newFriendRequest",
-						data: $('#registeredInvitation-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: function(data) {
-			        		$("#dialog-registeredInvitation").dialog( "close" );
-							NewPlayerWizard.resume(data);
-						}
-					});
-				}
-			}, {
-	            text: context.options.label_save_without_invitation,
-	            click: function() {
-	        		$("#dialog-registeredInvitation").dialog( "close" );
-	        		NewPlayerWizard.resume();
-	            }
-	        }]
-		});
+		// TODO: replace
+//		$( "#dialog-registeredInvitation" ).dialog({
+//			autoOpen: false,
+//			modal: true,
+//			width:'auto',
+//			buttons: [{
+//                text: context.options.label_back,
+//                click: function() {
+//            		$("#dialog-registeredInvitation").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.goBack();
+//                }
+//            },{
+//				text: context.options.label_send_invitation,
+//				click: function() {
+//					var hasAnyFilledField = $("#registeredInvitation-form textarea").filter(function(){
+//					    return $.trim($(this).val()) != "";
+//					}).length > 0;
+//					if (!hasAnyFilledField) {
+//						$("#dialog-registeredInvitation .error-panel").html(context.options.error_please_enter_some_text);
+//						return;
+//					}
+//					$("#registeredInvitation-form input[name='playerId']").val(context.currentPlayerId);
+//					$.ajax({
+//						url: context.options.contextPath+"/app/score/newFriendRequest",
+//						data: $('#registeredInvitation-form').serialize(),
+//						type: 'POST',
+//						dataType: 'json',
+//						cache: false,
+//						success: function(data) {
+//			        		$("#dialog-registeredInvitation").dialog( "close" ); // TODO: replace
+//							NewPlayerWizard.resume(data);
+//						}
+//					});
+//				}
+//			}, {
+//	            text: context.options.label_save_without_invitation,
+//	            click: function() {
+//	        		$("#dialog-registeredInvitation").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.resume();
+//	            }
+//	        }]
+//		});
 		return InviteRegisteredUserStep;
 	}
 };
@@ -393,7 +397,7 @@ var InviteUnregisteredUserStep = {
         $("#unregisteredInvitation-form dt:eq(0)").html(data.playerNameInScore + " " + context.options.label_user_not_found + '<br/>' + context.options.label_take_the_opportunity_to_invite); // fullName + location
         $("#unregisteredInvitation-form textarea").text(data.invitationMessage); // invitationMessage
         $("#unregisteredInvitation-form input[name='email']").val(data.email); // email
-        $("#dialog-unregisteredInvitation").dialog("open");
+//        $("#dialog-unregisteredInvitation").dialog("open"); // TODO: replace
 	},
 
 	getNextStep: function() {
@@ -409,43 +413,44 @@ var InviteUnregisteredUserStep = {
 	},
 
 	init: function(context) {
-		$( "#dialog-unregisteredInvitation" ).dialog({
-			autoOpen: false,
-			modal: true,
-			width:'auto',
-			buttons: [{
-                text: context.options.label_back,
-                click: function() {
-            		$("#dialog-unregisteredInvitation").dialog( "close" );
-	        		NewPlayerWizard.goBack();
-                }
-            }, {
-				text: context.options.label_invite,
-				click: function() {
-					if (!$.trim($("#unregisteredInvitation-form input[name='email']").val()) || !$.trim($("#unregisteredInvitation-form textarea").val())) {
-						$("#dialog-unregisteredInvitation .error-panel").html(context.options.error_please_fill_out_all_fields);
-						return;
-					}
-					$.ajax({
-						url: context.options.contextPath+"/app/score/newInvitation",
-						data: $('#unregisteredInvitation-form').serialize(),
-						type: 'POST',
-						dataType: 'json',
-						cache: false,
-						success: function() {
-		            		$("#dialog-unregisteredInvitation").dialog( "close" );
-							NewPlayerWizard.resume();
-						}
-					});
-				}
-			}, {
-	            text: context.options.label_save_without_invitation,
-	            click: function() {
-	        		$("#dialog-registeredInvitation").dialog( "close" );
-	        		NewPlayerWizard.resume();
-	            }
-	        }]
-		});
+		// TODO: replace
+//		$( "#dialog-unregisteredInvitation" ).dialog({
+//			autoOpen: false,
+//			modal: true,
+//			width:'auto',
+//			buttons: [{
+//                text: context.options.label_back,
+//                click: function() {
+//            		$("#dialog-unregisteredInvitation").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.goBack();
+//                }
+//            }, {
+//				text: context.options.label_invite,
+//				click: function() {
+//					if (!$.trim($("#unregisteredInvitation-form input[name='email']").val()) || !$.trim($("#unregisteredInvitation-form textarea").val())) {
+//						$("#dialog-unregisteredInvitation .error-panel").html(context.options.error_please_fill_out_all_fields);
+//						return;
+//					}
+//					$.ajax({
+//						url: context.options.contextPath+"/app/score/newInvitation",
+//						data: $('#unregisteredInvitation-form').serialize(),
+//						type: 'POST',
+//						dataType: 'json',
+//						cache: false,
+//						success: function() {
+//		            		$("#dialog-unregisteredInvitation").dialog( "close" ); // TODO: replace
+//							NewPlayerWizard.resume();
+//						}
+//					});
+//				}
+//			}, {
+//	            text: context.options.label_save_without_invitation,
+//	            click: function() {
+//	        		$("#dialog-registeredInvitation").dialog( "close" ); // TODO: replace
+//	        		NewPlayerWizard.resume();
+//	            }
+//	        }]
+//		});
 		return InviteUnregisteredUserStep;
 	}
 };

@@ -4,20 +4,9 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: homeNewUser">
-	<#assign head_additional_css=[	"/css/vendor/magnific-popup.css",
-									"/css/vendor/select2.css",
-									"/css/vendor/pickadate/classic.css",
-									"/css/vendor/pickadate/classic.time.css",
-									"/css/vendor/pickadate/classic.date.css"
-									]>
+	<#assign head_additional_css=[	"/css/vendor/magnific-popup.css" ]>
 	<#assign head_additional_js=[	"/js/vendor/jquery.magnific-popup.min.js",
-									"/js/vendor/select2.js",
-									"/js/vendor/pickadate/legacy.js",
-									"/js/vendor/pickadate/picker.js",
-									"/js/vendor/pickadate/picker.date.js",
-									"/js/vendor/pickadate/picker.time.js",
-									"/js/app.js"
-									]>
+									"/js/app.js" ]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -29,8 +18,8 @@
 	<div class="row content">
 		<div class="small-6 large-centered columns">
 			<div class="centralizado">
-				<h2>Share your first result</h2>
-				<a href="/scoreshared/painel/registerScore" class="button">Compartilhar</a>
+				<h2><@spring.message code="label.share_your_first_score"/></h2>
+				<a href="<@spring.url relativeUrl="/app/score"/>" class="button"><@spring.message code="label.share"/></a>
 			</div>
 			<div class="item-resultado">
 				<img src="<@spring.url relativeUrl="/img/avatars/user1.png"/>" class="avatar" alt="" /> <a href="#">João</a>

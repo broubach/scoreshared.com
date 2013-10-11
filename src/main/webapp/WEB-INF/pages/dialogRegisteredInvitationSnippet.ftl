@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring />
 
-<div id="dialog-registeredInvitation" title="<@spring.message code="label.invite"/>">
+<div id="dialog-registeredInvitation" style="display:none" title="<@spring.message code="label.invite"/>">
 	<div class="error-panel"></div>
 
 	<form id="registeredInvitation-form">
