@@ -11,6 +11,6 @@ var FriendRequestUtil = {
         $("#requester textarea").text(data.invitationMessage); // invitationMessage
         $("#requester dd").html('<img src="' + contextPath + '/app/avatar?hash=' + loggedUserAvatarHash + '&small"/>'); // logged user avatar
         $("#dialog-registeredInvitation input[name='playerName']").val(data.playerNameInScore); // playerName
-        $("#dialog-registeredInvitation").dialog("open");
+		$.magnificPopup.open({items: {src: '#dialog-registeredInvitation', type: 'inline'}});
 	}
 };

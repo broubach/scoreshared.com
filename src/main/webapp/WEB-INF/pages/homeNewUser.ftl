@@ -5,7 +5,7 @@
 <head>
 	<#assign head_title="ScoreShared: homeNewUser">
 	<#assign head_additional_css=[	"/css/vendor/magnific-popup.css" ]>
-	<#assign head_additional_js=[	"/js/vendor/jquery.magnific-popup.min.js",
+	<#assign head_additional_js=[	"/js/jquery.magnific-popup-0.9.7.min.js",
 									"/js/app.js" ]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -14,7 +14,6 @@
 	<#assign header_snippet="/home/header_snippet.ftl">
 	<#include "/helper-snippets/basic-header.ftl">
 
-	<a href="/scoreshared/pages/feedbackform" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>
 	<div class="row content">
 		<div class="small-6 large-centered columns">
 			<div class="centralizado">

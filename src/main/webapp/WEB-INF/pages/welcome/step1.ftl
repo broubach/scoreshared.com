@@ -5,7 +5,7 @@
 <head>
 	<#assign head_title="ScoreShared: Welcome1">
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2.js"]>
+	<#assign head_additional_js=["/js/jquery.magnific-popup-0.9.7.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>

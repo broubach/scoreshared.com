@@ -6,3 +6,5 @@
 			<#include header_snippet>
 		</#if>
 	</header>
+
+	<a href="<@spring.url relativeUrl="/app/feedback-form"/>" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>

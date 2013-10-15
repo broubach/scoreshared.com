@@ -10,34 +10,20 @@
 								"/css/vendor/pickadate/classic.time.css",
 								"/css/vendor/pickadate/classic.date.css",
 								"/css/app.css"]>
-	<#assign head_additional_js=["/js/vendor/jquery.magnific-popup.min.js",
+	<#assign head_additional_js=["/js/jquery.magnific-popup-0.9.7.min.js",
 								"/js/vendor/select2.js",
 								"/js/vendor/pickadate/legacy.js",
 								"/js/vendor/pickadate/picker.js",
 								"/js/vendor/pickadate/picker.date.js",
 								"/js/vendor/pickadate/picker.time.js",
-								"/js/jquery.autosize-1.17.8.min.js"]>
+								"/js/jquery.autosize-1.17.8.min.js",
+								"/js/app.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
 	<#assign header_snippet="/home/header_snippet.ftl">
 	<#include "/helper-snippets/basic-header.ftl">
 
-    <@spring.bind "score" />
-	<#if (spring.status.errors.fieldErrorCount > 0)>
-		<ul>
-	    <@spring.bind "score.date" />
-        <#list spring.status.errorMessages as error>
-            <li>${error}</li>
-        </#list>
-	    <@spring.bind "score.playersLeft" />
-        <#list spring.status.errorMessages as error>
-            <li>${error}</li>
-        </#list>
-        </ul>
-	</#if>
-
-	<a href="<@spring.url relativeUrl="/pages/feedbackform"/>" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>
 	<div class="row content">
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
@@ -49,6 +35,21 @@
 			   		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
 						<div class="small-12 large-12 columns">
 							<h2><@spring.message code="label.score_details"/></h2>
+						</div>
+						<div class="small-12 large-12 columns">
+						    <@spring.bind "score" />
+							<#if (spring.status.errors.fieldErrorCount > 0)>
+								<ul>
+							    <@spring.bind "score.date" />
+						        <#list spring.status.errorMessages as error>
+						            <li>${error}</li>
+						        </#list>
+							    <@spring.bind "score.playersLeft" />
+						        <#list spring.status.errorMessages as error>
+						            <li>${error}</li>
+						        </#list>
+						        </ul>
+							</#if>
 						</div>
 						<div class="small-12 large-7 columns">
 							<@spring.formHiddenInput "score.commentId", ""/>
@@ -156,7 +157,7 @@
 						     	</div>
 						     	<div class="columns large-6">
 						     		<br/>
-									<a href="#dialog-confirm" id="save" class="no-margin-top button button-primary right"><@spring.message code="label.save"/></a>
+									<a id="save" class="no-margin-top button button-primary right"><@spring.message code="label.save"/></a>
 								</div>
 							</div>
 							<br/>
@@ -167,69 +168,99 @@
 		</div>
 	</div>
 
-	<div id="dialog-confirm" class="mfp-hide" title="<@spring.message code="label.confirmation"/>">
-		<p id="confirmation-question"></p>
-		<label><input type="checkbox"/><@spring.message code="label.dont_ask_again_for_this_player"/></label>
+	<div id="dialog-confirm" class="modal mfp-hide">
+		<div class="row content">
+			<div class="columns large-10">
+				<h2><@spring.message code="label.confirmation"/></h2>
+				<p id="confirmation-question"></p>
+				<label><input type="checkbox"/><@spring.message code="label.dont_ask_again_for_this_player"/></label>
+				<button class="button mfp-prevent-close" id="dialog-confirm-yes"><@spring.message code="label.yes"/></button>
+				<a class="button mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+			</div>
+		</div>
 	</div>
 
-	<div id="dialog-search" style="display:none" title="<@spring.message code="label.invitation"/>">
-		<form id="search-form">
-			<p id="search-for-username"></p>
-			<div class="error-panel"></div>
-			<@spring.formHiddenInput "search.playerNameInScore", "" />
-			<dl>
-				<dt><label for="name"><@spring.message code="label.first_name"/></label></dt>
-				<dd><@spring.formInput "search.firstName", "", "text"/></dd>
-			</dl>
-			<dl>
-				<dt><label for="name"><@spring.message code="label.last_name"/></label></dt>
-				<dd><@spring.formInput "search.lastName", "", "text"/></dd>
-			</dl>
-			<dl>
-				<dt><label for="name"><@spring.message code="label.city"/></label></dt>
-				<dd><@spring.formInput "search.city", "", "text"/></dd>
-			</dl>
-			<dl>
-				<dt><label for="name"><@spring.message code="label.country"/></label></dt>
-				<dd><@spring.formInput "search.country", "", "text"/></dd>
-			</dl>
-			<@spring.message code="label.or"/>
-			<hr/>
-			<dl>
-				<dt><label for="name"><@spring.message code="label.email"/></label></dt>
-				<dd><@spring.formInput "search.email", "", "text"/></dd>
-			</dl>
-		</form>
+	<div id="dialog-search" class="modal mfp-hide">
+		<div class="row content">
+			<div class="columns large-10">
+				<h2><@spring.message code="label.invitation"/></h2>
+				<form id="search-form">
+					<p id="search-for-username"></p>
+					<div class="error-panel"></div>
+					<@spring.formHiddenInput "search.playerNameInScore", "" />
+					<dl>
+						<dt><label for="name"><@spring.message code="label.first_name"/></label></dt>
+						<dd><@spring.formInput "search.firstName", "", "text"/></dd>
+					</dl>
+					<dl>
+						<dt><label for="name"><@spring.message code="label.last_name"/></label></dt>
+						<dd><@spring.formInput "search.lastName", "", "text"/></dd>
+					</dl>
+					<dl>
+						<dt><label for="name"><@spring.message code="label.city"/></label></dt>
+						<dd><@spring.formInput "search.city", "", "text"/></dd>
+					</dl>
+					<dl>
+						<dt><label for="name"><@spring.message code="label.country"/></label></dt>
+						<dd><@spring.formInput "search.country", "", "text"/></dd>
+					</dl>
+					<@spring.message code="label.or"/>
+					<hr/>
+					<dl>
+						<dt><label for="name"><@spring.message code="label.email"/></label></dt>
+						<dd><@spring.formInput "search.email", "", "text"/></dd>
+					</dl>
+				</form>
+				<a class="button mfp-prevent-close" id="dialog-search-invite"><@spring.message code="label.invite"/></a>
+				<a class="button mfp-prevent-close" id="dialog-search-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+			</div>
+		</div>
 	</div>
 
-	<div id="dialog-choosePlayerFromList" style="display:none" title="<@spring.message code="label.invitation"/>" style="display: none">
-		<@spring.message code="label.select_a_player"/>
-		<table>
-		<thead>
-		<tr>
-			<td></td><td><@spring.message code="label.name"/></td><td><@spring.message code="label.location"/></td>
-		</tr>
-		</thead>
-		<tbody>
-		</tbody>
-		</table>
+	<div id="dialog-choosePlayerFromList" class="modal mfp-hide">
+		<div class="row content">
+			<div class="columns large-10">
+				<h2><@spring.message code="label.invitation"/></h2>
+				<h3><@spring.message code="label.select_a_player"/></h3>
+
+				<table>
+				<thead>
+				<tr>
+					<td></td><td><@spring.message code="label.name"/></td><td><@spring.message code="label.location"/></td>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+				<a class="button mfp-prevent-close" id="dialog-choosePlayerFromList-back"><@spring.message code="label.back"/></a>
+				<a class="button mfp-prevent-close" id="dialog-choosePlayerFromList-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+			</div>
+		</div>
 	</div>
 
 	<#include "dialogRegisteredInvitationSnippet.ftl">
 
-	<div id="dialog-unregisteredInvitation" style="display:none" title="<@spring.message code="label.invitation"/>">
-		<div class="error-panel"></div>
-		<form id="unregisteredInvitation-form">
-			<input type="hidden" name="playerName" />
-			<dl>
-				<dt></dt>
-				<dd><textarea id="message" name="message" ></textarea></dd>
-			</dl>
-			<dl>
-				<dt><@spring.message code="label.email"/></dt>
-				<dd><input type="text" name="email"></input></dd>
-			</dl>
-		</form>
+	<div id="dialog-unregisteredInvitation" class="modal mfp-hide">
+		<div class="row content">
+			<div class="columns large-10">
+				<h2><@spring.message code="label.invitation"/></h2>
+				<div class="error-panel"></div>
+				<form id="unregisteredInvitation-form">
+					<input type="hidden" name="playerName" />
+					<dl>
+						<dt></dt>
+						<dd><textarea id="message" name="message" ></textarea></dd>
+					</dl>
+					<dl>
+						<dt><@spring.message code="label.email"/></dt>
+						<dd><input type="text" name="email"></input></dd>
+					</dl>
+				</form>
+				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-back"><@spring.message code="label.back"/></a>
+				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-invite"><@spring.message code="label.invite"/></a>
+				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+			</div>
+		</div>
 	</div>
 
 	<div class="row content">
@@ -289,14 +320,5 @@
 		NewPlayerWizard.init(newPlayerWizardOptions);
 
 		$("#playersRight").select2("open");
-		
-		$(document).foundation();
-
-		$('#save').magnificPopup({
-			type: 'inline',
-			removalDelay: 300,
-			mainClass: 'mfp-fade',
-			midClick: true
-		});
 	});
 </script>
