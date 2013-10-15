@@ -1111,3 +1111,9 @@ input[type=search]{
   box-shadow: 2px -2px 2px 0 rgba( 178, 178, 178, .4 );
   right: -9px;    
 }
+.no-padding-bottom {
+	padding-bottom: 0;
+}
+.no-padding-top {
+	padding-top: 0;
+}

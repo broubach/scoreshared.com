@@ -141,7 +141,7 @@ var UserConfirmationStep = {
 				console.log("checkbox was checked and user '" + context.players[context.currentPlayer].playerName + '" was added, resulting in: ' + $("#score-form input[name='newPlayersNotToBeRemembered']").val());
 			}
 			NewPlayerWizard.start(OpenSearchDialogStep.name);
-		};
+		});
 
 		$('#dialog-confirm-save_without_invitation').click(function(e) {
             e.preventDefault();
@@ -381,7 +381,7 @@ var InviteUnregisteredUserStep = {
 	execute: function(context, data) {
 		$("#dialog-unregisteredInvitation .error-panel").html('');
         $("#unregisteredInvitation-form input[name='playerName']").val(data.playerNameInScore); // playerName
-        $("#unregisteredInvitation-form dt:eq(0)").html(data.playerNameInScore + " " + context.options.label_user_not_found + '<br/>' + context.options.label_take_the_opportunity_to_invite); // fullName + location
+        $("#unregisteredInvitation-form .message-label").html(data.playerNameInScore + " " + context.options.label_user_not_found + '<br/>' + context.options.label_take_the_opportunity_to_invite); // fullName + location
         $("#unregisteredInvitation-form textarea").text(data.invitationMessage); // invitationMessage
         $("#unregisteredInvitation-form input[name='email']").val(data.email); // email
 		$.magnificPopup.open({items: {src: '#dialog-unregisteredInvitation', type: 'inline'}});
@@ -420,7 +420,7 @@ var InviteUnregisteredUserStep = {
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
-				success: function() {
+				complete: function() {
 					$.magnificPopup.close();
 					NewPlayerWizard.resume();
 				}

@@ -68,7 +68,7 @@ public class HomeController extends BaseController {
                 mapper.writeValue(jsonPlayers, listPlayersNameAndId(scores));
                 mav.addObject("players", jsonPlayers.toString());
 
-                mav.setViewName("home");
+                mav.setViewName("home/home");
 
             } else {
                 List<Object[]> globalScores = scoreBo.findScores(0, false);
@@ -78,7 +78,7 @@ public class HomeController extends BaseController {
                 mapper.writeValue(jsonPlayers, listGlobalPlayersNameAndId(globalScores));
                 mav.addObject("players", jsonPlayers.toString());
 
-                mav.setViewName("homeNewUser");
+                mav.setViewName("home/homeNewUser");
             }
             return mav;
         } catch (JsonGenerationException e) {

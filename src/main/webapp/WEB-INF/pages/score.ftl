@@ -181,36 +181,32 @@
 	</div>
 
 	<div id="dialog-search" class="modal mfp-hide">
-		<div class="row content">
+		<div class="row content no-padding-bottom">
 			<div class="columns large-10">
 				<h2><@spring.message code="label.invitation"/></h2>
+				<p id="search-for-username"></p>
+				<div class="error-panel"></div>
+			</div>
+		</div>
+		<div class="row content no-padding-top no-padding-bottom">
+			<div class="columns large-5">
 				<form id="search-form">
-					<p id="search-for-username"></p>
-					<div class="error-panel"></div>
 					<@spring.formHiddenInput "search.playerNameInScore", "" />
-					<dl>
-						<dt><label for="name"><@spring.message code="label.first_name"/></label></dt>
-						<dd><@spring.formInput "search.firstName", "", "text"/></dd>
-					</dl>
-					<dl>
-						<dt><label for="name"><@spring.message code="label.last_name"/></label></dt>
-						<dd><@spring.formInput "search.lastName", "", "text"/></dd>
-					</dl>
-					<dl>
-						<dt><label for="name"><@spring.message code="label.city"/></label></dt>
-						<dd><@spring.formInput "search.city", "", "text"/></dd>
-					</dl>
-					<dl>
-						<dt><label for="name"><@spring.message code="label.country"/></label></dt>
-						<dd><@spring.formInput "search.country", "", "text"/></dd>
-					</dl>
-					<@spring.message code="label.or"/>
-					<hr/>
-					<dl>
-						<dt><label for="name"><@spring.message code="label.email"/></label></dt>
-						<dd><@spring.formInput "search.email", "", "text"/></dd>
-					</dl>
+					<div class="input text"><label for="firstName"><@spring.message code="label.first_name"/></label><@spring.formInput "search.firstName", "", "text"/></div>
+					<div class="input text"><label for="lastName"><@spring.message code="label.last_name"/></label><@spring.formInput "search.lastName", "", "text"/></div>
+					<div class="input text"><label for="city"><@spring.message code="label.city"/></label><@spring.formInput "search.city", "", "text"/></div>
+					<div class="input text"><label for="country"><@spring.message code="label.country"/></label><@spring.formInput "search.country", "", "text"/></div>
 				</form>
+			</div>
+			<div class="columns large-2 centralizado">
+				<@spring.message code="label.or"/>
+			</div>
+			<div class="columns large-5">
+				<div class="input text"><label for="email"><@spring.message code="label.email"/></label><@spring.formInput "search.email", "", "text"/></div>
+			</div>
+		</div>
+		<div class="row content no-padding-top no-padding-bottom">
+			<div class="columns large-10">
 				<a class="button mfp-prevent-close" id="dialog-search-invite"><@spring.message code="label.invite"/></a>
 				<a class="button mfp-prevent-close" id="dialog-search-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 			</div>
@@ -241,21 +237,23 @@
 	<#include "dialogRegisteredInvitationSnippet.ftl">
 
 	<div id="dialog-unregisteredInvitation" class="modal mfp-hide">
-		<div class="row content">
-			<div class="columns large-10">
+		<div class="row content no-padding-bottom">
+			<div class="columns large-12">
 				<h2><@spring.message code="label.invitation"/></h2>
 				<div class="error-panel"></div>
+			</div>
+		</div>
+		<div class="row content no-padding-bottom no-padding-top">
+			<div class="columns large-12">
 				<form id="unregisteredInvitation-form">
 					<input type="hidden" name="playerName" />
-					<dl>
-						<dt></dt>
-						<dd><textarea id="message" name="message" ></textarea></dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.email"/></dt>
-						<dd><input type="text" name="email"></input></dd>
-					</dl>
+					<div class="input text"><label class="message-label" for="message"></label><textarea id="message" name="message"></textarea></div>
+					<div class="input text"><label for="email"><@spring.message code="label.email"/></label><input type="text" id="email" name="email"/></div>
 				</form>
+			</div>
+		</div>
+		<div class="row content no-padding-bottom no-padding-top">
+			<div class="columns large-12">
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-back"><@spring.message code="label.back"/></a>
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-invite"><@spring.message code="label.invite"/></a>
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
