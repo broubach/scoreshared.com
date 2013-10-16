@@ -9,3 +9,4 @@ delete from profile;
 update file set owner_Id = null;
 delete from file where id <> 7 and id<> 4;
 delete from user;
+delete from userconnection;

@@ -11,7 +11,7 @@
 </head>
 <body>
 
-	<#assign header_snippet="/home/header_snippet.ftl">
+	<#assign header_snippet="/helper-snippets/header_snippet.ftl">
 	<#include "/helper-snippets/basic-header.ftl">
 
 	<div class="row content">
