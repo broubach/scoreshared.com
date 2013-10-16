@@ -166,6 +166,6 @@ public class Player extends BaseEntity implements PlayerBehavior {
     
             return (profile != null && profile.getAvatarHash() != null) ? profile.getAvatarHash() : "default";
         }
-        return "default";
+        return "";
     }
 }

@@ -15,7 +15,7 @@ import com.scoreshared.business.persistence.User;
 
 public class ScoreItemModel {
 
-    private Score score;
+    public Score score;
     private Comment comment;
     private User loggedUser;
     private MessageSource messageResource;
@@ -56,7 +56,7 @@ public class ScoreItemModel {
         partners.remove(score.getAssociatedPlayer(loggedUser.getId()));
 
         if (!partners.isEmpty()) {
-            result.append(", ").append(messageResource.getMessage("label.with", null, locale)).append(" ");
+            result.append(" ").append(messageResource.getMessage("label.with", null, locale)).append(" ");
             for (PlayerPermission player : partners) {
                 result.append(player.getName());
                 result.append(", ");
@@ -66,7 +66,7 @@ public class ScoreItemModel {
         }
 
         if (!opponents.isEmpty()) {
-            result.append(", ").append(messageResource.getMessage("label.against", null, locale)).append(" ");
+            result.append(" ").append(messageResource.getMessage("label.against", null, locale)).append(" ");
             for (PlayerPermission player : opponents) {
                 result.append(player.getName());
                 result.append(", ");
@@ -78,10 +78,31 @@ public class ScoreItemModel {
         return result.toString();
     }
 
+    public String getDetailTextPart1() {
+        StringBuilder result = new StringBuilder();
+        for (String token : getDetailText().split(" ")) {
+            if (token.matches("[0-9]+x[0-9]+")) {
+                result.append(token).append(" ");
+            } else {
+                break;
+            }
+        }
+        if (result.length() > 0) {
+            result.delete(result.length() - 1, result.length());
+        }
+        return result.toString();
+    }
+
+    public String getDetailTextPart2() {
+        String detailText = getDetailText();
+        String detailTextPart1 = getDetailTextPart1();
+        return detailText.substring(detailText.indexOf(detailTextPart1) + detailTextPart1.length()).trim();
+    }
+
     public Comment getComment() {
         return comment;
     }
-    
+
     public Score getScore() {
         return score;
     }
@@ -96,7 +117,7 @@ public class ScoreItemModel {
         }
         return result.toString().trim();
     }
-    
+
     public String getSampleOpponentName() {
         PlayerPermission sampleOpponent = score.getSampleOpponent(loggedUser);
         if (sampleOpponent != null) {
@@ -104,12 +125,16 @@ public class ScoreItemModel {
         }
         return "";
     }
-    
+
     public String getSampleOpponentAvatar() {
         PlayerPermission sampleOpponent = score.getSampleOpponent(loggedUser);
         if (sampleOpponent != null) {
             return sampleOpponent.getAvatar();
         }
-        return "default";
+        return "";
+    }
+    
+    public Boolean getConfirmed() {
+        return score.getConfirmed();
     }
 }

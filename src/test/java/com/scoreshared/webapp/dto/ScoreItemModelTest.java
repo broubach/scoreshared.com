@@ -72,15 +72,45 @@ public class ScoreItemModelTest {
     @Test
     public void testGetItemText() {
         ScoreItemModel model = new ScoreItemModel(score, null, user1, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
-        Assert.assertTrue("expected string", "6x1, contra Andre Agassi".equals(model.getDetailText()));
+        Assert.assertTrue("expected string", "6x1 against Andre Agassi".equals(model.getDetailText()));
 
         score.setSet2Left(2);
         score.setSet2Right(6);
         score.setSet3Left(6);
         score.setSet3Right(4);
-        Assert.assertTrue("expected string", "6x1 2x6 6x4, contra Andre Agassi".equals(model.getDetailText()));
+        Assert.assertTrue("expected string", "6x1 2x6 6x4 against Andre Agassi".equals(model.getDetailText()));
 
         model = new ScoreItemModel(score, null, user2, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
-        Assert.assertTrue("inverted point of view", "1x6 6x2 4x6, contra Pete Sampras".equals(model.getDetailText()));
+        Assert.assertTrue("inverted point of view", "1x6 6x2 4x6 against Pete Sampras".equals(model.getDetailText()));
+    }
+    
+    @Test
+    public void testGetItemTextPart1() {
+        ScoreItemModel model = new ScoreItemModel(score, null, user1, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("expected string", "6x1".equals(model.getDetailTextPart1()));
+
+        score.setSet2Left(2);
+        score.setSet2Right(6);
+        score.setSet3Left(6);
+        score.setSet3Right(4);
+        Assert.assertTrue("expected string", "6x1 2x6 6x4".equals(model.getDetailTextPart1()));
+
+        model = new ScoreItemModel(score, null, user2, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("inverted point of view", "1x6 6x2 4x6".equals(model.getDetailTextPart1()));
+    }
+
+    @Test
+    public void testGetItemTextPart2() {
+        ScoreItemModel model = new ScoreItemModel(score, null, user1, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("expected string", "against Andre Agassi".equals(model.getDetailTextPart2()));
+
+        score.setSet2Left(2);
+        score.setSet2Right(6);
+        score.setSet3Left(6);
+        score.setSet3Right(4);
+        Assert.assertTrue("expected string", "against Andre Agassi".equals(model.getDetailTextPart2()));
+
+        model = new ScoreItemModel(score, null, user2, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("inverted point of view", "against Pete Sampras".equals(model.getDetailTextPart2()));
     }
 }

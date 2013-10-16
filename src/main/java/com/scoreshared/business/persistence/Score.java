@@ -423,4 +423,15 @@ public class Score extends BaseEntity implements Cloneable {
         result.delete(result.length() - 2, result.length());
         return result.toString();
     }
+
+    public Boolean getConfirmed() {
+        boolean isConfirmed = true;
+        for (PlayerPermission playerPermission : getAllPlayers()) {
+            if (!ApprovalResponseEnum.ACCEPTED.equals(playerPermission.getApprovalResponse())) {
+                isConfirmed = false;
+                break;
+            }
+        }
+        return isConfirmed;
+    }
 }

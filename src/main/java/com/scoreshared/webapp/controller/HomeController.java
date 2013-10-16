@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -106,9 +108,11 @@ public class HomeController extends BaseController {
 
     private List<Object[]> listPlayersNameAndId(List<ScoreItemModel> scores) {
         List<Object[]> result = new ArrayList<Object[]>();
+        Set<Integer> ids = new HashSet<Integer>();
         for (ScoreItemModel score : scores) {
             for (PlayerPermission player : score.getScore().getAllPlayers()) {
-                if (player.isConnected()) {
+                if (player.isConnected() && !ids.contains(player.getAssociation().getId())) {
+                    ids.add(player.getAssociation().getId());
                     result.add(new Object[] { player.getAssociation().getId(), player.getName() });
                 }
             }
