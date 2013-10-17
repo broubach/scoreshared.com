@@ -63,7 +63,7 @@
 							</div>
 					</div>
 					<div class="small-8 columns">
-						<img id="target" src="<@spring.url relativeUrl="/app/avatar"/>?${((.now?datetime)?string)?replace(" ", "")}" />
+						<img id="target" style="max-width: none" src="<@spring.url relativeUrl="/app/avatar"/>?${((.now?datetime)?string)?replace(" ", "")}" />
 					</div>
 				</div>
 
