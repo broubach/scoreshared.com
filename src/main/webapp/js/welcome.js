@@ -15,8 +15,8 @@ function showCoords(c) {
     $('#x2').val(c.x2);
     $('#y2').val(c.y2);
 
-    var rx = 123 / c.w;
-    var ry = 162 / c.h;
+    var rx = 104 / c.w;
+    var ry = 104 / c.h;
 
     $('#preview').css({
         width: Math.round(rx * $('#target').width()) + 'px',

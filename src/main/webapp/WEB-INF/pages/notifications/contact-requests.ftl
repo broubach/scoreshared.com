@@ -32,7 +32,7 @@
 									<table>
 										<tbody>
 										<tr>
-											<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item[0]?html)!}&small"/>"/></td>
+											<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item[0]?html)!}&small"/>" class="avatar"/></td>
 											<td>${item[1]} ${item[2]}</td>
 											<td width="30%">
 												<span class="actions hide">
@@ -96,7 +96,7 @@ $(function() {
 		    type: 'POST',
 		    data: {'user2Id': id},
 		    dataType: 'json',
-		    success: function() {
+		    complete: function() {
 		    	ClickContext.tableLine.remove();
 		    }
 		});

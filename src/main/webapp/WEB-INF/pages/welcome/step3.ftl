@@ -88,8 +88,8 @@
 				bgColor: '#ffffff',
 				onChange: showCoords,
 				onSelect: showCoords, 
-				aspectRatio: .76,
-				setSelect: [0, 0, 123, 162]
+				aspectRatio: 1,
+				setSelect: [0, 0, 104, 104]
 	    });
 		Step3Bindings.start();
     });

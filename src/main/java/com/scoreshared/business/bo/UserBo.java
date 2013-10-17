@@ -38,10 +38,10 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public static final String SMALL_DEFAULT_AVATAR_KEY = "smallDefaultAvatarKey";
     private static final Integer SMALL_DEFAULT_AVATAR_ID = 7;
     public static final String CURRENT_USERS_AVATAR = "currentUsersAvatar";
-    public static final int SMALL_AVATAR_HEIGHT = 49;
-    public static final int SMALL_AVATAR_WIDTH = 37;
-    public static final int DEFAULT_AVATAR_HEIGHT = 162;
-    public static final int DEFAULT_AVATAR_WIDTH = 123;
+    public static final int SMALL_AVATAR_HEIGHT = 52;
+    public static final int SMALL_AVATAR_WIDTH = 52;
+    public static final int DEFAULT_AVATAR_HEIGHT = 104;
+    public static final int DEFAULT_AVATAR_WIDTH = 104;
 
     @Inject
     private Md5PasswordEncoder hashEncoder;
