@@ -1,32 +1,56 @@
 <#import "/spring.ftl" as spring />
 
 <!DOCTYPE html>
+<html>
 <head>
-	<title><@spring.message code="label.scoreshared"/></title>
+	<#assign head_title="ScoreShared: Login">
+	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
-	<form action="<@spring.url relativeUrl="/j_spring_security_check"/>" method="POST">
-		<dl>
-			<dt><label for="username"><@spring.message code="label.username"/></label></dt>
-			<dd><input id="username" name="j_username" type="text"></input></dd>
-		</dl>
-		<dl>
-			<dt><label for="password"><@spring.message code="label.password"/></label></dt>
-			<dd><input id="password" name="j_password" type="password"></input></dd>
-		</dl>
 
-		<input type="submit" value="<@spring.message code="label.signin"/>"></input>
-	</form>
+	<#assign should_show_feedback=false/>
+	<#include "/helper-snippets/basic-header.ftl">
 
-	<#if (SPRING_SECURITY_LAST_EXCEPTION??)>
-		<div id="error">
-			<@spring.message code="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+	<div class="row content no-padding-bottom">
+		<div class="small-6 small-centered columns">
+			<#if (SPRING_SECURITY_LAST_EXCEPTION??)>
+				<div class="error-panel label alert radius">
+					<@spring.message code="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+				</div>
+			</#if>
 		</div>
-	</#if>
+	</div>
+	<div class="row content no-padding-bottom">
+		<div class="small-6 small-centered columns">
+			<form action="<@spring.url relativeUrl="/j_spring_security_check"/>" method="POST">
+				<div class="input text"><label for="username"><@spring.message code="label.email"/></label><input id="username" name="j_username" type="text"></input></div>
+				<div class="input password"><label for="password"><@spring.message code="label.password"/></label><input id="password" name="j_password" type="password"></input></div>
+				<div class="submit">
+					<input class="button button-large button-primary button-enroll" type="submit" value="<@spring.message code="label.login"/>"></input>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="row content no-padding-top no-padding-bottom">
+		<div class="small-6 small-centered columns">
+			<div class="row content">
+				<div class="small-2 columns">
+					<span class="label secondary"><@spring.message code="label.login_with"/></span>
+				</div>
+				<div class="small-5 columns direita">
+					<form action="<@spring.url relativeUrl="/app/signin/twitter"/>" method="POST"><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
+				</div>
+				<div class="small-5 columns">
+					<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
+				</div>
+			</div>
+		</div>
+	</div>
 
-	<@spring.message code="label.enterwith"/>:
-	<form action="<@spring.url relativeUrl="/app/signin/twitter"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
-	<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
-	<form action="<@spring.url relativeUrl="/app/signin/google"/>" method="POST"><button type="submit"><img src="<@spring.url relativeUrl="/img/google.png"/>"/> <@spring.message code="label.google"/></button></form>
+	<div class="row content">
+		<br/>
+	</div>
+
+	<#include "/helper-snippets/basic-footer.ftl">
 </body>
 </html>
