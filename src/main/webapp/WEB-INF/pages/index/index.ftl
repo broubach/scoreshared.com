@@ -4,25 +4,11 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: Index">
-	<#assign head_additional_css=[	"/css/vendor/magnific-popup.css",
-									"/css/vendor/select2.css",
-									"/css/vendor/pickadate/classic.css",
-									"/css/vendor/pickadate/classic.time.css",
-									"/css/vendor/pickadate/classic.date.css"
-									]>
-	<#assign head_additional_js=[	"/js/jquery.magnific-popup-0.9.7.min.js",
-									"/js/vendor/select2.js",
-									"/js/vendor/pickadate/legacy.js",
-									"/js/vendor/pickadate/picker.js",
-									"/js/vendor/pickadate/picker.date.js",
-									"/js/vendor/pickadate/picker.time.js",
-									"/js/app.js"
-									]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
 
-	<#assign header_snippet="/index/header_snippet.ftl">
+	<#assign header_snippet="/index/header-snippet.ftl">
 	<#assign should_show_feedback=false/>
 	<#include "/helper-snippets/basic-header.ftl">
 	

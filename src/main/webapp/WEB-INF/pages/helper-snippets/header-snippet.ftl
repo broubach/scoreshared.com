@@ -1,7 +1,7 @@
 <div class="large-8 columns">
 	<ul class="inline-list links logado right">
 		<li><a href="/scoreshared/painel/home" class="menu-score">My Scores</a></li>
-		<li><a href="/scoreshared/painel/messages2" class="menu-mensagens">Messages</a></li>
+		<li><a href="<@spring.url relativeUrl="/app/notifications/contactRequests"/>" class="menu-mensagens"><@spring.message code="label.notifications"/></a></li>
 		<li><a href="#" class="menu-profile dropdown" data-dropdown="menu-profile">Profile</a></li>
 	</ul>
 </div>

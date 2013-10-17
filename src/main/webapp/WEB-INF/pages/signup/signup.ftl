@@ -5,10 +5,12 @@
 <head>
 	<#assign head_title="ScoreShared: Sign up">
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2.js", "/js/index.js"]>
+	<#assign head_additional_js=["/js/vendor/select2.js", "/js/signup.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
+
+	<#assign should_show_feedback=false/>
 	<#include "/helper-snippets/basic-header.ftl">
 
 	<div class="row content">

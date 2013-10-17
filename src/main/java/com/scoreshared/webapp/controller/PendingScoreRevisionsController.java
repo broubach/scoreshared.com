@@ -35,9 +35,9 @@ public class PendingScoreRevisionsController extends BaseController {
     @Inject
     private LocaleResolver localeResolver;
 
-    @RequestMapping(value = "/messages/pendingScoreRevisions", method = RequestMethod.GET)
+    @RequestMapping(value = "/notifications/pendingScoreRevisions", method = RequestMethod.GET)
     public ModelAndView list(@LoggedUser User loggedUser, HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("messages/pendingScoreRevisions");
+        ModelAndView mav = new ModelAndView("notifications/pending-score-revisions");
         List<Score> scores = scoreBo.findPendingScoreRevisions(loggedUser.getId());
         List<ScoreItemWithPlayerPermissionModel> scoreModels = new ArrayList<ScoreItemWithPlayerPermissionModel>();
         for (Score score : scores) {

@@ -1,4 +1,4 @@
-var MessageUtil = {
+var NotificationUtil = {
 
 	addClickBehaviorToMessagesList: function(selector, contextPath, labels) {
 		$(selector).click(function (e) {
@@ -30,10 +30,10 @@ var MessageUtil = {
 					userName = $(this).attr('href').split(',')[3];
 				}
 
-				MessageUtil.pendingScoreApprovalsHandleClick(id, kind, userName, contextPath, labels);
+				NotificationUtil.pendingScoreApprovalsHandleClick(id, kind, userName, contextPath, labels);
 
 			} else if (messageType == 'revision') {
-				MessageUtil.pendingScoreRevisionsHandleClick(id, kind, '<@spring.url relativeUrl="/"/>');
+				NotificationUtil.pendingScoreRevisionsHandleClick(id, kind, '<@spring.url relativeUrl="/"/>');
 			}
 		});
 	},
@@ -55,11 +55,20 @@ var MessageUtil = {
 			ClickContext.currentId = id;
 			ClickContext.currentUrl = url;
 			$('#info').val(labels.label_send_a_message_to_asking_for_revision_1_send_a_message_to + userName + labels.label_send_a_message_to_asking_for_revision_2_asking_for_revision);
-	        $("#dialog-revision").dialog("open");
-	
+	        $.magnificPopup.open({
+				items : {
+					src : '#dialog-revision',
+					type : 'inline'
+				},
+				callbacks: {
+					close: function() {
+						$("#revision-form .error-panel").css('display', 'none');
+					}
+				}
+			});
 		}
 	},
-	
+
 	pendingScoreRevisionsHandleClick: function(id, kind, contextPath) {
 		var url = contextPath + kind + '/revision/';
 
@@ -69,7 +78,7 @@ var MessageUtil = {
 			    type: 'POST',
 			    data: {'playerPermissionId': id},
 			    dataType: 'json',
-			    success: function() {
+			    complete: function() {
 			    	ClickContext.tableLine.remove();
 			    }
 			});

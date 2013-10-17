@@ -34,9 +34,9 @@ public class PendingScoreApprovalsController extends BaseController {
     @Inject
     private LocaleResolver localeResolver;
 
-    @RequestMapping(value = "/messages/pendingScoreApprovals", method = RequestMethod.GET)
+    @RequestMapping(value = "/notifications/pendingScoreApprovals", method = RequestMethod.GET)
     public ModelAndView list(@LoggedUser User loggedUser, HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("messages/pendingScoreApprovals");
+        ModelAndView mav = new ModelAndView("notifications/pending-score-approvals");
         List<Score> scores = scoreBo.findPendingScoreApprovals(loggedUser.getId());
         List<ScoreItemModel> scoreModels = new ArrayList<ScoreItemModel>();
         for (Score score : scores) {

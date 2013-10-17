@@ -92,7 +92,7 @@
 		<p><@spring.message code="label.the_association_with_this_player_will_be_deleted_are_you_sure" /></p>
 	</div>
 
-	<#include "dialogRegisteredInvitationSnippet.ftl">
+	<#include "/helper-snippets/dialog-registered-invitation-snippet.ftl">
 </body>
 </html>
 

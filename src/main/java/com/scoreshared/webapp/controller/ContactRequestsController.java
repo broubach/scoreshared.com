@@ -23,9 +23,9 @@ public class ContactRequestsController extends BaseController {
     @Inject
     private GraphBo graphBo;
 
-    @RequestMapping(value = "/messages/contactRequests", method = RequestMethod.GET)
+    @RequestMapping(value = "/notifications/contactRequests", method = RequestMethod.GET)
     public ModelAndView list(@LoggedUser User loggedUser) {
-        ModelAndView mav = new ModelAndView("messages/contactRequests");
+        ModelAndView mav = new ModelAndView("notifications/contact-requests");
         List<Object[]> pendingInvitations = graphBo.findPendingInvitations(loggedUser.getId());
         for (Object[] pendingInvitation : pendingInvitations) {
             if (pendingInvitation[0] != null) {
