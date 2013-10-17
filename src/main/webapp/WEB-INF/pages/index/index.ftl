@@ -23,6 +23,7 @@
 <body>
 
 	<#assign header_snippet="/index/header_snippet.ftl">
+	<#assign should_show_feedback=false/>
 	<#include "/helper-snippets/basic-header.ftl">
 	
 	<div class="row banner">

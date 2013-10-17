@@ -161,6 +161,7 @@ var OpenSearchDialogStep = {
 	name: 'openSearchDialog',
 
 	execute: function(context) {
+		$("#dialog-search .error-panel").css('display', 'none');
 		$("#dialog-search .error-panel").html('');
         $('#search-for-username').html(context.options.label_search_for + " " + context.players[context.currentPlayer].playerName);
         $.magnificPopup.open({
@@ -191,6 +192,7 @@ var OpenSearchDialogStep = {
 			    return $.trim($(this).val());
 			}).length > 0;
 			if (!hasAnyFilledField) {
+				$("#dialog-search .error-panel").css('display', 'block');
 				$("#dialog-search .error-panel").html(context.options.error_please_fill_at_least_one_field_for_search);
 				return;
 			}
@@ -259,12 +261,12 @@ var ChoosePlayerFromListStep = {
 
 		$("#dialog-choosePlayerFromList table tbody").html('');
 		for ( var i = 0; i < data.playerList.length; i++) {
-            var row = "<tr><td><a href='"+i+"'>";
+            var row = "<tr><td><a class='mfp-prevent-close' href='"+i+"'>";
             row += "<img src='" + context.options.contextPath + "/app/avatar?hash="
                     + data.playerList[i][1] + "&small'/>";
-            row += "</a></td><td><a href='"+i+"'>";
+            row += "</a></td><td><a class='mfp-prevent-close' href='"+i+"'>";
             row += data.playerList[i][2];
-            row += "</a></td><td><a href='"+i+"'>";
+            row += "</a></td><td><a class='mfp-prevent-close' href='"+i+"'>";
             row += data.playerList[i][3];
             row += "</a></td></tr>";
             $("#dialog-choosePlayerFromList table tbody").append(row);
@@ -282,6 +284,12 @@ var ChoosePlayerFromListStep = {
             });
         }
 
+		$('table.full tbody tr').hover(function(){
+			$(this).addClass('hover');
+		},function(){
+			$(this).removeClass('hover');
+		})
+
 		$.magnificPopup.open({items: {src: '#dialog-choosePlayerFromList', type: 'inline'}});
 	},
 
@@ -298,14 +306,14 @@ var ChoosePlayerFromListStep = {
 	},
 
 	init: function(context) {
-		$('dialog-choosePlayerFromList-back').click(function(e) {
+		$('#dialog-choosePlayerFromList-back').click(function(e) {
             e.preventDefault();
 
             $.magnificPopup.close();
     		NewPlayerWizard.goBack(2);
         });
 		
-		$('dialog-choosePlayerFromList-save_without_invitation').click(function(e) {
+		$('#dialog-choosePlayerFromList-save_without_invitation').click(function(e) {
             e.preventDefault();
 
             $.magnificPopup.close();
@@ -318,6 +326,7 @@ var ChoosePlayerFromListStep = {
 var InviteRegisteredUserStep = {
 	name: 'inviteRegisteredUser',
 	execute: function(context, data) {
+		$("#dialog-registeredInvitation .error-panel").css('display', 'none');
 		$("#dialog-registeredInvitation .error-panel").html('');
 		FriendRequestUtil.openFriendRequestDialog(data, context.options.contextPath, context.options.loggedUserAvatarHash);
 	},
@@ -349,6 +358,7 @@ var InviteRegisteredUserStep = {
 			    return $.trim($(this).val()) != "";
 			}).length > 0;
 			if (!hasAnyFilledField) {
+				$("#dialog-registeredInvitation .error-panel").css('display', 'block');
 				$("#dialog-registeredInvitation .error-panel").html(context.options.error_please_enter_some_text);
 				return;
 			}
@@ -359,13 +369,13 @@ var InviteRegisteredUserStep = {
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
-				success: function(data) {
+				complete: function(data) {
 					$.magnificPopup.close();
 					NewPlayerWizard.resume(data);
 				}
 			});
 		});
-		
+
 		$('#dialog-registeredInvitation-save_without_invitation').click(function(e) {
             e.preventDefault();
 
@@ -379,6 +389,7 @@ var InviteRegisteredUserStep = {
 var InviteUnregisteredUserStep = {
 	name: 'inviteUnregisteredUser',
 	execute: function(context, data) {
+		$("#dialog-unregisteredInvitation .error-panel").css('display', 'none');
 		$("#dialog-unregisteredInvitation .error-panel").html('');
         $("#unregisteredInvitation-form input[name='playerName']").val(data.playerNameInScore); // playerName
         $("#unregisteredInvitation-form .message-label").html(data.playerNameInScore + " " + context.options.label_user_not_found + '<br/>' + context.options.label_take_the_opportunity_to_invite); // fullName + location
@@ -411,6 +422,7 @@ var InviteUnregisteredUserStep = {
             e.preventDefault();
 
             if (!$.trim($("#unregisteredInvitation-form input[name='email']").val()) || !$.trim($("#unregisteredInvitation-form textarea").val())) {
+        		$("#dialog-unregisteredInvitation .error-panel").css('display', 'block');
 				$("#dialog-unregisteredInvitation .error-panel").html(context.options.error_please_fill_out_all_fields);
 				return;
 			}

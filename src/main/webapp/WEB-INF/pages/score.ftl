@@ -17,8 +17,15 @@
 								"/js/vendor/pickadate/picker.date.js",
 								"/js/vendor/pickadate/picker.time.js",
 								"/js/jquery.autosize-1.17.8.min.js",
-								"/js/app.js"]>
+								"/js/app.js",
+								"/js/jquery.numeric.js",
+								"/js/jquery.maskedinput-1.3.1.min.js",
+								"/js/steps.js",
+								"/js/score.js",
+								"/js/json2.js",
+								"/js/scaffold/friendRequestUtil.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
+
 </head>
 <body>
 	<#assign header_snippet="/helper-snippets/header_snippet.ftl">
@@ -136,13 +143,13 @@
 							<br/>
 
 							<div class="row collapse">
+								<#assign label_on><@spring.message code="label.on"/></#assign>
+								<#assign label_off><@spring.message code="label.off"/></#assign>
+								<#assign onOffHash = {"true":label_on, "false":label_off} />
 								<div class="small-6 large-6 columns">
 									<div class="columns large-4">
 										<a href="#a" class="js-toggle-switch"><img src="<@spring.url relativeUrl="/img/icons/twitter.png"/>" alt="" /></a>
 										<div class="small-2 switch tiny">
-											<#assign label_on><@spring.message code="label.on"/></#assign>
-											<#assign label_off><@spring.message code="label.off"/></#assign>
-											<#assign onOffHash = {"true":label_on, "false":label_off} />
 											<@spring.formRadioButtons "score.postInTwitter", onOffHash, "", "" />
 							          		<span></span>
 							        	</div>
@@ -175,7 +182,7 @@
 				<p id="confirmation-question"></p>
 				<label><input type="checkbox"/><@spring.message code="label.dont_ask_again_for_this_player"/></label>
 				<button class="button mfp-prevent-close" id="dialog-confirm-yes"><@spring.message code="label.yes"/></button>
-				<a class="button mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+				<a class="button button-primary mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 			</div>
 		</div>
 	</div>
@@ -185,51 +192,58 @@
 			<div class="columns large-10">
 				<h2><@spring.message code="label.invitation"/></h2>
 				<p id="search-for-username"></p>
-				<div class="error-panel"></div>
+				<div class="error-panel label alert radius" style="display: none"></div>
 			</div>
 		</div>
 		<div class="row content no-padding-top no-padding-bottom">
-			<div class="columns large-5">
-				<form id="search-form">
-					<@spring.formHiddenInput "search.playerNameInScore", "" />
-					<div class="input text"><label for="firstName"><@spring.message code="label.first_name"/></label><@spring.formInput "search.firstName", "", "text"/></div>
-					<div class="input text"><label for="lastName"><@spring.message code="label.last_name"/></label><@spring.formInput "search.lastName", "", "text"/></div>
-					<div class="input text"><label for="city"><@spring.message code="label.city"/></label><@spring.formInput "search.city", "", "text"/></div>
-					<div class="input text"><label for="country"><@spring.message code="label.country"/></label><@spring.formInput "search.country", "", "text"/></div>
-				</form>
-			</div>
-			<div class="columns large-2 centralizado">
-				<@spring.message code="label.or"/>
-			</div>
-			<div class="columns large-5">
-				<div class="input text"><label for="email"><@spring.message code="label.email"/></label><@spring.formInput "search.email", "", "text"/></div>
-			</div>
+			<form id="search-form">
+				<div class="columns large-5">
+						<@spring.formHiddenInput "search.playerNameInScore", "" />
+						<div class="input text"><label for="firstName"><@spring.message code="label.first_name"/></label><@spring.formInput "search.firstName", "", "text"/></div>
+						<div class="input text"><label for="lastName"><@spring.message code="label.last_name"/></label><@spring.formInput "search.lastName", "", "text"/></div>
+						<div class="input text"><label for="city"><@spring.message code="label.city"/></label><@spring.formInput "search.city", "", "text"/></div>
+						<div class="input text"><label for="country"><@spring.message code="label.country"/></label><@spring.formInput "search.country", "", "text"/></div>
+				</div>
+				<div class="columns large-2 centralizado">
+					<@spring.message code="label.or"/>
+				</div>
+				<div class="columns large-5">
+					<div class="input text"><label for="email"><@spring.message code="label.email"/></label><@spring.formInput "search.email", "", "text"/></div>
+				</div>
+			</form>
 		</div>
 		<div class="row content no-padding-top no-padding-bottom">
 			<div class="columns large-10">
 				<a class="button mfp-prevent-close" id="dialog-search-invite"><@spring.message code="label.invite"/></a>
-				<a class="button mfp-prevent-close" id="dialog-search-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+				<a class="button button-primary mfp-prevent-close" id="dialog-search-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 			</div>
 		</div>
 	</div>
 
 	<div id="dialog-choosePlayerFromList" class="modal mfp-hide">
-		<div class="row content">
-			<div class="columns large-10">
+		<div class="row content no-padding-top">
+			<div class="columns small-10">
 				<h2><@spring.message code="label.invitation"/></h2>
-				<h3><@spring.message code="label.select_a_player"/></h3>
-
-				<table>
+				<p><@spring.message code="label.select_a_player"/></p>
+			</div>
+		</div>
+		<div class="row content no-padding-top no-padding-bottom">
+			<div class="columns small-10">
+				<table class="full selecao-jogador">
 				<thead>
 				<tr>
-					<td></td><td><@spring.message code="label.name"/></td><td><@spring.message code="label.location"/></td>
+					<th></th><th><@spring.message code="label.name"/></th><th><@spring.message code="label.location"/></th>
 				</tr>
 				</thead>
 				<tbody>
 				</tbody>
 				</table>
+			</div>
+		</div>
+		<div class="row content no-padding-top no-padding-bottom">
+			<div class="columns small-10">
 				<a class="button mfp-prevent-close" id="dialog-choosePlayerFromList-back"><@spring.message code="label.back"/></a>
-				<a class="button mfp-prevent-close" id="dialog-choosePlayerFromList-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+				<a class="button button-primary mfp-prevent-close" id="dialog-choosePlayerFromList-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 			</div>
 		</div>
 	</div>
@@ -240,7 +254,7 @@
 		<div class="row content no-padding-bottom">
 			<div class="columns large-12">
 				<h2><@spring.message code="label.invitation"/></h2>
-				<div class="error-panel"></div>
+				<div class="error-panel label alert radius" style="display: none"></div>
 			</div>
 		</div>
 		<div class="row content no-padding-bottom no-padding-top">
@@ -256,7 +270,7 @@
 			<div class="columns large-12">
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-back"><@spring.message code="label.back"/></a>
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-invite"><@spring.message code="label.invite"/></a>
-				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+				<a class="button button-primary mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 			</div>
 		</div>
 	</div>
@@ -269,12 +283,6 @@
 </body>
 </html>
 
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.numeric.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.maskedinput-1.3.1.min.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/steps.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/score.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/json2.js"/>"></script>
-<script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/friendRequestUtil.js"/>"></script>
 <script type="text/javascript">
 	$(function() {
 		// TODO: do the same for coach
@@ -304,14 +312,9 @@
 			error_please_enter_some_text: "<@spring.message code="error.please_enter_some_text"/>",
 			error_please_fill_at_least_one_field_for_search: "<@spring.message code="error.please_fill_at_least_one_field_for_search"/>",
 			error_please_fill_out_all_fields: "<@spring.message code="error.please_fill_out_all_fields"/>",
-			label_back: "<@spring.message code="label.back" />",
-			label_invite: "<@spring.message code="label.invite"/>",
-			label_save_without_invitation: "<@spring.message code="label.save_without_invitation"/>",
 			label_search_for: "<@spring.message code="label.search_for"/>",
-			label_send_invitation: "<@spring.message code="label.send_invitation"/>",
 			label_take_the_opportunity_to_invite: "<@spring.message code="label.take_the_opportunity_to_invite"/>",
 			label_user_not_found: "<@spring.message code="label.user_not_found"/>",
-			label_yes: "<@spring.message code="label.yes"/>",
 			loggedUserAvatarHash: "${loggedUserAvatarHash}", 
 			playersList: ${playersList}
 		};

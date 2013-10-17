@@ -7,4 +7,6 @@
 		</#if>
 	</header>
 
-	<a href="<@spring.url relativeUrl="/app/feedback-form"/>" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>
+	<#if (!(should_show_feedback??) || should_show_feedback)>
+		<a href="<@spring.url relativeUrl="/app/feedback-form"/>" id="feedback" class="ajax-popup-link"><img src="<@spring.url relativeUrl="/img/buttons/feedback.png"/>" alt="" /></a>
+	</#if>

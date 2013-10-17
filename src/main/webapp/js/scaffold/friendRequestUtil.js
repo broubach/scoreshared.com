@@ -2,14 +2,13 @@ var FriendRequestUtil = {
 
 	openFriendRequestDialog: function(data, contextPath, loggedUserAvatarHash) {
         $("#dialog-registeredInvitation input[name='userId']").val(data.playerList[0][0]); // userId
-        $("#requested dt").html('<img src="' + contextPath + '/app/avatar?hash=' + data.playerList[0][1] + '&small"/>'); // avatarHash
+        $("#requested-pic").html('<img src="' + contextPath + '/app/avatar?hash=' + data.playerList[0][1] + '&small"/>'); // avatarHash
         if (data.playerList[0][3] != undefined) {
-            $("#requested dd").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]); // fullName + location
+            $("#requested-desc").html(data.playerList[0][2] + "<br/>" + data.playerList[0][3]); // fullName + location
         } else {
-            $("#requested dd").html(data.playerList[0][2]); // fullName
+            $("#requested-desc").html(data.playerList[0][2]); // fullName
         }
-        $("#requester textarea").text(data.invitationMessage); // invitationMessage
-        $("#requester dd").html('<img src="' + contextPath + '/app/avatar?hash=' + loggedUserAvatarHash + '&small"/>'); // logged user avatar
+        $("#registeredInvitation-form textarea").text(data.invitationMessage); // invitationMessage
         $("#dialog-registeredInvitation input[name='playerName']").val(data.playerNameInScore); // playerName
 		$.magnificPopup.open({items: {src: '#dialog-registeredInvitation', type: 'inline'}});
 	}

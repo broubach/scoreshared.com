@@ -203,14 +203,13 @@ var NewPlayerWizard = {
 	breadCrumb: [],
 
 	applyDefaults: function(options){
-		options['contextPath'] = (options['contextPath'] == undefined ? '/scoreshared' : options['contextPath']);
-		options['label_yes'] = (options['label_yes'] == undefined ? 'yes' : options['label_yes']);
-		options['label_no'] = (options['label_no'] == undefined ? 'no' : options['label_no']);
-		options['label_send_request'] = (options['label_send_request'] == undefined ? 'send request' : options['label_send_request']);
-		options['label_invite'] = (options['label_invite'] == undefined ? 'invite' : options['label_invite']);
-		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
+		options['contextPath'] = (options['contextPath'] == undefined ? '/webapp' : options['contextPath']);
+		options['error_please_enter_some_text'] = (options['error_please_enter_some_text'] == undefined ? 'please enter some text' : options['error_please_enter_some_text']);
+		options['error_please_fill_at_least_one_field_for_search'] = (options['error_please_fill_at_least_one_field_for_search'] == undefined ? 'please fill at least one field for search' : options['error_please_fill_at_least_one_field_for_search']);
+		options['error_please_fill_out_all_fields'] = (options['error_please_fill_out_all_fields'] == undefined ? 'please fill out all fields' : options['error_please_fill_out_all_fields']);
+		options['label_search_for'] = (options['label_search_for'] == undefined ? 'search for' : options['label_search_for']);
 		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
-		options['label_back'] = (options['label_back'] == undefined ? 'back' : options['label_back']);
+		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
 		options['loggedUserAvatarHash'] = (options['loggedUserAvatarHash'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarHash']);
 		// TODO: start passing over the correct url
 		if (options['continueWithSavingProcessCallback'] == undefined) {

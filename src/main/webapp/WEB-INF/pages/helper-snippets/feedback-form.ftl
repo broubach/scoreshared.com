@@ -20,9 +20,11 @@
 	$('#send-feedback').click(function(){
 		$('#feedback-panel').css('display', 'block');
 		if ($('#message').val().length <= 0) {
+			$('#feedback-panel').addClass('alert');
 			$('#feedback-panel').html('<@spring.message code="label.please_fill_in_the_field_with_a_message"/>');
 			return false;
 		}
+		$('#feedback-panel').removeClass('alert');
 		$('#feedback-panel').html('<@spring.message code="label.sending_please_wait"/>');
 		$('#message').attr('readonly', '');
 		$('#send-feedback').attr('disabled', '');
