@@ -52,8 +52,6 @@ public class HomeController extends BaseController {
     public ModelAndView home(@LoggedUser User loggedUser, HttpServletRequest request) {
         try {
             ModelAndView mav = new ModelAndView();
-            mav.addObject("userFirstName", loggedUser.getFirstName());
-
             mav.addObject("messages", getMessages(loggedUser));
 
             List<ScoreItemModel> scores = getScores(loggedUser, localeResolver.resolveLocale(request));

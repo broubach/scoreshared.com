@@ -58,7 +58,7 @@
 
 				<div class="row">
 					<div class="small-4 columns">
-							<div style="width:123px;height:162px;overflow:hidden;margin-left:5px;border:0px;"> 
+							<div style="width:104px;height:104px;overflow:hidden;margin-left:5px;border:0px;"> 
 								<img id="preview" style="max-width: none" src="<@spring.url relativeUrl="/app/avatar"/>?${((.now?datetime)?string)?replace(" ", "")}"/>
 							</div>
 					</div>

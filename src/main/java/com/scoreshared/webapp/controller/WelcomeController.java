@@ -1,12 +1,14 @@
 package com.scoreshared.webapp.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Date;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.File;
 import com.scoreshared.business.persistence.User;
+import com.scoreshared.scaffold.CustomMultipartFile;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.WelcomeStep1Form;
@@ -90,9 +93,26 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step3", method = RequestMethod.GET)
-    public String getStep3(ModelMap modelMap) {
+    public String getStep3(ModelMap modelMap, @LoggedUser User loggedUser, HttpSession session, SessionStatus status) {
+        WelcomeStep3Form step3Form = new WelcomeStep3Form();
         if (!modelMap.containsAttribute("welcomeStep3Form")) {
-            modelMap.addAttribute(new WelcomeStep3Form());
+            modelMap.addAttribute(step3Form);
+        }
+
+        Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
+        if (facebookConnection != null && loggedUser.getProfile() != null
+                && StringUtils.isEmpty(loggedUser.getProfile().getAvatarHash())) {
+            try {
+                MultipartFile multipartFile = new CustomMultipartFile(facebookConnection.getImageUrl());
+                step3Form.setFile(multipartFile);
+                step3Form.setAvatarUploaded(Boolean.TRUE);
+                saveStep3(step3Form, loggedUser, session, status);
+
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return "welcome/step3";
     }
