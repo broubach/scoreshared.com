@@ -14,6 +14,7 @@ var SignupFlow = {
 				});
 
 			} else {
+				$('#message-console').css("display", "block");
 				if (data.errorMessage instanceof Array) {
 					$('#message-console').text("");
 					for (var i = 0; i<data.errorMessage.length; i++) {
@@ -50,6 +51,7 @@ var SignupFlow = {
 			if (data.errorMessage == undefined) {
 				window.location.href = SignupFlow.context + '/app/welcome/step1';
 			} else {
+				$('#message-console').css("display", "block");
 				$('#message-console').html(data.errorMessage);
 			}
 		},

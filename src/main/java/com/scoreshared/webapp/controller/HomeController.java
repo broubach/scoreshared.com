@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
+import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
@@ -43,6 +44,9 @@ public class HomeController extends BaseController {
     private GraphBo graphBo;
 
     @Inject
+    private UserBo userBo;
+
+    @Inject
     private MessageSource messageResource;
 
     @Inject
@@ -59,6 +63,8 @@ public class HomeController extends BaseController {
 
             StringWriter jsonPlayers = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();
+
+            loggedUser.setProfile(userBo.markSignupProcessAsCompleted(loggedUser).getProfile());
 
             if (!scores.isEmpty()) {
                 Integer[] winLoss = scoreBo.calculateWinLoss(loggedUser.getId());

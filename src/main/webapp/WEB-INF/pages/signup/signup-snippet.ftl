@@ -54,4 +54,4 @@
 	<div class="input text"><label><@spring.message code="label.clicking_over_signup_you_are_accepting_our_terms_and_conditions" /></label></div>
 	<div class="submit"><button class="button button-large button-primary button-enroll" type="button"><@spring.message code="label.signup"/></button></div>
 </form>
-<div id="message-console"></div>
+<div id="message-console" class="error-panel label alert radius" style="display: none"></div>

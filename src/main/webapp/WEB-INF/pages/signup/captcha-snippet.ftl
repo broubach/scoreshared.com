@@ -18,4 +18,4 @@
 		<a id="goBack" href="#"><@spring.message code="label.back" /></a>
 	</div>
 </form>
-<div id="message-console"></div> 
+<div id="message-console" class="error-panel label alert radius" style="display: none"></div>

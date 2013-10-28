@@ -38,6 +38,8 @@ public class Profile extends BaseEntity {
     private File smallAvatar;
     private SportEnum sport;
 
+    private Boolean signupProcessCompleted;
+
     public String getCity() {
         return city;
     }
@@ -151,5 +153,13 @@ public class Profile extends BaseEntity {
 
     public void setSport(SportEnum sport) {
         this.sport = sport;
+    }
+
+    public Boolean getSignupProcessCompleted() {
+        return signupProcessCompleted;
+    }
+
+    public void setSignupProcessCompleted(Boolean signupProcessCompleted) {
+        this.signupProcessCompleted = signupProcessCompleted;
     }
 }

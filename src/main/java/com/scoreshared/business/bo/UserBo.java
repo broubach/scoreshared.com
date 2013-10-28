@@ -259,4 +259,25 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public void updateUser(User user) {
         dao.saveOrUpdate(user);
     }
+
+    public User markSignupProcessAsCompleted(User loggedUser) {
+		if (loggedUser.getProfile() == null
+				|| !Boolean.TRUE.equals(loggedUser.getProfile().getSignupProcessCompleted())) {
+            // fetch user
+            loggedUser = dao.findByPk(User.class, loggedUser.getId(), null);
+            if (loggedUser.getProfile() == null) {
+                // if there's no profile, create one with the signupProcessCompleted as true
+            	loggedUser.setProfile(new Profile());
+            }
+            loggedUser.getProfile().setSignupProcessCompleted(Boolean.TRUE);
+            // save profile
+            dao.saveOrUpdate(loggedUser);
+    	}
+		return loggedUser;
+    }
+
+    public boolean isSignupCompleted(User user) {
+        user = dao.findByPk(User.class, user.getId(), null);
+        return user.getProfile() != null && Boolean.TRUE.equals(user.getProfile().getSignupProcessCompleted());
+    }
 }
