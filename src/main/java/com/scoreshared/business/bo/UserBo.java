@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.scoreshared.business.persistence.File;
 import com.scoreshared.business.persistence.InvitationResponseEnum;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Profile;
+import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
 @Component("userBo")
@@ -279,5 +281,21 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public boolean isSignupCompleted(User user) {
         user = dao.findByPk(User.class, user.getId(), null);
         return user.getProfile() != null && Boolean.TRUE.equals(user.getProfile().getSignupProcessCompleted());
+    }
+
+    public void closeAccount(User loggedUser, String reasonsNotToUseScoreshared) {
+        // delete all scores which the loggedUser is the owner
+        List<Score> scores = dao.findByNamedQuery("scoresByOwner", loggedUser.getId());
+        for (Score score : scores) {
+            score.setDeleted(true);
+            dao.saveOrUpdate(score);
+            // FIXME: it should be in an asynchronous job with bulk update. high chances it will decrease server performance.
+        }
+
+        // set the date account was closed as today
+        loggedUser.setDeleted(true);
+        loggedUser.setDateAccountWasClosed(new Date());
+        loggedUser.setReasonAccountWasClosed(reasonsNotToUseScoreshared);
+        dao.saveOrUpdate(loggedUser);
     }
 }

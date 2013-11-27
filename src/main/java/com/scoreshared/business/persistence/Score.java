@@ -29,7 +29,8 @@ import org.hibernate.annotations.Where;
         @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)"),
         @NamedQuery(name = "pendingScoreApprovalsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.revisionMessage is null and pl.player.association.id = :userId and pl.player.invitationResponse = 0) or (pr.revisionMessage is null and pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitationResponse = 0)) group by s.id"),
         @NamedQuery(name = "pendingScoreRevisionsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.revisionMessage is not null or pr.revisionMessage is not null) and s.owner.id = :ownerId group by s.id"),
-        @NamedQuery(name = "scoresByIdsQuery", query = "from Score s where s.id in(:ids)")})
+        @NamedQuery(name = "scoresByIdsQuery", query = "from Score s where s.id in(:ids)"),
+        @NamedQuery(name = "scoresByOwner", query = "from Score s where s.owner.id = :ownerId")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
 public class Score extends BaseEntity implements Cloneable {

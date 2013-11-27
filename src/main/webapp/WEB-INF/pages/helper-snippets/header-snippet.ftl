@@ -8,7 +8,7 @@
 <ul id="menu-profile" class="f-dropdown">
 	<li class="use-as"><@spring.message code="label.hello"/> ${associatedPlayer.association.firstName}!</li>
 	<li><a href="<@spring.url relativeUrl="/app/profile"/>"/><@spring.message code="label.profile" /></a></li>
-	<li><a href="<@spring.url relativeUrl="/app/accountSettings"/>"/><@spring.message code="label.account_settings" /></a></li>
+	<li><a href="<@spring.url relativeUrl="/app/account-settings/terms-and-conditions"/>"/><@spring.message code="label.account_settings" /></a></li>
 	<li><hr/></li>
 	<li><a href="<@spring.url relativeUrl="/j_spring_security_logout"/>"><@spring.message code="label.logout" /></a></li>
 </ul>

@@ -30,6 +30,8 @@ public class User extends BaseEntity implements UserDetails {
     private Date birthday;
     private String password;
     private char gender;
+    private Date dateAccountWasClosed;
+    private String reasonAccountWasClosed;
     private Date lastAccess;
     private Date beforeLastAccess;
 
@@ -91,6 +93,22 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setGender(char gender) {
         this.gender = gender;
+    }
+
+    public Date getDateAccountWasClosed() {
+        return dateAccountWasClosed;
+    }
+
+    public void setDateAccountWasClosed(Date dateAccountWasClosed) {
+        this.dateAccountWasClosed = dateAccountWasClosed;
+    }
+
+    public String getReasonAccountWasClosed() {
+        return reasonAccountWasClosed;
+    }
+
+    public void setReasonAccountWasClosed(String reasonAccountWasClosed) {
+        this.reasonAccountWasClosed = reasonAccountWasClosed;
     }
 
     public Date getLastAccess() {

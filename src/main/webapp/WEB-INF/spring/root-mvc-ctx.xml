@@ -22,6 +22,7 @@
 	<view-controller path="/error" view-name="error" />
 	<view-controller path="/index" view-name="index/index" />
 	<view-controller path="/feedback-form" view-name="helper-snippets/feedback-form" />
+	<view-controller path="/account-settings/terms-and-conditions" view-name="account-settings/terms-and-conditions" />
 
 	<beans:bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
