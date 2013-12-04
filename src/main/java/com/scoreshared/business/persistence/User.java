@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -18,7 +19,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email")
+@NamedQueries({
+        @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email"),
+        @NamedQuery(name = "existentForgotPasswordInstructionsHashQuery", query = "select 1 from User u where u.forgotPasswordInstructionsHash = :hash and :date < u.forgotPasswordInstructionsDate"),
+        @NamedQuery(name = "updatePasswordQuery", query = "update User set password = :password, forgotPasswordInstructionsHash = null where forgotPasswordInstructionsHash = :hash and :date < forgotPasswordInstructionsDate"),
+        @NamedQuery(name = "emailByForgotPasswordHashQuery", query = "select u.email from User u where u.forgotPasswordInstructionsHash = :hash")})
 @Table(name = "user")
 @SQLDelete(sql="UPDATE user SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -34,6 +39,8 @@ public class User extends BaseEntity implements UserDetails {
     private String reasonAccountWasClosed;
     private Date lastAccess;
     private Date beforeLastAccess;
+    private String forgotPasswordInstructionsHash;
+    private Date forgotPasswordInstructionsDate;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Profile profile;
@@ -125,6 +132,22 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setBeforeLastAccess(Date beforeLastAccess) {
         this.beforeLastAccess = beforeLastAccess;
+    }
+
+    public String getForgotPasswordInstructionsHash() {
+        return forgotPasswordInstructionsHash;
+    }
+
+    public void setForgotPasswordInstructionsHash(String forgotPasswordInstructionsHash) {
+        this.forgotPasswordInstructionsHash = forgotPasswordInstructionsHash;
+    }
+
+    public Date getForgotPasswordInstructionsDate() {
+        return forgotPasswordInstructionsDate;
+    }
+
+    public void setForgotPasswordInstructionsDate(Date forgotPasswordInstructionsDate) {
+        this.forgotPasswordInstructionsDate = forgotPasswordInstructionsDate;
     }
 
     @Override

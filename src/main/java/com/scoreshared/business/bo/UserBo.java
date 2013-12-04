@@ -7,15 +7,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,6 +38,12 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
 	@Inject
 	private GraphBo graphBo;
 
+    @Value("${email.from}")
+    private String from;
+    
+    @Value("${email.fromName}")
+    private String fromName;
+    
     public static final String DEFAULT_AVATAR_KEY = "defaultAvatarKey";
     private static final Integer DEFAULT_AVATAR_ID = 4;
     public static final String SMALL_DEFAULT_AVATAR_KEY = "smallDefaultAvatarKey";
@@ -297,5 +306,56 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         loggedUser.setDateAccountWasClosed(new Date());
         loggedUser.setReasonAccountWasClosed(reasonsNotToUseScoreshared);
         dao.saveOrUpdate(loggedUser);
+    }
+
+    public boolean isEmailValid(String email) {
+        if (email == null || email.indexOf('@') == -1 || email.indexOf('.') == -1) {
+            return false;
+        }
+        return true;
+    }
+
+    public void sendInstructions(String email, Locale locale) {
+        List<User> users = findUserDetailsByMailAndProfileInfo(email, null);
+        if (!users.isEmpty()) {
+            User userToBeRecovered = users.get(0);
+            String hash = hashEncoder.encodePassword(userToBeRecovered.getId().toString(), System.currentTimeMillis());
+            userToBeRecovered.setForgotPasswordInstructionsHash(hash);
+            Calendar forgotPasswordInstructionsDate = Calendar.getInstance();
+            forgotPasswordInstructionsDate.add(Calendar.DATE, 2);
+            userToBeRecovered.setForgotPasswordInstructionsDate(forgotPasswordInstructionsDate.getTime());
+
+            dao.saveOrUpdate(userToBeRecovered);
+
+            sendInstructionsMail(email, hash, locale);         
+        }
+    }
+    
+    private void sendInstructionsMail(String email, String hash, Locale locale) {
+        String templateName = "forgot-password-email-template";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("hash", hash);
+        String body = parseTemplate(templateName, params, locale);
+        sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
+    }
+
+    public boolean isForgotPasswordHashValid(String hash) {
+        return !dao.findByNamedQuery("existentForgotPasswordInstructionsHashQuery", new Date(), hash).isEmpty();
+    }
+
+    public boolean resetPassword(String hash, String newPassword) {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("password", newPassword);
+        properties.put("hash", hash);
+        properties.put("date", new Date());
+        return dao.execute("updatePasswordQuery", properties) > 0 ? true : false;
+    }
+
+    public boolean isPasswordValid(String password) {
+        return password != null && password.length() >= 6;
+    }
+
+    public String findEmailByForgotPasswordHash(String hash) {
+        return (String) dao.findByNamedQuery("emailByForgotPasswordHashQuery", hash).get(0);
     }
 }

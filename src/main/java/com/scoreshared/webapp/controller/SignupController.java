@@ -173,7 +173,7 @@ public class SignupController extends BaseController {
                             localeResolver.resolveLocale(request)));
 
         } else {
-            if (form.getEmail().indexOf('@') == -1 || form.getEmail().indexOf('.') == -1) {
+            if (userBo.isEmailValid(form.getEmail())) {
                 result.put(
                         "errorMessage",
                         messageResource.getMessage("error.type_in_valid_email", null,
@@ -192,7 +192,7 @@ public class SignupController extends BaseController {
                                 localeResolver.resolveLocale(request)));
             }
 
-            if (form.getPassword().length() < 6) {
+            if (userBo.isPasswordValid(form.getPassword())) {
                 if (result.get("errorMessage") == null) {
                     result.put("errorMessage", messageResource.getMessage(
                             "error.the_password_must_have_at_least_6_characters", null,

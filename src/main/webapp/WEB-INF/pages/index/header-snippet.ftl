@@ -19,7 +19,7 @@
 								<div class="submit"><input class="button button-primary button-small" id="login_button" type="button" value="<@spring.message code="label.login"/>"/></div>
 							</div>
 							<div class="columns large-8">
-								<a href="#" class="forgot-pass"><@spring.message code="label.forgotyourpassword"/></a>
+								<a href="<@spring.url relativeUrl="/app/forgotPassword/sendInstructions"/>" class="forgot-pass"><@spring.message code="label.forgot_your_password"/></a>
 							</div>
 						</div>
 					</div>

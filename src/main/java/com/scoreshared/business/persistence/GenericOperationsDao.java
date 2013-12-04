@@ -83,11 +83,15 @@ public class GenericOperationsDao extends HibernateDaoSupport {
             query.setMaxResults(maxResults);
         }
         if (paramValues != null) {
-            for (int i = 0; i < query.getNamedParameters().length; i++) {
-                if (paramValues[i] instanceof Collection) {
-                    query.setParameterList(query.getNamedParameters()[i], (Collection) paramValues[i]);
-                } else {
-                    query.setParameter(query.getNamedParameters()[i], paramValues[i]);
+            if (paramValues.length > 0 && paramValues[0] instanceof Map) {
+                query.setProperties((Map) paramValues[0]);
+            } else {
+                for (int i = 0; i < query.getNamedParameters().length; i++) {
+                    if (paramValues[i] instanceof Collection) {
+                        query.setParameterList(query.getNamedParameters()[i], (Collection) paramValues[i]);
+                    } else {
+                        query.setParameter(query.getNamedParameters()[i], paramValues[i]);
+                    }
                 }
             }
         }
@@ -189,7 +193,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         getHibernateTemplate().getSessionFactory().getCurrentSession().close();
     }
 
-    public void execute(String namedQuery, Object... paramValues) {
+    public int execute(String namedQuery, Object... paramValues) {
         Session session = null;
         Transaction t = null;
         try {
@@ -197,8 +201,9 @@ public class GenericOperationsDao extends HibernateDaoSupport {
             t = session.beginTransaction();
             Query query = session.getNamedQuery(namedQuery);
             populateQuery(null, null, query, paramValues);
-            query.executeUpdate();
+            int result = query.executeUpdate();
             t.commit();
+            return result;
 
         } catch (HibernateException e) {
             t.rollback();
