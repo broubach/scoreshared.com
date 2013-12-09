@@ -98,7 +98,7 @@ public class ScoreController extends BaseController {
 
             StringWriter playersList = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(playersList, scoreBo.listPlayersName(loggedUser));
+            mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
             mav.addObject("playersList", playersList.toString());
             return mav;
         } catch (JsonGenerationException e) {
@@ -108,6 +108,14 @@ public class ScoreController extends BaseController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> toPlayerList(List<Player> players) {
+        List<String> result = new ArrayList<String>();
+        for (Player player :players) {
+            result.add(player.getName());
+        }
+        return result;
     }
 
     @RequestMapping(value = "{scoreId}", method = RequestMethod.GET)
@@ -130,7 +138,7 @@ public class ScoreController extends BaseController {
 
             StringWriter playersList = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(playersList, scoreBo.listPlayersName(loggedUser));
+            mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
             mav.addObject("playersList", playersList.toString());
             return mav;
         } catch (JsonGenerationException e) {
@@ -153,7 +161,7 @@ public class ScoreController extends BaseController {
 
                 StringWriter playersList = new StringWriter();
                 ObjectMapper mapper = new ObjectMapper();
-                mapper.writeValue(playersList, scoreBo.listPlayersName(loggedUser));
+                mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
                 mav.addObject("playersList", playersList.toString());
                 return mav;
             }

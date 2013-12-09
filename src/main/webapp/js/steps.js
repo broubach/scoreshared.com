@@ -50,6 +50,60 @@ var ProvidePlayerListStep = {
 	}
 };
 
+var ProvidePlayerListWithSinglePlayerStep = {
+	name: 'first',
+	execute: function(context) {
+		var players = [ { playerName: $(document.getElementById('playerName')).val() } ];
+		context.players = players;
+	},
+
+	getNextStep: function() {
+		return BuildDataWithI18nStep.name;
+	},
+
+	isSuspensive: function() {
+		return false;
+	},
+
+	storeInBreadCrumbs: function() {
+		return false;
+	},
+
+	init: function() {
+		return ProvidePlayerListWithSinglePlayerStep;
+	}
+};
+
+var BuildDataWithI18nStep = {
+	name: 'buildDataWithI18n',
+	execute: function(context) {
+		$.ajax({
+			url: context.options.contextPath+"/app/home/buildDataWithI18n",
+			data: {'playerName': context.players[context.currentPlayer].playerName},
+			type: 'POST',
+			dataType: 'json',
+			cache: false,
+			success: NewPlayerWizard.resume
+		});
+	},
+
+	getNextStep: function() {
+		return UserConfirmationStep.name;
+	},
+
+	isSuspensive: function() {
+		return true;
+	},
+
+	storeInBreadCrumbs: function() {
+		return false;
+	},
+
+	init: function() {
+		return BuildDataWithI18nStep;
+	}
+};
+
 var CheckIfPlayerShouldBeInvitedStep = {
 	name: 'checkIfInvites',
 	suspensive: {},

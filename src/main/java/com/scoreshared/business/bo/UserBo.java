@@ -358,4 +358,14 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public String findEmailByForgotPasswordHash(String hash) {
         return (String) dao.findByNamedQuery("emailByForgotPasswordHashQuery", hash).get(0);
     }
+
+    public List<Player> listPlayersNameExceptLoggedUser(User loggedUser) {
+        return dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", loggedUser.getId());
+    }
+
+    public Integer createPlayer(User loggedUser, String playerName) {
+        Player player = new Player(playerName.trim(), loggedUser);
+        dao.saveOrUpdate(player);
+        return player.getId();
+    }
 }

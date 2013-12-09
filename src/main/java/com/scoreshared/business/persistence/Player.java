@@ -22,7 +22,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerByNameAndOwnerQuery", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerNameByOwnerQuery", query = "select player.name from Player player where player.owner.id = :ownerId"),
+        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery", query = "from Player player where player.owner.id = :ownerId and (player.association.id <> :ownerId or player.association.id is null)"),
         @NamedQuery(name = "playerByAssociationAndOwnerQuery", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
         @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitationHash = :invitationHash"),
         @NamedQuery(name = "pendingInvitationsQuery", query= "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitationDate is not null and p.invitationResponse is null" )})

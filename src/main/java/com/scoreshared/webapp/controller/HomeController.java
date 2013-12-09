@@ -18,8 +18,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,11 +29,13 @@ import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Comment;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerPermission;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.ScoreItemModel;
+import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
 @RequestMapping(value = "/home")
@@ -71,18 +75,15 @@ public class HomeController extends BaseController {
                 mav.addObject("win", winLoss[0]);
                 mav.addObject("loss", winLoss[1]);
 
-                mapper.writeValue(jsonPlayers, listPlayersNameAndId(scores));
+                mapper.writeValue(jsonPlayers, listPlayersNameAndIdFromScoreItemModel(scores));
                 mav.addObject("players", jsonPlayers.toString());
 
                 mav.setViewName("home/home");
 
             } else {
-                List<Object[]> globalScores = scoreBo.findScores(0, false);
-
-                mav.addObject("scores", getScores(globalScores, localeResolver.resolveLocale(request)));
-
-                mapper.writeValue(jsonPlayers, listGlobalPlayersNameAndId(globalScores));
-                mav.addObject("players", jsonPlayers.toString());
+                mav.addObject("search", new SearchModel());
+                mav.addObject("players", listPlayersNameAndIdFromPlayers(userBo
+                        .listPlayersNameExceptLoggedUser(loggedUser)));
 
                 mav.setViewName("home/homeNewUser");
             }
@@ -96,21 +97,15 @@ public class HomeController extends BaseController {
         }
     }
 
-    private List<Object[]> listGlobalPlayersNameAndId(List<Object[]> globalScores) {
+    private List<Object[]> listPlayersNameAndIdFromPlayers(List<Player> players) {
         List<Object[]> result = new ArrayList<Object[]>();
-        Score score = null;
-        for (Object[] item : globalScores) {
-            score = (Score) item[0];
-            for (PlayerPermission player : score.getAllPlayers()) {
-                if (player.isConnected()) {
-                    result.add(new Object[] { player.getAssociation().getId(), player.getName() });
-                }
-            }
+        for (Player player : players) {
+            result.add(new Object[] { player.getId(), player.getName() });
         }
         return result;
     }
 
-    private List<Object[]> listPlayersNameAndId(List<ScoreItemModel> scores) {
+    private List<Object[]> listPlayersNameAndIdFromScoreItemModel(List<ScoreItemModel> scores) {
         List<Object[]> result = new ArrayList<Object[]>();
         Set<Integer> ids = new HashSet<Integer>();
         for (ScoreItemModel score : scores) {
@@ -132,26 +127,6 @@ public class HomeController extends BaseController {
             result.add(new ScoreItemModel((Score)score[0], (Comment)score[1], loggedUser, messageResource, locale));
         }
 
-        return result;
-    }
-
-    private List<Map<String, Object>> getScores(List<Object[]> scores, Locale locale) {
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        Map<String, Object> item = null;
-        Score score = null;
-        for (Object[] scoreObj : scores) {
-            item = new HashMap<String, Object>();
-            score = (Score) scoreObj[0];
-
-            item.put("leftPlayerAvatar", score.getSampleLeftPlayer().getAvatar());
-            item.put("leftPlayerName", score.getLeftPlayerNames());
-            item.put("scoreText", score.getFinalScore());
-            item.put("rightPlayerName", score.getRightPlayerNames());
-            item.put("rightPlayerAvatar", score.getSampleRightPlayer().getAvatar());
-
-            result.add(item);
-        }
-        
         return result;
     }
 
@@ -194,7 +169,26 @@ public class HomeController extends BaseController {
             }
         }
 
-        // TODO: get pending comments
+        return result;
+    }
+
+    @RequestMapping(value= "/player", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> createPlayer(@ModelAttribute("playerName") String playerName, @LoggedUser User loggedUser, HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Integer id = userBo.createPlayer(loggedUser, playerName);
+        result.put("playerId", id);
+        result.put("playerName", playerName);
+        return result;
+    }
+
+    @RequestMapping(value= "/buildDataWithI18n", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> buildDataWithI18n(@ModelAttribute("playerName") String playerName, HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("proceedWithConfirmation", "true");
+        result.put("title", messageResource.getMessage("label.invite_to_your_contacts",
+                new String[] { playerName }, localeResolver.resolveLocale(request)));
         return result;
     }
 }

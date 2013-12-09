@@ -150,19 +150,10 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    public List<String> listPlayersName(User loggedUser) {
-        return dao.findByNamedQuery("playerNameByOwnerQuery", loggedUser.getId());
-    }
-
     public List<Object[]> findScores(Integer pageNumber, Boolean ascending, User owner) {
         String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :ownerId and lp.visible = 1) or (rp.approvalResponse = 0 and rp.player.association.id = :ownerId and rp.visible = 1)) order by cast(score.date as date)").append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
         return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
 	}
-
-    public List<Object[]> findScores(Integer pageNumber, Boolean ascending) {
-        String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.visible = 1) or (rp.approvalResponse = 0 and rp.visible = 1)) order by cast(score.date as date)").append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
-        return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null);
-    }
 
     public Score findById(Integer scoreId) {
         return dao.findByPk(Score.class, scoreId);

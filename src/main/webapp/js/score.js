@@ -211,7 +211,6 @@ var NewPlayerWizard = {
 		options['label_take_the_opportunity_to_invite'] = (options['label_take_the_opportunity_to_invite'] == undefined ? 'take the opportunity to invite' : options['label_take_the_opportunity_to_invite']);
 		options['label_user_not_found'] = (options['label_user_not_found'] == undefined ? 'not found' : options['label_user_not_found']);
 		options['loggedUserAvatarHash'] = (options['loggedUserAvatarHash'] == undefined ? '/loggedUser/avatar/url' : options['loggedUserAvatarHash']);
-		// TODO: start passing over the correct url
 		if (options['continueWithSavingProcessCallback'] == undefined) {
 			options.continueWithSavingProcessCallback = function() {
 				$("#score-form").submit();

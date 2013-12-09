@@ -172,105 +172,15 @@
 		</div>
 	</div>
 
-	<div id="dialog-confirm" class="modal mfp-hide">
-		<div class="row content">
-			<div class="columns large-10">
-				<h2><@spring.message code="label.confirmation"/></h2>
-				<p id="confirmation-question"></p>
-				<label><input type="checkbox"/><@spring.message code="label.dont_ask_again_for_this_player"/></label>
-				<button class="button mfp-prevent-close" id="dialog-confirm-yes"><@spring.message code="label.yes"/></button>
-				<a class="button button-primary mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
-			</div>
-		</div>
-	</div>
+	<#include "/helper-snippets/dialog-confirm-snippet.ftl">
 
-	<div id="dialog-search" class="modal mfp-hide">
-		<div class="row content no-padding-bottom">
-			<div class="columns large-10">
-				<h2><@spring.message code="label.invitation"/></h2>
-				<p id="search-for-username"></p>
-				<div class="error-panel label alert radius" style="display: none"></div>
-			</div>
-		</div>
-		<div class="row content no-padding-top no-padding-bottom">
-			<form id="search-form">
-				<div class="columns large-5">
-						<@spring.formHiddenInput "search.playerNameInScore", "" />
-						<div class="input text"><label for="firstName"><@spring.message code="label.first_name"/></label><@spring.formInput "search.firstName", "", "text"/></div>
-						<div class="input text"><label for="lastName"><@spring.message code="label.last_name"/></label><@spring.formInput "search.lastName", "", "text"/></div>
-						<div class="input text"><label for="city"><@spring.message code="label.city"/></label><@spring.formInput "search.city", "", "text"/></div>
-						<div class="input text"><label for="country"><@spring.message code="label.country"/></label><@spring.formInput "search.country", "", "text"/></div>
-				</div>
-				<div class="columns large-2 centralizado">
-					<@spring.message code="label.or"/>
-				</div>
-				<div class="columns large-5">
-					<div class="input text"><label for="email"><@spring.message code="label.email"/></label><@spring.formInput "search.email", "", "text"/></div>
-				</div>
-			</form>
-		</div>
-		<div class="row content no-padding-top no-padding-bottom">
-			<div class="columns large-10">
-				<a class="button mfp-prevent-close" id="dialog-search-invite"><@spring.message code="label.invite"/></a>
-				<a class="button button-primary mfp-prevent-close" id="dialog-search-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
-			</div>
-		</div>
-	</div>
+	<#include "/helper-snippets/dialog-search-snippet.ftl">
 
-	<div id="dialog-choosePlayerFromList" class="modal mfp-hide">
-		<div class="row content no-padding-top">
-			<div class="columns small-10">
-				<h2><@spring.message code="label.invitation"/></h2>
-				<p><@spring.message code="label.select_a_player"/></p>
-			</div>
-		</div>
-		<div class="row content no-padding-top no-padding-bottom">
-			<div class="columns small-10">
-				<table class="full selecao-jogador">
-				<thead>
-				<tr>
-					<th></th><th><@spring.message code="label.name"/></th><th><@spring.message code="label.location"/></th>
-				</tr>
-				</thead>
-				<tbody>
-				</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row content no-padding-top no-padding-bottom">
-			<div class="columns small-10">
-				<a class="button mfp-prevent-close" id="dialog-choosePlayerFromList-back"><@spring.message code="label.back"/></a>
-				<a class="button button-primary mfp-prevent-close" id="dialog-choosePlayerFromList-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
-			</div>
-		</div>
-	</div>
+	<#include "/helper-snippets/dialog-choose-player-from-list-snippet.ftl">
 
 	<#include "/helper-snippets/dialog-registered-invitation-snippet.ftl">
 
-	<div id="dialog-unregisteredInvitation" class="modal mfp-hide">
-		<div class="row content no-padding-bottom">
-			<div class="columns large-12">
-				<h2><@spring.message code="label.invitation"/></h2>
-				<div class="error-panel label alert radius" style="display: none"></div>
-			</div>
-		</div>
-		<div class="row content no-padding-bottom no-padding-top">
-			<div class="columns large-12">
-				<form id="unregisteredInvitation-form">
-					<input type="hidden" name="playerName" />
-					<div class="input text"><label class="message-label" for="message"></label><textarea id="message" name="message"></textarea></div>
-					<div class="input text"><label for="email"><@spring.message code="label.email"/></label><input type="text" id="email" name="email"/></div>
-				</form>
-			</div>
-		</div>
-		<div class="row content no-padding-bottom no-padding-top">
-			<div class="columns large-12">
-				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-back"><@spring.message code="label.back"/></a>
-				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-invite"><@spring.message code="label.invite"/></a>
-				<a class="button button-primary mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
-			</div>
-		</div>
-	</div>
+	<#include "/helper-snippets/dialog-unregistered-invitation-snippet.ftl">
 
 	<div class="row content">
 		<br/>
@@ -302,7 +212,7 @@
 
 		$("#set1Left,#set1Right,#set2Left,#set2Right,#set3Left,#set3Right,#set4Left,#set4Right,#set5Left,#set5Right").numeric({ decimal: false, negative: false });
 		$("#time").mask("99:99");
-		Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>", ["Pete Sampras", "Agelina Jolie", "Recceba de morney"], "${associatedPlayer.name}");
+		Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>", ${playersList}, "${associatedPlayer.name}");
 
 		var newPlayerWizardOptions = {
 			contextPath: "<@spring.url relativeUrl="/"/>",

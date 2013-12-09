@@ -36,7 +36,7 @@ public class StatsController {
     public void renderChart(@PathVariable Integer win, @PathVariable Integer loss, HttpServletRequest request,
             HttpServletResponse resp) throws IOException {
         String victoriesLabel = new StringBuilder()
-                .append(messageResource.getMessage("label.wins", null, localeResolver.resolveLocale(request)))
+                .append(messageResource.getMessage("label.win", null, localeResolver.resolveLocale(request)))
                 .append("(").append(win).append(")").toString();
         String defeatsLabel = new StringBuilder()
                 .append(messageResource.getMessage("label.loss", null, localeResolver.resolveLocale(request)))
