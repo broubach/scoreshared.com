@@ -44,13 +44,13 @@
 										<table>
 											<tbody>
 											<tr>
-												<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerPermission.player.avatar?html)!}&small"/>"/></td>
+												<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/></td>
 												<td>${item.detailText}</td>
-												<td>${item.playerPermission.revisionMessage}</td>
+												<td>${item.playerInstance.revisionMessage}</td>
 												<td width="30%">
 													<span class="actions hide">
 														<a href="review,${item.score.id}" class="button button-small button-warning"><@spring.message code="label.review"/></a>
-														<a href="ignore,${item.playerPermission.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
+														<a href="ignore,${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
 													</span>
 												</td>
 											</tr>

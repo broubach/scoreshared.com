@@ -70,8 +70,8 @@ public class SignupController extends BaseController {
         if (player != null) {
             SignupForm form = (SignupForm) mav.getModel().get("signupForm");
             form.setInvitationHash(invitationHash);
-            form.setEmail(player.getInvitationEmail());
-            form.setEmailConfirmation(player.getInvitationEmail());
+            form.setEmail(player.getInvitation().getEmail());
+            form.setEmailConfirmation(player.getInvitation().getEmail());
         }
         return mav;
     }
@@ -173,7 +173,7 @@ public class SignupController extends BaseController {
                             localeResolver.resolveLocale(request)));
 
         } else {
-            if (userBo.isEmailValid(form.getEmail())) {
+            if (!userBo.isEmailValid(form.getEmail())) {
                 result.put(
                         "errorMessage",
                         messageResource.getMessage("error.type_in_valid_email", null,
@@ -192,7 +192,7 @@ public class SignupController extends BaseController {
                                 localeResolver.resolveLocale(request)));
             }
 
-            if (userBo.isPasswordValid(form.getPassword())) {
+            if (!userBo.isPasswordValid(form.getPassword())) {
                 if (result.get("errorMessage") == null) {
                     result.put("errorMessage", messageResource.getMessage(
                             "error.the_password_must_have_at_least_6_characters", null,

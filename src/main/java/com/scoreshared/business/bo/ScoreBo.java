@@ -1,5 +1,6 @@
 package com.scoreshared.business.bo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,10 +11,10 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.persistence.ApprovalResponseEnum;
-import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerBehavior;
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstance;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -22,14 +23,12 @@ public class ScoreBo extends BaseBo<Score> {
 
     private static final int PAGE_SIZE = 25;
 
-    public void save(User owner, Score score, Comment comment) {
+    public void save(User owner, Score score, PlayerInstanceComment comment) {
         consist(owner, score, comment);
-
-        markRevisionsAsComplete(score);
         
         updateProfileWithNewestPreferences(score);
 
-        saveScoreOrComment(score, comment);
+        saveScoreAndComment(score, comment);
 
         // TODO: post in twitter or facebook
     }
@@ -41,7 +40,7 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    private void consist(User owner, Score score, Comment comment) {
+    private void consist(User owner, Score score, PlayerInstanceComment comment) {
         score.setOwner(owner);
         score.setWinnerDefined(score.hasWinner());
 
@@ -55,15 +54,9 @@ public class ScoreBo extends BaseBo<Score> {
             if (!score.getLeftPlayers().contains(score.getCoach()) && !score.getRightPlayers().contains(score.getCoach())) {
                 coach = findExistentPlayerAndKeepProperties(owner, score.getCoach());
             } else {
-                Set<PlayerPermission> source = new HashSet<PlayerPermission>();
-                if (score.getLeftPlayers().contains(score.getCoach())) {
-                    source.addAll(score.getLeftPlayers());
-                } else {
-                    source.addAll(score.getRightPlayers());
-                }
-                for (PlayerPermission playerInSource : source) {
-                    if (playerInSource.equals(score.getCoach())) {
-                        coach = playerInSource.getPlayer();
+                for (PlayerInstance player : score.getAllPlayers()) {
+                    if (player.equals(score.getCoach())) {
+                        coach = player.getPlayer();
                         break;
                     }
                 }
@@ -73,59 +66,58 @@ public class ScoreBo extends BaseBo<Score> {
             }
         }
         if (comment != null) {
-            comment.setScore(score);
+            comment.setPlayerInstance(score.getAssociatedPlayer(owner.getId()));
             comment.setOwner(owner);
         }
     }
 
-    private void saveScoreOrComment(Score score, Comment comment) {
+    private void saveScoreAndComment(Score score, PlayerInstanceComment comment) {
+        dao.saveOrUpdate(score);
         if (comment != null) {
             dao.saveOrUpdate(comment);
-        } else {
-            dao.saveOrUpdate(score);
         }
     }
 
-    private void consist(User owner, Score score, Set<PlayerPermission> players) {
-        Set<PlayerPermission> replacedPlayers = new HashSet<PlayerPermission>();
-        PlayerPermission playerPermission = null;
-        for (Iterator<PlayerPermission> it = players.iterator(); it.hasNext(); ) {
-            playerPermission = it.next();
+    private void consist(User owner, Score score, Set<PlayerInstance> players) {
+        Set<PlayerInstance> replacedPlayers = new HashSet<PlayerInstance>();
+        PlayerInstance playerInstance = null;
+        for (Iterator<PlayerInstance> it = players.iterator(); it.hasNext(); ) {
+            playerInstance = it.next();
 
-            PlayerPermission existentPlayerPermission = replaceExistentPlayerOrPlayerPermissionAndKeepProperties(owner, score, playerPermission);
-            if (existentPlayerPermission != null) {
+            PlayerInstance existentPlayerInstance = replaceExistentPlayerOrPlayerInstanceAndKeepProperties(owner, score, playerInstance);
+            if (existentPlayerInstance != null) {
                 it.remove();
-                replacedPlayers.add(existentPlayerPermission);
+                replacedPlayers.add(existentPlayerInstance);
             }
         }
         players.addAll(replacedPlayers);
     }
 
-    private PlayerPermission replaceExistentPlayerOrPlayerPermissionAndKeepProperties(User owner, Score score, PlayerPermission playerPermission) {
-        PlayerPermission result = null;
+    private PlayerInstance replaceExistentPlayerOrPlayerInstanceAndKeepProperties(User owner, Score score, PlayerInstance playerInstance) {
+        PlayerInstance result = null;
         if (score.getId() != null) {
-            result = findExistentPlayerPermissionAndKeepProperties(owner, score, playerPermission);
+            result = findExistentPlayerInstanceAndKeepProperties(owner, score, playerInstance);
         }
 
         if (result == null) {
-            Player player = findExistentPlayerAndKeepProperties(owner, playerPermission);
+            Player player = findExistentPlayerAndKeepProperties(owner, playerInstance);
             if (player != null) {
-                playerPermission.setPlayer(player);
+                playerInstance.setPlayer(player);
             }
         }
         return result;
     }
 
-    private PlayerPermission findExistentPlayerPermissionAndKeepProperties(User owner, Score score,
-            PlayerPermission playerPermission) {
+    private PlayerInstance findExistentPlayerInstanceAndKeepProperties(User owner, Score score,
+            PlayerInstance playerInstance) {
         Map<String, Integer> params = new HashMap<String, Integer>();
         params.put("scoreId", score.getId());
-        params.put("playerId", playerPermission.getPlayer().getId());
-        List<PlayerPermission> playerPermissions = dao.findByNamedQueryAndNamedParam("playerPermissionLeftByPlayerAndScoreQuery", params);
-        playerPermissions.addAll(dao.findByNamedQueryAndNamedParam("playerPermissionRightByPlayerAndScoreQuery", params));
-        if (playerPermissions.size() > 0) {
-            keepProperties(owner, playerPermissions.get(0), playerPermission);
-            return playerPermissions.get(0);
+        params.put("playerId", playerInstance.getPlayer().getId());
+        List<PlayerInstance> playerInstances = dao.findByNamedQueryAndNamedParam("playerInstanceLeftByPlayerAndScoreQuery", params);
+        playerInstances.addAll(dao.findByNamedQueryAndNamedParam("playerInstanceRightByPlayerAndScoreQuery", params));
+        if (playerInstances.size() > 0) {
+            keepProperties(owner, playerInstances.get(0), playerInstance);
+            return playerInstances.get(0);
         }
         return null;
     }
@@ -143,33 +135,57 @@ public class ScoreBo extends BaseBo<Score> {
     }
 
     private void keepProperties(User owner, PlayerBehavior newPlayer, PlayerBehavior oldPlayer) {
-        newPlayer.setInvitationShouldNotBeRemembered(oldPlayer.getInvitationShouldNotBeRemembered());
+        newPlayer.setShouldNotReinvite(oldPlayer.getShouldNotReinvite());
         newPlayer.setOwner(owner);
         if (newPlayer.getAssociation() != null && newPlayer.getAssociation().getId().equals(owner.getId())) {
             newPlayer.setAssociation(owner);
         }
     }
 
-    public List<Object[]> findScores(Integer pageNumber, Boolean ascending, User owner) {
-        String query = new StringBuilder().append("select score, comment from Comment comment right outer join comment.score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :ownerId and lp.visible = 1) or (rp.approvalResponse = 0 and rp.player.association.id = :ownerId and rp.visible = 1)) order by cast(score.date as date)").append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
-        return dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE) : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
-	}
+    public List<Score> findScores(Integer pageNumber, Boolean ascending, User owner) {
+        String query = new StringBuilder()
+                .append("select distinct score from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :ownerId) or (rp.approvalResponse = 0 and rp.player.association.id = :ownerId)) order by cast(score.date as date)")
+                .append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
+        List<Score> scores = dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE)
+                : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
+
+        List<Integer> ids = new ArrayList<Integer>();
+        Map<Integer, Score> scoresByIdMap = new HashMap<Integer, Score>();
+        for (Score score : scores) {
+            Integer associatedPlayerId = score.getAssociatedPlayer(owner.getId()).getId();
+            ids.add(associatedPlayerId);
+            scoresByIdMap.put(associatedPlayerId, score);
+        }
+
+        if (!ids.isEmpty()) {
+            List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdsQuery", ids);
+            for (PlayerInstanceComment comment : comments) {
+                scoresByIdMap.get(comment.getPlayerInstance().getId()).setComment(comment);
+            }
+        }
+
+        return scores;
+    }
 
     public Score findById(Integer scoreId) {
         return dao.findByPk(Score.class, scoreId);
     }
 
-    public Comment findCommentByScoreId(Integer scoreId) {
-        List<Comment> comments = dao.findByNamedQuery("commentByScoreIdQuery", scoreId);
+    public PlayerInstanceComment findCommentByPlayerInstanceId(Integer playerInstanceId) {
+        List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdQuery", playerInstanceId);
         return comments.size() > 0 ? comments.get(0) : null;
     }
 
     public void deleteScores(Integer[] ids, Integer userId) {
         List<Score> scores = dao.findByNamedQuery("scoresByIdsQuery", ids);
         for (Score score : scores) {
-            PlayerPermission player = score.getAssociatedPlayer(userId);
-            player.setVisible(Boolean.FALSE);
-            dao.saveOrUpdate(player);
+            if (score.getOwner().getId().equals(userId)) {
+                dao.remove(score);
+            } else {
+                PlayerInstance player = score.getAssociatedPlayer(userId);
+                player.setApprovalResponse(ApprovalResponseEnum.HIDDEN);
+                dao.saveOrUpdate(player);
+            }
         }
     }
 
@@ -197,32 +213,32 @@ public class ScoreBo extends BaseBo<Score> {
         Map<Integer, Score> scoresById = new HashMap<Integer, Score>();
         for (Score score : scores) {
             scoresById.put(score.getId(), score);
-            score.setLeftPlayers(new HashSet<PlayerPermission>());
+            score.setLeftPlayers(new HashSet<PlayerInstance>());
         }
         Object[] scoreIdAndPlayer = null;
         for (Object obj : dao.findByNamedQuery("scoreIdAndLeftPlayerQuery", new Object[] {scoresById.keySet()})) {
             scoreIdAndPlayer = (Object[]) obj;
-            scoresById.get(scoreIdAndPlayer[0]).getLeftPlayers().add((PlayerPermission) scoreIdAndPlayer[1]);
+            scoresById.get(scoreIdAndPlayer[0]).getLeftPlayers().add((PlayerInstance) scoreIdAndPlayer[1]);
         }
     }
 
     public void acceptScore(Integer userId, Integer scoreId) {
         Score score = findById(scoreId);
-        PlayerPermission player = score.getAssociatedPlayer(userId);
+        PlayerInstance player = score.getAssociatedPlayer(userId);
         player.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
         dao.saveOrUpdate(player);
     }
 
     public void ignoreScore(Integer userId, Integer scoreId) {
         Score score = findById(scoreId);
-        PlayerPermission player = score.getAssociatedPlayer(userId);
+        PlayerInstance player = score.getAssociatedPlayer(userId);
         player.setApprovalResponse(ApprovalResponseEnum.IGNORED);
         dao.saveOrUpdate(player);
     }
 
     public void reviewScore(Integer userId, Integer scoreId, String message) {
         Score score = findById(scoreId);
-        PlayerPermission player = score.getAssociatedPlayer(userId);
+        PlayerInstance player = score.getAssociatedPlayer(userId);
         player.setRevisionMessage(message);
         dao.saveOrUpdate(player);
     }
@@ -233,25 +249,17 @@ public class ScoreBo extends BaseBo<Score> {
 
     public void reviewRevision(Integer scoreId) {
         Score score = dao.findByPk(Score.class, scoreId);
-        score.setInRevision(Boolean.TRUE);
+        // score.setInRevision(Boolean.TRUE);
         dao.saveOrUpdate(score);
     }
 
-    public void ignoreRevision(Integer playerPermissionId) {
-        PlayerPermission playerPermission = dao.findByPk(PlayerPermission.class, playerPermissionId);
-        playerPermission.setRevisionMessage(null);
-        dao.saveOrUpdate(playerPermission);
+    public void ignoreRevision(Integer playerInstanceId) {
+        PlayerInstance playerInstance = dao.findByPk(PlayerInstance.class, playerInstanceId);
+        playerInstance.setRevisionMessage(null);
+        dao.saveOrUpdate(playerInstance);
     }
 
     public List<Score> findPendingScoreRevisions(Integer ownerId) {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
-    }
-
-    private void markRevisionsAsComplete(Score score) {
-        score.setInRevision(Boolean.FALSE);
-
-        for (PlayerPermission playerPermission : score.getAllPlayers()) {
-            playerPermission.setRevisionMessage(null);
-        }
     }
 }

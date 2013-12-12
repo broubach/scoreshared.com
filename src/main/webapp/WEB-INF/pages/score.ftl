@@ -230,3 +230,8 @@
 		$("#playersRight").select2("open");
 	});
 </script>
+<#if playersList == '[]'>
+	<style>
+			.select2-drop { display: none !important };
+	</style>
+</#if>

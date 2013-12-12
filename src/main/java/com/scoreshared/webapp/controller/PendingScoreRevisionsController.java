@@ -17,11 +17,11 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
-import com.scoreshared.webapp.dto.ScoreItemWithPlayerPermissionModel;
+import com.scoreshared.webapp.dto.ScoreItemWithPlayerInstanceModel;
 
 @Controller
 public class PendingScoreRevisionsController extends BaseController {
@@ -39,11 +39,11 @@ public class PendingScoreRevisionsController extends BaseController {
     public ModelAndView list(@LoggedUser User loggedUser, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("notifications/pending-score-revisions");
         List<Score> scores = scoreBo.findPendingScoreRevisions(loggedUser.getId());
-        List<ScoreItemWithPlayerPermissionModel> scoreModels = new ArrayList<ScoreItemWithPlayerPermissionModel>();
+        List<ScoreItemWithPlayerInstanceModel> scoreModels = new ArrayList<ScoreItemWithPlayerInstanceModel>();
         for (Score score : scores) {
-            for (PlayerPermission playerPermission : score.getAllPlayers()) {
-                if (playerPermission.getRevisionMessage() != null) {
-                    scoreModels.add(new ScoreItemWithPlayerPermissionModel(score, null, loggedUser, messageResource, localeResolver.resolveLocale(request), playerPermission));
+            for (PlayerInstance playerInstance : score.getAllPlayers()) {
+                if (playerInstance.getRevisionMessage() != null) {
+                    scoreModels.add(new ScoreItemWithPlayerInstanceModel(score, null, loggedUser, messageResource, localeResolver.resolveLocale(request), playerInstance));
                 }
             }
         }
@@ -61,7 +61,7 @@ public class PendingScoreRevisionsController extends BaseController {
 
     @RequestMapping(value = "/ignore/revision", method = RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.OK)
-    public void ignoreRevision(@ModelAttribute("playerPermissionId") Integer playerPermissionId) {
-        scoreBo.ignoreRevision(playerPermissionId);
+    public void ignoreRevision(@ModelAttribute("playerInstanceId") Integer playerInstanceId) {
+        scoreBo.ignoreRevision(playerInstanceId);
     }
 }

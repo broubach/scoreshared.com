@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 
 public class ScoreModelConverter extends BaseConverter implements Converter<Score, ScoreModel> {
@@ -35,25 +35,25 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             dest.setSet5Left(src.getSet5Left());
             dest.setSet5Right(src.getSet5Right());
             dest.setCommentId(src.getComment() != null ? src.getComment().getId() : null);
-            dest.setComment(src.getComment() != null ? src.getComment().getDescription() : null);
+            dest.setComment(src.getComment() != null ? src.getComment().getComment() : null);
             dest.setPrivate(false);
             dest.setPostInTwitter(false);
             dest.setPostInFacebook(false);
 
             List<String> newPlayersNotToBeRemembered = new ArrayList<String>();
             List<String> leftPlayers = new ArrayList<String>();
-            for (PlayerPermission playerLeft : src.getLeftPlayers()) {
+            for (PlayerInstance playerLeft : src.getLeftPlayers()) {
                 leftPlayers.add(playerLeft.getName());
-                if (Boolean.TRUE.equals(playerLeft.getInvitationShouldNotBeRemembered())) {
+                if (Boolean.TRUE.equals(playerLeft.getShouldNotReinvite())) {
                     newPlayersNotToBeRemembered.add(playerLeft.getName());
                 }
             }
             dest.setPlayersLeft(leftPlayers);
 
             List<String> rightPlayers = new ArrayList<String>();
-            for (PlayerPermission playerRight : src.getRightPlayers()) {
+            for (PlayerInstance playerRight : src.getRightPlayers()) {
                 rightPlayers.add(playerRight.getName());
-                if (Boolean.TRUE.equals(playerRight.getInvitationShouldNotBeRemembered())) {
+                if (Boolean.TRUE.equals(playerRight.getShouldNotReinvite())) {
                     newPlayersNotToBeRemembered.add(playerRight.getName());
                 }
             }
@@ -61,7 +61,7 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             
             if (src.getCoach() != null) {
                 dest.setCoach(src.getCoach().getName());
-                if (Boolean.TRUE.equals(src.getCoach().getInvitationShouldNotBeRemembered())) {
+                if (Boolean.TRUE.equals(src.getCoach().getShouldNotReinvite())) {
                     newPlayersNotToBeRemembered.add(src.getCoach().getName());
                 }
 

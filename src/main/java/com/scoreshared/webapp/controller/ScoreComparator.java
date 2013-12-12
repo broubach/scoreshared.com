@@ -5,7 +5,7 @@ import java.util.Comparator;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
-final class ScoreComparator implements Comparator<Object[]> {
+final class ScoreComparator implements Comparator<Score> {
     private final User loggedUser;
     private final Boolean ascending;
 
@@ -15,10 +15,7 @@ final class ScoreComparator implements Comparator<Object[]> {
     }
 
     @Override
-    public int compare(Object[] o1, Object[] o2) {
-        Score score1 = (Score) o1[0];
-        Score score2 = (Score) o2[0];
-        
+    public int compare(Score score1, Score score2) {
         if (ascending) {
             return Boolean.valueOf(score1.hasWinner(loggedUser.getId())).compareTo(score2.hasWinner(loggedUser.getId()));
         }

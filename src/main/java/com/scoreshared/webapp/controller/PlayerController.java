@@ -23,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
@@ -61,10 +60,10 @@ public class PlayerController extends BaseController {
         Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(user.getId(), loggedUser.getId());
         mav.addObject("player", new PlayerModel(user, associatedPlayer, messageResource, localeResolver.resolveLocale(request)));
 
-        List<Object[]> scores = scoreBo.findScores(null, false, user);
+        List<Score> scores = scoreBo.findScores(null, false, user);
         List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
-        for (Object[] score : scores) {
-            items.add(new ScoreItemModel((Score)score[0], (Comment)score[1], user, messageResource, localeResolver.resolveLocale(request)));
+        for (Score score : scores) {
+            items.add(new ScoreItemModel(score, score.getComment(), user, messageResource, localeResolver.resolveLocale(request)));
         }
         mav.addObject("scores", items);
 

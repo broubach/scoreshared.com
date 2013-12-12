@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.persistence.File;
+import com.scoreshared.business.persistence.Invitation;
 import com.scoreshared.business.persistence.InvitationResponseEnum;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.Profile;
@@ -247,7 +248,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public void saveNewUser(User loggedUser, String invitationHash) {
         Player player = new Player(loggedUser.getFullName(), loggedUser);
         player.setAssociation(loggedUser);
-        player.setInvitationResponse(InvitationResponseEnum.ACCEPTED);
+        player.setInvitation(new Invitation(InvitationResponseEnum.ACCEPTED));
         if (!StringUtils.isEmpty(invitationHash)) {
             graphBo.acceptUnregisteredUserInvitation(loggedUser, invitationHash);
         }

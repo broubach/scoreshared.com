@@ -25,10 +25,12 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "score")
 @NamedQueries({
-        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :id and lp.visible = 1) or (rp.approvalResponse = 0 and rp.player.association.id = :id and rp.visible = 1)"),
+        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :id) or (rp.approvalResponse = 0 and rp.player.association.id = :id)"),
         @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)"),
-        @NamedQuery(name = "pendingScoreApprovalsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.revisionMessage is null and pl.player.association.id = :userId and pl.player.invitationResponse = 0) or (pr.revisionMessage is null and pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitationResponse = 0)) group by s.id"),
-        @NamedQuery(name = "pendingScoreRevisionsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.revisionMessage is not null or pr.revisionMessage is not null) and s.owner.id = :ownerId group by s.id"),
+        @NamedQuery(name = "pendingScoreApprovalsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0)) group by s.id"),
+        @NamedQuery(name = "countPendingScoreApprovalsQuery", query = "select count(s) from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0)) group by s.id"),
+        @NamedQuery(name = "pendingScoreRevisionsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 || pr.approvalResponse = 3) and s.owner.id = :ownerId group by s.id"),
+        @NamedQuery(name = "countPendingScoreRevisionsQuery", query = "select count(s) from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 || pr.approvalResponse = 3) and s.owner.id = :ownerId group by s.id"),
         @NamedQuery(name = "scoresByIdsQuery", query = "from Score s where s.id in(:ids)"),
         @NamedQuery(name = "scoresByOwner", query = "from Score s where s.owner.id = :ownerId")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
@@ -52,12 +54,12 @@ public class Score extends BaseEntity implements Cloneable {
     private Integer set5Right;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(name = "score_playerpermission_left", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerpermission_id") })
-    private Set<PlayerPermission> leftPlayers;
+    @JoinTable(name = "score_playerinstance_left", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerinstance_id") })
+    private Set<PlayerInstance> leftPlayers;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(name = "score_playerpermission_right", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerpermission_id") })
-    private Set<PlayerPermission> rightPlayers;
+    @JoinTable(name = "score_playerinstance_right", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerinstance_id") })
+    private Set<PlayerInstance> rightPlayers;
 
     private boolean winnerDefined;
 
@@ -65,11 +67,12 @@ public class Score extends BaseEntity implements Cloneable {
     private Player coach;
     
     private SportEnum sport;
-    private Boolean inRevision;
+    
+    private Boolean confirmed;
 
     @Transient
-    private Comment comment;
-
+    private PlayerInstanceComment comment;
+    
     public Score() {
     }
 
@@ -195,19 +198,19 @@ public class Score extends BaseEntity implements Cloneable {
         this.set5Right = set5Right;
     }
 
-    public Set<PlayerPermission> getLeftPlayers() {
+    public Set<PlayerInstance> getLeftPlayers() {
         return leftPlayers;
     }
 
-    public void setLeftPlayers(Set<PlayerPermission> leftPlayers) {
+    public void setLeftPlayers(Set<PlayerInstance> leftPlayers) {
         this.leftPlayers = leftPlayers;
     }
 
-    public Set<PlayerPermission> getRightPlayers() {
+    public Set<PlayerInstance> getRightPlayers() {
         return rightPlayers;
     }
 
-    public void setRightPlayers(Set<PlayerPermission> rightPlayers) {
+    public void setRightPlayers(Set<PlayerInstance> rightPlayers) {
         this.rightPlayers = rightPlayers;
     }
 
@@ -235,20 +238,20 @@ public class Score extends BaseEntity implements Cloneable {
         this.sport = sport;
     }
 
-    public Boolean getInRevision() {
-        return inRevision;
-    }
-
-    public void setInRevision(Boolean inRevision) {
-        this.inRevision = inRevision;
-    }
-
-    public Comment getComment() {
+    public PlayerInstanceComment getComment() {
         return comment;
     }
 
-    public void setComment(Comment comment) {
+    public void setComment(PlayerInstanceComment comment) {
         this.comment = comment;
+    }
+
+    public Boolean getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
     /**
@@ -306,7 +309,7 @@ public class Score extends BaseEntity implements Cloneable {
     }
 
     public boolean hasWinner(Integer userId) {
-        for (PlayerPermission player : leftPlayers) {
+        for (PlayerInstance player : leftPlayers) {
             if (player.getAssociation() != null && player.getAssociation().getId().equals(userId)) {
                 return true;
             }
@@ -314,12 +317,12 @@ public class Score extends BaseEntity implements Cloneable {
         return false;
     }
 
-    public PlayerPermission getAssociatedPlayer(Integer userId) {
-        Set<PlayerPermission> allPlayers = new HashSet<PlayerPermission>();
+    public PlayerInstance getAssociatedPlayer(Integer userId) {
+        Set<PlayerInstance> allPlayers = new HashSet<PlayerInstance>();
         allPlayers.addAll(leftPlayers);
         allPlayers.addAll(rightPlayers);
 
-        for (PlayerPermission player : allPlayers) {
+        for (PlayerInstance player : allPlayers) {
             if (player.getAssociation() != null && player.getAssociation().getId().equals(userId)) {
                 return player;
             }
@@ -327,13 +330,13 @@ public class Score extends BaseEntity implements Cloneable {
         return null;
     }
 
-    public Set<PlayerPermission> getOppositePlayers(Integer loggedUserId) {
+    public Set<PlayerInstance> getOppositePlayers(Integer loggedUserId) {
         if (hasWinner(loggedUserId)) {
             return rightPlayers;
         } else if (hasWinner()) {
             return leftPlayers;
         }
-        return new HashSet<PlayerPermission>();
+        return new HashSet<PlayerInstance>();
     }
 
     @Override
@@ -341,11 +344,11 @@ public class Score extends BaseEntity implements Cloneable {
         try {
             Score newScore = (Score) BeanUtils.cloneBean(this);
             if (leftPlayers != null) {
-                newScore.setLeftPlayers(new HashSet<PlayerPermission>());
+                newScore.setLeftPlayers(new HashSet<PlayerInstance>());
                 newScore.getLeftPlayers().addAll(leftPlayers);
             }
             if (rightPlayers != null) {
-                newScore.setRightPlayers(new HashSet<PlayerPermission>());
+                newScore.setRightPlayers(new HashSet<PlayerInstance>());
                 newScore.getRightPlayers().addAll(rightPlayers);
             }
             return newScore;
@@ -360,15 +363,15 @@ public class Score extends BaseEntity implements Cloneable {
         }
     }
 
-    public Set<PlayerPermission> getAllPlayers() {
-        Set<PlayerPermission> result = new HashSet<PlayerPermission>();
+    public Set<PlayerInstance> getAllPlayers() {
+        Set<PlayerInstance> result = new HashSet<PlayerInstance>();
         result.addAll(leftPlayers);
         result.addAll(rightPlayers);
         return result;
     }
 
-	public PlayerPermission getSampleOpponent(User loggedUser) {
-	    Set<PlayerPermission> opponents = new HashSet<PlayerPermission>();
+	public PlayerInstance getSampleOpponent(User loggedUser) {
+	    Set<PlayerInstance> opponents = new HashSet<PlayerInstance>();
 	    if (hasWinner(loggedUser.getId())) {
 	        opponents.addAll(rightPlayers);
 	
@@ -379,21 +382,21 @@ public class Score extends BaseEntity implements Cloneable {
 	    return getSamplePlayer(opponents);
 	}
 
-    public PlayerPermission getSampleLeftPlayer() {
+    public PlayerInstance getSampleLeftPlayer() {
         return getSamplePlayer(leftPlayers);
     }
 
-    public PlayerPermission getSampleRightPlayer() {
+    public PlayerInstance getSampleRightPlayer() {
         return getSamplePlayer(rightPlayers);
     }
 
-    public PlayerPermission getSamplePlayer() {
+    public PlayerInstance getSamplePlayer() {
         return getSamplePlayer(getAllPlayers());
     }
 
-    public PlayerPermission getSamplePlayer(Set<PlayerPermission> players) {
-        PlayerPermission result = null;
-        for (PlayerPermission player : players) {
+    public PlayerInstance getSamplePlayer(Set<PlayerInstance> players) {
+        PlayerInstance result = null;
+        for (PlayerInstance player : players) {
             if (player.isConnected()) {
                 result = player;
                 break;
@@ -414,25 +417,14 @@ public class Score extends BaseEntity implements Cloneable {
         return getPlayerNames(rightPlayers);
     }
 
-    public String getPlayerNames(Set<PlayerPermission> players) {
+    public String getPlayerNames(Set<PlayerInstance> players) {
         StringBuilder result = new StringBuilder();
-        for (PlayerPermission player : players) {
+        for (PlayerInstance player : players) {
             result.append(player.getName());
             result.append(", ");
         }
 
         result.delete(result.length() - 2, result.length());
         return result.toString();
-    }
-
-    public Boolean getConfirmed() {
-        boolean isConfirmed = true;
-        for (PlayerPermission playerPermission : getAllPlayers()) {
-            if (!ApprovalResponseEnum.ACCEPTED.equals(playerPermission.getApprovalResponse())) {
-                isConfirmed = false;
-                break;
-            }
-        }
-        return isConfirmed;
     }
 }

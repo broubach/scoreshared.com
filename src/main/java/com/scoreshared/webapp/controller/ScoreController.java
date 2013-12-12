@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Comment;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerBehavior;
 import com.scoreshared.business.persistence.Score;
@@ -128,7 +128,7 @@ public class ScoreController extends BaseController {
                 return create(loggedUser, session);
             }
 
-            Comment comment = scoreBo.findCommentByScoreId(scoreId);
+            PlayerInstanceComment comment = scoreBo.findCommentByPlayerInstanceId(score.getAssociatedPlayer(loggedUser.getId()).getId());
             score.setComment(comment);
 
             ScoreModel scoreModel = conversionService.convert(score, ScoreModel.class);
@@ -168,7 +168,7 @@ public class ScoreController extends BaseController {
 
             scoreModel.setOwner(loggedUser);
             Score score = conversionService.convert(scoreModel, Score.class);
-            Comment comment = conversionService.convert(scoreModel, Comment.class);
+            PlayerInstanceComment comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
             
             scoreBo.save(loggedUser, score, comment);
 

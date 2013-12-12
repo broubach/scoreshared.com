@@ -12,8 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.stereotype.Component;
-
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.scaffold.UserLoggedListener;

@@ -31,7 +31,6 @@ var Sets = {
 				var data = { results : [] };
 
 				$.each(Sets.playersList, function() {
-					// TODO: is it really necessary to include the name of the logged player within the playersList?
 					 if (query.term.length == 0 || this.toUpperCase().indexOf(query.term.toUpperCase()) >= 0) {
 						 data.results.push({id: this, text: this });
 					 }

@@ -1,8 +1,9 @@
-delete from score_playerpermission_left;
-delete from score_playerpermission_right;
+delete from invitation;
+delete from score_playerinstance_left;
+delete from score_playerinstance_right;
 delete from score;
-delete from comment;
-delete from playerpermission;
+delete from playerinstancecomment;
+delete from playerinstance;
 delete from player;
 update user set profile_id = null;
 delete from profile;

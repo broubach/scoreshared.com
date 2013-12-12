@@ -1,7 +1,5 @@
 package com.scoreshared.business.persistence;
 
-import java.util.Date;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,8 +22,9 @@ import org.hibernate.annotations.Where;
         @NamedQuery(name = "playerByNameAndOwnerQuery", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
         @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery", query = "from Player player where player.owner.id = :ownerId and (player.association.id <> :ownerId or player.association.id is null)"),
         @NamedQuery(name = "playerByAssociationAndOwnerQuery", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
-        @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitationHash = :invitationHash"),
-        @NamedQuery(name = "pendingInvitationsQuery", query= "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitationDate is not null and p.invitationResponse is null" )})
+        @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitation.hash = :invitationHash"),
+        @NamedQuery(name = "pendingInvitationsQuery", query= "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null" ),
+        @NamedQuery(name = "countPendingInvitationsQuery", query= "select count(p.owner.id) from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null" )})
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -37,15 +36,11 @@ public class Player extends BaseEntity implements PlayerBehavior {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User association;
+    
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    private Invitation invitation;
 
-    private String invitationHash;
-    private String invitationEmail;
-
-    private String invitationMessage;
-    private Date invitationDate;
-    private InvitationResponseEnum invitationResponse;
-
-    private Boolean invitationShouldNotBeRemembered;
+    private Boolean shouldNotReinvite;
 
     public Player() {
     }
@@ -82,44 +77,20 @@ public class Player extends BaseEntity implements PlayerBehavior {
         this.association = association;
     }
 
-    public String getInvitationEmail() {
-        return invitationEmail;
+    public Invitation getInvitation() {
+        return invitation;
     }
 
-    public void setInvitationEmail(String invitationEmail) {
-        this.invitationEmail = invitationEmail;
+    public void setInvitation(Invitation invitation) {
+        this.invitation = invitation;
     }
 
-    public String getInvitationMessage() {
-        return invitationMessage;
+    public Boolean getShouldNotReinvite() {
+        return shouldNotReinvite;
     }
 
-    public void setInvitationMessage(String invitationMessage) {
-        this.invitationMessage = invitationMessage;
-    }
-
-    public Date getInvitationDate() {
-        return invitationDate;
-    }
-
-    public void setInvitationDate(Date invitationDate) {
-        this.invitationDate = invitationDate;
-    }
-
-    public String getInvitationHash() {
-        return invitationHash;
-    }
-
-    public void setInvitationHash(String invitationHash) {
-        this.invitationHash = invitationHash;
-    }
-
-    public InvitationResponseEnum getInvitationResponse() {
-        return invitationResponse;
-    }
-
-    public void setInvitationResponse(InvitationResponseEnum invitationResponse) {
-        this.invitationResponse = invitationResponse;
+    public void setShouldNotReinvite(Boolean shouldNotReinvite) {
+        this.shouldNotReinvite = shouldNotReinvite;
     }
 
     @Override
@@ -147,16 +118,7 @@ public class Player extends BaseEntity implements PlayerBehavior {
 
     @Override
     public boolean isConnected() {
-        return association != null && InvitationResponseEnum.ACCEPTED.equals(invitationResponse);
-    }
-
-    public Boolean getInvitationShouldNotBeRemembered() {
-        return invitationShouldNotBeRemembered;
-    }
-
-    @Override
-    public void setInvitationShouldNotBeRemembered(Boolean invitationShouldNotBeRemembered) {
-        this.invitationShouldNotBeRemembered = invitationShouldNotBeRemembered;
+        return association != null && invitation != null && InvitationResponseEnum.ACCEPTED.equals(invitation.getResponse());
     }
 
     @Override

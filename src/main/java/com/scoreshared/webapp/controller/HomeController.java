@@ -28,9 +28,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -109,7 +108,7 @@ public class HomeController extends BaseController {
         List<Object[]> result = new ArrayList<Object[]>();
         Set<Integer> ids = new HashSet<Integer>();
         for (ScoreItemModel score : scores) {
-            for (PlayerPermission player : score.getScore().getAllPlayers()) {
+            for (PlayerInstance player : score.getScore().getAllPlayers()) {
                 if (player.isConnected() && !ids.contains(player.getAssociation().getId())) {
                     ids.add(player.getAssociation().getId());
                     result.add(new Object[] { player.getAssociation().getId(), player.getName() });
@@ -120,11 +119,11 @@ public class HomeController extends BaseController {
     }
 
     private List<ScoreItemModel> getScores(User loggedUser, Locale locale) {
-        List<Object[]> scores = scoreBo.findScores(0, false, loggedUser);
+        List<Score> scores = scoreBo.findScores(0, false, loggedUser);
 
         List<ScoreItemModel> result = new ArrayList<ScoreItemModel>();
-        for (Object[] score : scores) {
-            result.add(new ScoreItemModel((Score)score[0], (Comment)score[1], loggedUser, messageResource, locale));
+        for (Score score : scores) {
+            result.add(new ScoreItemModel(score, score.getComment(), loggedUser, messageResource, locale));
         }
 
         return result;
@@ -156,13 +155,13 @@ public class HomeController extends BaseController {
         // get pending score revisions
         for (Score score : scoreBo.findPendingScoreRevisions(loggedUser.getId())) {
             item = new HashMap<String, Object>();
-            for (PlayerPermission playerPermission : score.getAllPlayers()) {
-                if (playerPermission.getRevisionMessage() != null) {
-                    item.put("senderName", playerPermission.getName());
+            for (PlayerInstance playerInstance : score.getAllPlayers()) {
+                if (playerInstance.getRevisionMessage() != null) {
+                    item.put("senderName", playerInstance.getName());
                     item.put("scoreText",
                             score.hasWinner(loggedUser.getId()) ? score.getFinalScore(true) : score.getFinalScore(false));
                     item.put("scoreId", score.getId());
-                    item.put("playerPermissionId", playerPermission.getId());
+                    item.put("playerInstanceId", playerInstance.getId());
                     item.put("type", "REVISION");
                     result.add(item);
                 }

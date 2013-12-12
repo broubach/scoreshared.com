@@ -13,18 +13,19 @@ import javax.persistence.Table;
 import org.apache.commons.beanutils.BeanUtils;
 
 @Entity
-@Table(name = "comment")
-@NamedQueries({ @NamedQuery(name = "commentByScoreIdQuery", query = "from Comment comment where comment.score.id = :scoreId") })
-public class Comment extends BaseEntity implements Cloneable {
+@Table(name = "playerinstancecomment")
+@NamedQueries({
+        @NamedQuery(name = "commentByScoreIdQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id = :playerInstanceId"),
+        @NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)") })
+public class PlayerInstanceComment extends BaseEntity implements Cloneable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private User owner;
 
-    private boolean pvt; //pvt used because private is a reserved word
-    private String description;
+    private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-    private Score score;
+    private PlayerInstance playerInstance;
 
     public User getOwner() {
         return owner;
@@ -34,28 +35,20 @@ public class Comment extends BaseEntity implements Cloneable {
         this.owner = owner;
     }
 
-    public boolean isPrivate() {
-        return pvt;
+    public String getComment() {
+        return comment;
     }
 
-    public void setPrivate(boolean pvt) {
-        this.pvt = pvt;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public String getDescription() {
-        return description;
+    public PlayerInstance getPlayerInstance() {
+        return playerInstance;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
+    public void setPlayerInstance(PlayerInstance playerInstance) {
+        this.playerInstance = playerInstance;
     }
 
     public Object clone() {

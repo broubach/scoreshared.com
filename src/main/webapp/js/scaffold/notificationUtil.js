@@ -76,7 +76,7 @@ var NotificationUtil = {
 	    	$.ajax({
 			    url: url,
 			    type: 'POST',
-			    data: {'playerPermissionId': id},
+			    data: {'playerInstanceId': id},
 			    dataType: 'json',
 			    complete: function() {
 			    	ClickContext.tableLine.remove();

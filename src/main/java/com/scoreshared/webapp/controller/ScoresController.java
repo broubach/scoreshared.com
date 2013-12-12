@@ -18,7 +18,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
-import com.scoreshared.business.persistence.Comment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -48,7 +47,7 @@ public class ScoresController extends BaseController {
             return result;
     	}
 
-    	List<Object[]> scores = bo.findScores(pageNumber, ascending, loggedUser);
+    	List<Score> scores = bo.findScores(pageNumber, ascending, loggedUser);
     	
     	if (sortFieldEnum.equals(SortFieldEnum.PLAYER)) {
     	    Collections.sort(scores, new PlayerComparator(loggedUser, ascending));
@@ -57,8 +56,8 @@ public class ScoresController extends BaseController {
     	}
 
     	List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
-    	for (Object[] score : scores) {
-    	    items.add(new ScoreItemModel((Score)score[0], (Comment)score[1], loggedUser, messageResource, localeResolver.resolveLocale(request)));
+    	for (Score score : scores) {
+    	    items.add(new ScoreItemModel(score, score.getComment(), loggedUser, messageResource, localeResolver.resolveLocale(request)));
     	}
     	result.addObject("scores", items);
 

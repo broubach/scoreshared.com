@@ -8,22 +8,22 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-import com.scoreshared.business.persistence.Comment;
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
 public class ScoreItemModel {
 
     public Score score;
-    private Comment comment;
+    private PlayerInstanceComment comment;
     private User loggedUser;
     private MessageSource messageResource;
     private Locale locale;
     private DateFormat dateFormat;
     private DateFormat timeFormat;
 
-    public ScoreItemModel(Score score, Comment comment, User loggedUser, MessageSource messageResource, Locale locale) {
+    public ScoreItemModel(Score score, PlayerInstanceComment comment, User loggedUser, MessageSource messageResource, Locale locale) {
         this.score = score;
         this.comment = comment;
         this.loggedUser = loggedUser;
@@ -41,8 +41,8 @@ public class ScoreItemModel {
 
     public String getDetailText() {
         StringBuilder result = new StringBuilder();
-        List<PlayerPermission> partners = new ArrayList<PlayerPermission>();
-        List<PlayerPermission> opponents = new ArrayList<PlayerPermission>();
+        List<PlayerInstance> partners = new ArrayList<PlayerInstance>();
+        List<PlayerInstance> opponents = new ArrayList<PlayerInstance>();
         if (score.hasWinner(loggedUser.getId())) {
             result.append(score.getFinalScore(true));
             partners.addAll(score.getLeftPlayers());
@@ -57,7 +57,7 @@ public class ScoreItemModel {
 
         if (!partners.isEmpty()) {
             result.append(" ").append(messageResource.getMessage("label.with", null, locale)).append(" ");
-            for (PlayerPermission player : partners) {
+            for (PlayerInstance player : partners) {
                 result.append(player.getName());
                 result.append(", ");
             }
@@ -67,7 +67,7 @@ public class ScoreItemModel {
 
         if (!opponents.isEmpty()) {
             result.append(" ").append(messageResource.getMessage("label.against", null, locale)).append(" ");
-            for (PlayerPermission player : opponents) {
+            for (PlayerInstance player : opponents) {
                 result.append(player.getName());
                 result.append(", ");
             }
@@ -99,7 +99,7 @@ public class ScoreItemModel {
         return detailText.substring(detailText.indexOf(detailTextPart1) + detailTextPart1.length()).trim();
     }
 
-    public Comment getComment() {
+    public PlayerInstanceComment getComment() {
         return comment;
     }
 
@@ -119,7 +119,7 @@ public class ScoreItemModel {
     }
 
     public String getSampleOpponentName() {
-        PlayerPermission sampleOpponent = score.getSampleOpponent(loggedUser);
+        PlayerInstance sampleOpponent = score.getSampleOpponent(loggedUser);
         if (sampleOpponent != null) {
             return sampleOpponent.getName();
         }
@@ -127,7 +127,7 @@ public class ScoreItemModel {
     }
 
     public String getSampleOpponentAvatar() {
-        PlayerPermission sampleOpponent = score.getSampleOpponent(loggedUser);
+        PlayerInstance sampleOpponent = score.getSampleOpponent(loggedUser);
         if (sampleOpponent != null) {
             return sampleOpponent.getAvatar();
         }

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerPermission;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.SportEnum;
 
@@ -37,26 +37,26 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             dest.setSet5Left(src.getSet5Left());
             dest.setSet5Right(src.getSet5Right());
 
-            Set<PlayerPermission> leftPlayers = new HashSet<PlayerPermission>();
-            PlayerPermission playerPermission = null;
+            Set<PlayerInstance> leftPlayers = new HashSet<PlayerInstance>();
+            PlayerInstance playerInstance = null;
             for (String playerLeft : src.getPlayersLeft()) {
                 if (!StringUtils.isEmpty(playerLeft)) {
-                    playerPermission = new PlayerPermission(playerLeft.trim(), src.getOwner());
-                    leftPlayers.add(playerPermission);
+                    playerInstance = new PlayerInstance(playerLeft.trim(), src.getOwner());
+                    leftPlayers.add(playerInstance);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerLeft.trim())) {
-                        playerPermission.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                        playerInstance.setShouldNotReinvite(Boolean.TRUE);
                     }
                 }
             }
             dest.setLeftPlayers(leftPlayers);
 
-            Set<PlayerPermission> rightPlayers = new HashSet<PlayerPermission>();
+            Set<PlayerInstance> rightPlayers = new HashSet<PlayerInstance>();
             for (String playerRight : src.getPlayersRight()) {
                 if (!StringUtils.isEmpty(playerRight)) {
-                    playerPermission = new PlayerPermission(playerRight.trim(), src.getOwner());
-                    rightPlayers.add(playerPermission);
+                    playerInstance = new PlayerInstance(playerRight.trim(), src.getOwner());
+                    rightPlayers.add(playerInstance);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerRight.trim())) {
-                        playerPermission.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                        playerInstance.setShouldNotReinvite(Boolean.TRUE);
                     }
                 }
             }
@@ -66,7 +66,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
                 Player coach = new Player(src.getCoach().trim(), src.getOwner());
                 dest.setCoach(coach);
                 if (src.getNewPlayersNotToBeRemembered().contains(src.getCoach().trim())) {
-                    coach.setInvitationShouldNotBeRemembered(Boolean.TRUE);
+                    coach.setShouldNotReinvite(Boolean.TRUE);
                 }
             }
 

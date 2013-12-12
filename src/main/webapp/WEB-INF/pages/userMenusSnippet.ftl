@@ -15,7 +15,7 @@
 			<#elseif item.type = 'APPROVAL'>
 				<li><@spring.message code="label.approval"/>: ${item.senderName} ${item.scoreText} <a href="approval,accept,${item.scoreId}"><@spring.message code="label.accept"/></a> <a href="approval,review,${item.scoreId},${item.senderName}"><@spring.message code="label.review"/></a> <a href="approval,ignore,${item.scoreId}"/><@spring.message code="label.ignore"/></a></li>
 			<#elseif item.type = 'REVISION'>
-				<li><@spring.message code="label.revision"/>: ${item.senderName} ${item.scoreText} <a href="revision,review,${item.scoreId}"><@spring.message code="label.review"/></a> <a href="revision,ignore,${item.playerPermissionId}"><@spring.message code="label.ignore"/></a></li>
+				<li><@spring.message code="label.revision"/>: ${item.senderName} ${item.scoreText} <a href="revision,review,${item.scoreId}"><@spring.message code="label.review"/></a> <a href="revision,ignore,${item.playerInstanceId}"><@spring.message code="label.ignore"/></a></li>
 			<#else>
 				<li><@spring.message code="label.commentary"/>: ${item.senderName} ${item.message} <a href="<@spring.url relativeUrl="/app/pendingComments"/>"><@spring.message code="label.see" /></a></li>
 			</#if>

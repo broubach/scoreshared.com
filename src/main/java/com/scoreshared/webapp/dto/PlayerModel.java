@@ -46,7 +46,7 @@ public class PlayerModel {
     }
     
     public Date getInvitationDate() {
-        return associatedPlayer != null ? associatedPlayer.getInvitationDate() : null;
+        return associatedPlayer != null ? associatedPlayer.getInvitation().getDate() : null;
     }
 
     public Integer getId() {

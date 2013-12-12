@@ -2,18 +2,17 @@ package com.scoreshared.webapp.dto;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.Comment;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
 
-public class CommentConverter extends BaseConverter implements Converter<ScoreModel, Comment> {
+public class CommentConverter extends BaseConverter implements Converter<ScoreModel, PlayerInstanceComment> {
 
     @Override
-    public Comment convert(ScoreModel src) {
-        Comment dest = null;
+    public PlayerInstanceComment convert(ScoreModel src) {
+        PlayerInstanceComment dest = null;
         if ((src.getCommentId() == null && !src.getComment().isEmpty()) || src.getCommentId() != null) {
-            dest = new Comment();
+            dest = new PlayerInstanceComment();
             dest.setId(src.getCommentId());
-            dest.setPrivate(src.getPrivate());
-            dest.setDescription(src.getComment());
+            dest.setComment(src.getComment());
         }
 
         return dest;

@@ -12,9 +12,9 @@ public interface PlayerBehavior {
 
     public String getAvatar();
 
-    public Boolean getInvitationShouldNotBeRemembered();
+    public Boolean getShouldNotReinvite();
 
-    public void setInvitationShouldNotBeRemembered(Boolean invitationShouldNotBeRemembered);
+    public void setShouldNotReinvite(Boolean shouldNotReinvite);
 
     public void setOwner(User owner);
 
