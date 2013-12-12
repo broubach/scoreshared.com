@@ -369,4 +369,28 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         dao.saveOrUpdate(player);
         return player.getId();
     }
+
+    public Integer getTotalPendingFriendRequests(Integer ownerId) {
+        List<Long> results = dao.findByNamedQuery("countPendingInvitationsQuery", ownerId);
+        if (!results.isEmpty()) {
+            return results.get(0).intValue();
+        }
+        return 0;
+    }
+
+    public Integer getTotalPendingScoreApprovals(Integer ownerId) {
+        List<Long> results = dao.findByNamedQuery("countPendingScoreApprovalsQuery", ownerId);
+        if (!results.isEmpty()) {
+            return results.get(0).intValue();
+        }
+        return 0;
+    }
+
+    public Integer getTotalPendingScoreRevisions(Integer ownerId) {
+        List<Long> results = dao.findByNamedQuery("countPendingScoreRevisionsQuery", ownerId);
+        if (!results.isEmpty()) {
+            return results.get(0).intValue();
+        }
+        return 0;
+    }
 }

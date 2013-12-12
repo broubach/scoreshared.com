@@ -24,14 +24,15 @@
 			<div style="" class="section-container auto notificacoes" data-section="">
 				<section>
 					<p style="left: 112px;" class="title" data-section-title="">
-						<a href="<@spring.url relativeUrl="/app/notifications/contactRequests"/>"><@spring.message code="label.contact_requests"/> <span>(1)</span></a>
+						<a href="<@spring.url relativeUrl="/app/notifications/contactRequests"/>"><@spring.message code="label.contact_requests"/>  <#if (_total_pending_friend_requests > 0)><span>(${_total_pending_friend_requests})</span></#if></a>
 					</p>
 				</section>
-				<section style="padding-top: 50px;" class="active">
+				<section class="active">
 					<p style="left: 0px;" class="title" data-section-title="">
-						<a href="#"><@spring.message code="label.pending_score_approvals"/> <span>(2)</span></a>
+						<a href="#"><@spring.message code="label.pending_score_approvals"/> <#if (_total_pending_score_approvals > 0)><span>(${_total_pending_score_approvals})</span></#if></a>
 					</p>
 					<div class="content" data-section-content="">
+						<#if (pendingScores?size <= 0)><p><@spring.message code="label.you_have_no_scores_to_approve_at_the_moment"/></p></#if>
 						<ul class="lista-resultados lista-aprovacoes">
 							<#list pendingScores as item>
 								<li class="item-resultado resultado-perdeu">
@@ -60,7 +61,7 @@
 				</section>
 				<section>
 					<p style="left: 217px;" class="title" data-section-title="">
-						<a href="<@spring.url relativeUrl="/app/notifications/pendingScoreRevisions"/>"><@spring.message code="label.pending_score_revisions"/> <span>(2)</span></a>
+						<a href="<@spring.url relativeUrl="/app/notifications/pendingScoreRevisions"/>"><@spring.message code="label.pending_score_revisions"/> <#if (_total_pending_score_revisions > 0)><span>(${_total_pending_score_revisions})</span></#if></a>
 					</p>
 				</section>
 			</div>

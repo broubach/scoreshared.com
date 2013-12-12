@@ -3,6 +3,7 @@ package com.scoreshared.webapp.controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -16,12 +17,16 @@ import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.persistence.Profile;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.NotificationStatsHelper;
 
 @Controller
 public class ContactRequestsController extends BaseController {
 
     @Inject
     private GraphBo graphBo;
+    
+    @Inject
+    private NotificationStatsHelper notificationStatsHelper;
 
     @RequestMapping(value = "/notifications/contactRequests", method = RequestMethod.GET)
     public ModelAndView list(@LoggedUser User loggedUser) {
@@ -41,13 +46,17 @@ public class ContactRequestsController extends BaseController {
 
     @RequestMapping(value = "/accept/invitation/", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void acceptInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id) {
+    public void acceptInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id, HttpServletRequest request) {
         graphBo.acceptRegisteredUserInvitation(loggedUser, user2Id);
+
+        notificationStatsHelper.updateNotificationStats(request);
     }
 
     @RequestMapping(value = "/ignore/invitation/", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void ignoreInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id) {
+    public void ignoreInvitation(@LoggedUser User loggedUser, @ModelAttribute("user2Id") Integer user2Id, HttpServletRequest request) {
         graphBo.ignoreRegisteredUserInvitation(loggedUser, user2Id);
+
+        notificationStatsHelper.updateNotificationStats(request);
     }
 }

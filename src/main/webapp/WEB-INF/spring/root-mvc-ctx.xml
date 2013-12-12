@@ -49,5 +49,6 @@
 	
 	<beans:bean class="com.scoreshared.scaffold.CustomContextListener"/>
 
-	<beans:bean id="onlyAtSignupFilter" class="com.scoreshared.webapp.filter.OnlyAtSignupFilter"/>
+	<beans:bean id="onlyAtSignupFilter" class="com.scoreshared.scaffold.OnlyAtSignupFilter"/>
+	<beans:bean id="notificationStatsFilter" class="com.scoreshared.scaffold.NotificationStatsFilter"/>
 </beans:beans>

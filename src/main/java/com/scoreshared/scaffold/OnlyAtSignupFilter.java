@@ -1,4 +1,4 @@
-package com.scoreshared.webapp.filter;
+package com.scoreshared.scaffold;
 
 import java.io.IOException;
 
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.scaffold.UserLoggedListener;
 
 public class OnlyAtSignupFilter implements Filter {
 

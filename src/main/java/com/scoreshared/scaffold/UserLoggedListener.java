@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.PlayerBehavior;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.User;
 
 @Component
@@ -33,7 +33,7 @@ public class UserLoggedListener implements ApplicationListener<AuthenticationSuc
 
         CustomWebAuthenticationDetails details = (CustomWebAuthenticationDetails) event.getAuthentication().getDetails();
 
-        PlayerBehavior player = graphBo.findPlayerByAssociationAndOwner(user.getId(), user.getId());
+        Player player = graphBo.findPlayerByAssociationAndOwner(user.getId(), user.getId());
 
         details.getSession().setAttribute(ASSOCIATED_PLAYER, player);
 
