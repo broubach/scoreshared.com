@@ -38,13 +38,7 @@
 					<div class="item-resultado <#if item.confirmed??>confirmado</#if>">
 						<#if (item.detailTextPart1?length > 0)>
 							<span class="placar">
-								<#list item.detailTextPart1?split(" ") as currSet>
-									<#if (currSet?split("x")[0]?eval > currSet?split("x")[1]?eval)>
-										<span class="winner">${currSet?split("x")[0]}</span> x ${currSet?split("x")[1]}
-									<#else>
-										${currSet?split("x")[0]} x <span class="winner">${currSet?split("x")[1]}</span>
-									</#if>
-								</#list>
+								${item.detailTextHighlightingWinnerWithLoggedUserAtLeft}
 							</span>
 						</#if>
 						${item.detailTextPart2}  

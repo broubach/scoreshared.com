@@ -1,6 +1,7 @@
 package com.scoreshared.business.bo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -236,10 +237,27 @@ public class ScoreBo extends BaseBo<Score> {
         dao.saveOrUpdate(player);
     }
 
-    public void reviewScore(Integer userId, Integer scoreId, String message) {
+    public void reviewScore(Integer loggedUserId, Integer scoreId, Date date, Date time, String message,
+            Integer set1Left, Integer set1Right, Integer set2Left, Integer set2Right, Integer set3Left,
+            Integer set3Right, Integer set4Left, Integer set4Right, Integer set5Left, Integer set5Right) {
         Score score = findById(scoreId);
-        PlayerInstance player = score.getAssociatedPlayer(userId);
+
+        PlayerInstance player = score.getAssociatedPlayer(loggedUserId);
+        player.setRevisionDate(date);
+        player.setRevisionTime(time);
+        player.setRevisionSet1Left(set1Left);
+        player.setRevisionSet1Right(set1Right);
+        player.setRevisionSet2Left(set2Left);
+        player.setRevisionSet2Right(set2Right);
+        player.setRevisionSet3Left(set3Left);
+        player.setRevisionSet3Right(set3Right);
+        player.setRevisionSet4Left(set4Left);
+        player.setRevisionSet4Right(set4Right);
+        player.setRevisionSet5Left(set5Left);
+        player.setRevisionSet5Right(set5Right);
         player.setRevisionMessage(message);
+        player.setApprovalResponse(ApprovalResponseEnum.IN_REVISION);
+
         dao.saveOrUpdate(player);
     }
 

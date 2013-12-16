@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -80,15 +82,43 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
         }
     }
 
-    private Date getTime(String time) throws ParseException {
+    public Date getTime(String time) throws ParseException {
         DateFormat df = DateFormat.getTimeInstance();
+        df.setLenient(false);
         ((SimpleDateFormat) df).applyPattern(messageResource.getMessage("system.time_format", null, localeResolver.resolveLocale(request)));
         return df.parse(time);
     }
 
-    private Date getDate(String date) throws ParseException {
+    public Date getDate(String date) throws ParseException {
         DateFormat df = DateFormat.getDateInstance();
+        df.setLenient(false);
         ((SimpleDateFormat) df).applyPattern(messageResource.getMessage("system.date_format", null, localeResolver.resolveLocale(request)));
         return df.parse(date);
+    }
+
+    public Integer[][] getSets(String scoreAsText) throws ParseException {
+        Integer[][] result = new Integer[5][2];
+        String scoreAsPaddedText = StringUtils.rightPad(scoreAsText, 19);
+        String strPattern = "(\\dx\\d) ([\\d| ][x| ][\\d| ]) ([\\d| ][x| ][\\d| ]) ([\\d| ][x| ][\\d| ]) ([\\d| ][x| ][\\d| ])";
+        Pattern pattern = Pattern.compile(strPattern);
+        Matcher matcher = pattern.matcher(scoreAsPaddedText);
+        if (matcher.find()) {
+            for (int i = 1; i < matcher.groupCount(); i++) {
+                String set = matcher.group(i);
+                if (!StringUtils.isEmpty(set.trim())) {
+                    try {
+                        Integer setLeft = Integer.valueOf(set.substring(0, 1));
+                        Integer setRight = Integer.valueOf(set.substring(2, 3));
+                        result[i - 1][0] = setLeft;
+                        result[i - 1][1] = setRight;
+                    } catch (NumberFormatException nfe) {
+                        throw new ParseException("invalid pattern expected. ie 6x3 4x6 7x5", 0);
+                    }
+                }
+            }
+            return result;
+        } else {
+            throw new ParseException("invalid pattern expected. ie 6x3 4x6 7x5", 0);
+        }
     }
 }

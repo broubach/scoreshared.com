@@ -36,6 +36,8 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
 public class Score extends BaseEntity implements Cloneable {
+    private static final String DOUBLES_SEPARATOR = " / ";
+
     private Date date;
     private Date time;
 
@@ -288,20 +290,32 @@ public class Score extends BaseEntity implements Cloneable {
         return finalScore;
     }
     
-    public String getFinalScore(boolean winnerInLeft) {
+    public String getFinalScore(boolean winnerInLeft, String winnerHightLightStart, String winnerHighLightEnd) {
         StringBuilder result = new StringBuilder();
         Integer[][] finalScore = getFinalScoreArray();
         for (Integer[] set : finalScore) {
             if (set[0] != null && set[1] != null) {
                 if (winnerInLeft) {
-                    result.append(set[0]).append("x").append(set[1]);
+                    if (set[0] >= set[1]) {
+                        result.append(winnerHightLightStart).append(set[0]).append(winnerHighLightEnd).append("x").append(set[1]);
+                    } else {
+                        result.append(set[0]).append("x").append(winnerHightLightStart).append(set[1]).append(winnerHighLightEnd);
+                    }
                 } else {
-                    result.append(set[1]).append("x").append(set[0]);
+                    if (set[1] >= set[0]) {
+                        result.append(winnerHightLightStart).append(set[1]).append(winnerHighLightEnd).append("x").append(set[0]);
+                    } else {
+                        result.append(set[1]).append("x").append(winnerHightLightStart).append(set[0]).append(winnerHighLightEnd);
+                    }
                 }
                 result.append(" ");
             }
         }
         return result.toString().trim();
+    }
+
+    public String getFinalScore(boolean winnerInLeft) {
+        return getFinalScore(winnerInLeft, "", "");
     }
 
     public String getFinalScore() {
@@ -330,13 +344,13 @@ public class Score extends BaseEntity implements Cloneable {
         return null;
     }
 
-    public Set<PlayerInstance> getOppositePlayers(Integer loggedUserId) {
+    public String getOpponentPlayerNames(Integer loggedUserId) {
         if (hasWinner(loggedUserId)) {
-            return rightPlayers;
+            return getRightPlayerNames();
         } else if (hasWinner()) {
-            return leftPlayers;
+            return getLeftPlayerNames();
         }
-        return new HashSet<PlayerInstance>();
+        return "";
     }
 
     @Override
@@ -421,10 +435,10 @@ public class Score extends BaseEntity implements Cloneable {
         StringBuilder result = new StringBuilder();
         for (PlayerInstance player : players) {
             result.append(player.getName());
-            result.append(", ");
+            result.append(DOUBLES_SEPARATOR);
         }
 
-        result.delete(result.length() - 2, result.length());
+        result.delete(result.length() - DOUBLES_SEPARATOR.length(), result.length());
         return result.toString();
     }
 }

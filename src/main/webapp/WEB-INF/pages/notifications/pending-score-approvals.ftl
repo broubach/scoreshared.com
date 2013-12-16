@@ -4,7 +4,8 @@
 <html>
 <head>
 	<#assign head_title="ScoreShared: Notifications">
-	<#assign head_additional_js=["/js/jquery.autosize-1.17.8.min.js"]>
+	<#assign head_additional_js=["/js/jquery.autosize-1.17.8.min.js",
+								"/js/jquery.maskedinput-1.3.1.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -16,7 +17,7 @@
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
 			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <a href="#" class="current"><@spring.message code="label.notifications"/></a>
-		</nav>	
+		</nav>
 
 		<div class="box-content">
 			<h2><@spring.message code="label.notifications"/></h2>
@@ -35,20 +36,20 @@
 						<#if (pendingScores?size <= 0)><p><@spring.message code="label.you_have_no_scores_to_approve_at_the_moment"/></p></#if>
 						<ul class="lista-resultados lista-aprovacoes">
 							<#list pendingScores as item>
-								<li class="item-resultado resultado-perdeu">
+								<li class="item-resultado <#if item.loggedUserWon>resultado-venceu<#else>resultado-perdeu</#if>">
 									<table>
 										<tbody>
 										<tr>
 											<td><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.sampleOpponentAvatar?html)!}&small"/>"/></td>
-											<td>${item.sampleOpponentName}</td>
-											<td>2 x <span class="winner">6</span></td>
-											<td>You</td>
-											<td><img src="<@spring.url relativeUrl="/img/time.png"/>" alt="${item.dateTime}" title="${item.dateTime}">${item.dateTime}</td>
-											<td width="30%">
+											<td>${item.opponentsNames}</td>
+											<td>${item.detailTextHighlightingWinnerWithLoggedUserAtRight}</td>
+											<td><@spring.message code="label.you"/></td>
+											<td><img src="<@spring.url relativeUrl="/img/icons/time.png"/>" alt="${item.dateTime}" title="${item.dateTime}">${item.dateTime}</td>
+											<td width="40%">
 												<span class="actions hide">
-													<a href="accept,${item.score.id},${item.sampleOpponentName}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
-													<a href="review,${item.score.id},${item.sampleOpponentName}" class="button button-small button-warning"><@spring.message code="label.ask_for_revision"/></a>
-													<a href="ignore,${item.score.id},${item.sampleOpponentName}" class="button button-small"><@spring.message code="label.ignore"/></a>
+													<a href="accept,${item.score.id},${item.score.owner.fullName}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
+													<a href="review,${item.score.id},${item.score.owner.fullName}" class="button button-small button-warning"><@spring.message code="label.ask_for_revision"/></a>
+													<a href="ignore,${item.score.id},${item.score.owner.fullName}" class="button button-small"><@spring.message code="label.ignore"/></a>
 												</span>
 											</td>
 										</tr>
@@ -81,23 +82,21 @@
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/notificationUtil.js"/>"></script>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	$('.item-resultado').hover(function(){
-		$(this).find('span.actions').fadeIn('fast');
-	}, function(){
-	$(this).find('span.actions').fadeOut();
-	})
-});
-
 var ClickContext = {
 		tableLine: {},
 		currentId: {},
 		currentUrl: {}
 };
 $(function() {
+	$('.item-resultado').hover(function(){
+		$(this).find('span.actions').fadeIn('fast');
+	}, function(){
+	$(this).find('span.actions').fadeOut();
+	});
+
 	$("td a").click(function (e) {
 		e.preventDefault();
-		ClickContext.tableLine = $(this).parent().parent();
+		ClickContext.tableLine = $(this).closest("li");
 
 		var kind = $(this).attr('href').split(',')[0];
 		var id = $(this).attr('href').split(',')[1];

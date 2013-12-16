@@ -46,25 +46,42 @@ var NotificationUtil = {
 			    type: 'POST',
 			    data: {'scoreId': id},
 			    dataType: 'json',
-			    success: function() {
+			    complete: function() {
 			    	ClickContext.tableLine.remove();
 			    }
 			});
 	
 		} else {
-			ClickContext.currentId = id;
+	    	ClickContext.currentId = id;
 			ClickContext.currentUrl = url;
-			$('#info').val(labels.label_send_a_message_to_asking_for_revision_1_send_a_message_to + userName + labels.label_send_a_message_to_asking_for_revision_2_asking_for_revision);
-	        $.magnificPopup.open({
-				items : {
-					src : '#dialog-revision',
-					type : 'inline'
-				},
-				callbacks: {
-					close: function() {
-						$("#revision-form .error-panel").css('display', 'none');
-					}
-				}
+
+			$.ajax({
+			    url: url,
+			    type: 'GET',
+			    data: {'scoreId': id},
+			    dataType: 'json',
+				cache: false,
+			    success: function(data) {
+			    	$('#scoreId').val(data.scoreId);
+			    	$('#playersLeft').text(data.playersLeft);
+			    	$('#playersRight').text(data.playersRight);
+			    	$('#sets').val(data.sets);
+			    	$('#date').val(data.date);
+			    	$('#time').val(data.time);
+			    	$('#message').val(data.message);
+
+			        $.magnificPopup.open({
+						items : {
+							src : '#dialog-revision',
+							type : 'inline'
+						},
+						callbacks: {
+							close: function() {
+								$("#revision-form .error-panel").css('display', 'none');
+							}
+						}
+					});
+			    }
 			});
 		}
 	},

@@ -22,7 +22,7 @@
 		</form>
 	</div>
 	<div class="row content no-padding-top no-padding-bottom">
-		<div class="columns large-12">
+		<div class="columns large-12 direita">
 			<a class="button mfp-prevent-close" id="dialog-registeredInvitation-back"><@spring.message code="label.back"/></a>
 			<a class="button mfp-prevent-close" id="dialog-registeredInvitation-send_invitation"><@spring.message code="label.invite"/></a>
 			<a class="button button-primary mfp-prevent-close" id="dialog-registeredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>

@@ -113,4 +113,19 @@ public class ScoreItemModelTest {
         model = new ScoreItemModel(score, null, user2, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
         Assert.assertTrue("inverted point of view", "against Pete Sampras".equals(model.getDetailTextPart2()));
     }
+
+    @Test
+    public void testGetDetailTextHighlightingWinner() {
+        ScoreItemModel model = new ScoreItemModel(score, null, user1, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("expected string", "1x<span class='winner'>6</span>".equals(model.getDetailTextHighlightingWinnerWithLoggedUserAtRight()));
+
+        score.setSet2Left(2);
+        score.setSet2Right(6);
+        score.setSet3Left(6);
+        score.setSet3Right(4);
+        Assert.assertTrue("expected string", "1x<span class='winner'>6</span> <span class='winner'>6</span>x2 4x<span class='winner'>6</span>".equals(model.getDetailTextHighlightingWinnerWithLoggedUserAtRight()));
+
+        model = new ScoreItemModel(score, null, user2, messageResource, localeResolver.resolveLocale(new MockHttpServletRequest()));
+        Assert.assertTrue("inverted point of view", "<span class='winner'>6</span>x1 2x<span class='winner'>6</span> <span class='winner'>6</span>x4".equals(model.getDetailTextHighlightingWinnerWithLoggedUserAtRight()));
+    }
 }

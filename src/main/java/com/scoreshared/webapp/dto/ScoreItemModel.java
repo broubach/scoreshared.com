@@ -8,8 +8,8 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.PlayerInstance;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -136,5 +136,29 @@ public class ScoreItemModel {
     
     public Boolean getConfirmed() {
         return score.getConfirmed();
+    }
+    
+    public boolean getLoggedUserWon() {
+        return score.hasWinner(loggedUser.getId());
+    }
+
+    public String getOpponentsNames() {
+        return score.getOpponentPlayerNames(loggedUser.getId());
+    }
+
+    public String getDetailTextHighlightingWinnerWithLoggedUserAtRight() {
+        if (score.hasWinner(loggedUser.getId())) {
+            return score.getFinalScore(false, "<span class='winner'>", "</span>");
+
+        }
+        return score.getFinalScore(true, "<span class='winner'>", "</span>");
+    }
+
+    public String getDetailTextHighlightingWinnerWithLoggedUserAtLeft() {
+        if (score.hasWinner(loggedUser.getId())) {
+            return score.getFinalScore(true, "<span class='winner'>", "</span>");
+
+        }
+        return score.getFinalScore(false, "<span class='winner'>", "</span>");
     }
 }

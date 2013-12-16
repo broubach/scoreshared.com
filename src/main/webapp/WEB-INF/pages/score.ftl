@@ -17,7 +17,6 @@
 								"/js/jquery.autosize-1.17.8.min.js",
 								"/js/app.js",
 								"/js/jquery.numeric.js",
-								"/js/jquery.maskedinput-1.3.1.min.js",
 								"/js/steps.js",
 								"/js/score.js",
 								"/js/json2.js",
@@ -211,7 +210,6 @@
 		});
 
 		$("#set1Left,#set1Right,#set2Left,#set2Right,#set3Left,#set3Right,#set4Left,#set4Right,#set5Left,#set5Right").numeric({ decimal: false, negative: false });
-		$("#time").mask("99:99");
 		Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>", ${playersList}, "${associatedPlayer.name}");
 
 		var newPlayerWizardOptions = {

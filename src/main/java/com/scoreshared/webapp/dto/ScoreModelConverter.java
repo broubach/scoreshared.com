@@ -84,14 +84,15 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
         }
     }
 
-    private String getTime(Date time) throws ParseException {
+    public String getTime(Date time) throws ParseException {
         DateFormat df = DateFormat.getTimeInstance();
-        ((SimpleDateFormat) df).applyPattern("HH:mm");
+        ((SimpleDateFormat) df).applyPattern(messageResource.getMessage("system.time_format", null, localeResolver.resolveLocale(request)));
         return df.format(time);
     }
 
-    private String getDate(Date date) throws ParseException {
+    public String getDate(Date date) throws ParseException {
         DateFormat df = DateFormat.getDateInstance();
-        return df.format(date);
+        ((SimpleDateFormat) df).applyPattern(messageResource.getMessage("system.date_format", null, localeResolver.resolveLocale(request)));
+       return df.format(date);
     }
 }

@@ -3,14 +3,18 @@
 <div class="modal">
 	<div class="row content">
 		<div class="columns large-12">
-			<form id="feedback-form" accept-charset="utf-8">
+			<form id="feedback-form" accept-charset="utf-8" class="no-margin-bottom">
 				<h2><@spring.message code="label.we_would_love_to_hear_from_you"/></h2>
 				<div id="feedback-panel" class="label radius" style="display: none"></div>
 				<div class="input textarea">
 					<label for="FeedbackMessage"><@spring.message code="label.send_your_message"/></label>
 					<textarea name="message" class="autosize" cols="30" rows="6" id="message"></textarea>
 				</div>
-				<div class="submit"><input class="button" id="send-feedback" value="<@spring.message code="label.send"/>" type="button"></div>
+				<div class="row content no-padding-bottom">
+					<div class="columns small-12 direita">
+						<div class="submit"><input class="button" id="send-feedback" value="<@spring.message code="label.send"/>" type="button"></div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>

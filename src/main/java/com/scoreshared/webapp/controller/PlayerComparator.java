@@ -1,9 +1,7 @@
 package com.scoreshared.webapp.controller;
 
 import java.util.Comparator;
-import java.util.Set;
 
-import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 
@@ -19,18 +17,12 @@ final class PlayerComparator implements Comparator<Score> {
     @Override
     public int compare(Score score1, Score score2) {
         // get the list of opposite players
-        Set<PlayerInstance> oppositePlayers1 = score1.getOppositePlayers(loggedUser.getId());
-        Set<PlayerInstance> oppositePlayers2 = score2.getOppositePlayers(loggedUser.getId());
+        String oppositePlayers1 = score1.getOpponentPlayerNames(loggedUser.getId());
+        String oppositePlayers2 = score2.getOpponentPlayerNames(loggedUser.getId());
 
-        if (oppositePlayers1.isEmpty()) { return 1 * (ascending ? 1 : -1); }
-        if (oppositePlayers2.isEmpty()) { return -1 * (ascending ? 1 : -1); }
-
-        // compare first of each other
         if (ascending) {
-            return oppositePlayers1.iterator().next().getName()
-                    .compareTo(oppositePlayers2.iterator().next().getName());
+            return oppositePlayers1.compareTo(oppositePlayers2);
         }
-        return oppositePlayers2.iterator().next().getName()
-                .compareTo(oppositePlayers1.iterator().next().getName());
+        return oppositePlayers2.compareTo(oppositePlayers1);
     }
 }

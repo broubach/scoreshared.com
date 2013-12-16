@@ -24,7 +24,7 @@
 								<div class="ch-info-wrap">
 									<div class="ch-info">
 										<div class="ch-info-back">
-											<a href="#"><@spring.message code="label.follow"/></a>
+											<a href="http://twitter.com/scoreshared"><@spring.message code="label.follow"/></a>
 										</div>	
 									</div>
 								</div>
@@ -35,7 +35,7 @@
 								<div class="ch-info-wrap">
 									<div class="ch-info">
 										<div class="ch-info-back">
-											<a href="#"><@spring.message code="label.like"/></a>
+											<a href="http://www.facebook.com/scoreshared"><@spring.message code="label.like"/></a>
 										</div>
 									</div>
 								</div>
@@ -46,7 +46,7 @@
 								<div class="ch-info-wrap">
 									<div class="ch-info">
 										<div class="ch-info-back">
-											<a href="#"><@spring.message code="label.mail"/></a>
+											<a href="mailto:contact@scoreshared.com"><@spring.message code="label.mail"/></a>
 										</div>
 									</div>
 								</div>

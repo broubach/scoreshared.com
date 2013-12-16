@@ -16,7 +16,7 @@
 			</div>
 		</div>
 		<div class="row content no-padding-bottom no-padding-top">
-			<div class="columns large-12">
+			<div class="columns large-12 direita">
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-back"><@spring.message code="label.back"/></a>
 				<a class="button mfp-prevent-close" id="dialog-unregisteredInvitation-invite"><@spring.message code="label.invite"/></a>
 				<a class="button button-primary mfp-prevent-close" id="dialog-unregisteredInvitation-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
