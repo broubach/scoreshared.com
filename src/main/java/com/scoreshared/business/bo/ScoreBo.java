@@ -265,15 +265,32 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByNamedQuery("pendingScoreApprovalsQuery", ownerId);
     }
 
-    public void reviewRevision(Integer scoreId) {
+    public void approveRevision(Integer scoreId, Integer revisionRequesterId) {
         Score score = dao.findByPk(Score.class, scoreId);
-        // score.setInRevision(Boolean.TRUE);
-        dao.saveOrUpdate(score);
+        PlayerInstance revisionRequester = score.getPlayerInstance(revisionRequesterId);
+        if (isOwnerAndPlayerInstanceInDifferentSidesOfScore(score, revisionRequester)) {
+            for (PlayerInstance playerInstance : score.getAllPlayers()) {
+                playerInstance.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+            }
+            score.setConfirmed(Boolean.TRUE);
+            score.copyDateAndScoreFrom(revisionRequester);
+            dao.saveOrUpdate(score);
+
+        } else {
+            revisionRequester.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+            score.copyDateAndScoreFrom(revisionRequester);
+            dao.saveOrUpdate(score);
+        }
+    }
+
+    private boolean isOwnerAndPlayerInstanceInDifferentSidesOfScore(Score score, PlayerInstance revisionRequester) {
+        return score.hasWinner(score.getOwner().getId()) && !score.hasWinner(revisionRequester.getAssociation().getId())
+                || !score.hasWinner(score.getOwner().getId()) && score.hasWinner(revisionRequester.getAssociation().getId());
     }
 
     public void ignoreRevision(Integer playerInstanceId) {
         PlayerInstance playerInstance = dao.findByPk(PlayerInstance.class, playerInstanceId);
-        playerInstance.setRevisionMessage(null);
+        playerInstance.setApprovalResponse(ApprovalResponseEnum.IGNORED);
         dao.saveOrUpdate(playerInstance);
     }
 

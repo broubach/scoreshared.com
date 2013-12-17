@@ -24,7 +24,7 @@
 			</div>
 			<div class="row content no-padding-top no-padding-bottom">
 				<div class="columns small-12">
-					<div class="input text"><label for="message"><@spring.message code="label.message"/><textarea id="message" name="message" placeholder="<@spring.message code="label.just_updated_the_score_please_take_a_look"/>" maxlength="2000"></textarea></label></div>
+					<div class="input text"><label for="message"><@spring.message code="label.message"/><textarea id="message" name="message" placeholder="<@spring.message code="label.just_updated_the_score_please_take_a_look"/>" maxlength="2000" class="autosize"></textarea></label></div>
 				</div>
 			</div>
 			<div class="row content no-padding-top no-padding-bottom">
@@ -40,7 +40,8 @@
 	$(function() {
 		$("#date").mask("99/99/9999");
 		$("#time").mask("99:99");
-		$("#dialog-revision-cancel").click(function() {
+	 	$('.autosize').autosize({append: "\n"});
+	 	$("#dialog-revision-cancel").click(function() {
 			$.magnificPopup.close();
 		});
 

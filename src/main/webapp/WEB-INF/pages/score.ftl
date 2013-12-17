@@ -203,10 +203,10 @@
 			return false;
 		});
 		$('.datepicker').pickadate({
-			format : '<@spring.message code="label.datepicker_date_format"/>'
+			format : '<@spring.message code="system.datepicker_date_format"/>'
 		});
 		$('.timepicker').pickatime({
-			format : '<@spring.message code="label.datepicker_time_format"/>'
+			format : '<@spring.message code="system.datepicker_time_format"/>'
 		});
 
 		$("#set1Left,#set1Right,#set2Left,#set2Right,#set3Left,#set3Right,#set4Left,#set4Right,#set5Left,#set5Right").numeric({ decimal: false, negative: false });

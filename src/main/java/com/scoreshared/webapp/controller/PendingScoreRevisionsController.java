@@ -17,10 +17,12 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
+import com.scoreshared.business.persistence.ApprovalResponseEnum;
 import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.NotificationStatsHelper;
 import com.scoreshared.webapp.dto.ScoreItemWithPlayerInstanceModel;
 
 @Controller
@@ -29,6 +31,9 @@ public class PendingScoreRevisionsController extends BaseController {
     @Inject
     private ScoreBo scoreBo;
  
+    @Inject
+    private NotificationStatsHelper notificationStatsHelper;
+
     @Inject
     private MessageSource messageResource;
 
@@ -42,7 +47,7 @@ public class PendingScoreRevisionsController extends BaseController {
         List<ScoreItemWithPlayerInstanceModel> scoreModels = new ArrayList<ScoreItemWithPlayerInstanceModel>();
         for (Score score : scores) {
             for (PlayerInstance playerInstance : score.getAllPlayers()) {
-                if (playerInstance.getRevisionMessage() != null) {
+                if (ApprovalResponseEnum.IN_REVISION.equals(playerInstance.getApprovalResponse())) {
                     scoreModels.add(new ScoreItemWithPlayerInstanceModel(score, null, loggedUser, messageResource, localeResolver.resolveLocale(request), playerInstance));
                 }
             }
@@ -52,16 +57,19 @@ public class PendingScoreRevisionsController extends BaseController {
         return mav;
     }
 
-    @RequestMapping(value = "/review/revision", method = RequestMethod.POST)
-    public String reviewRevision(@ModelAttribute("scoreId") Integer scoreId) {
-        scoreBo.reviewRevision(scoreId);
+    @RequestMapping(value = "/approve/revision/", method = RequestMethod.POST)
+    @ResponseStatus(value=HttpStatus.OK)
+    public void approveRevision(@ModelAttribute("scoreId") Integer scoreId, @ModelAttribute("playerInstanceId") Integer playerInstanceId, HttpServletRequest request) {
+        scoreBo.approveRevision(scoreId, playerInstanceId);
 
-        return "redirect:/app/score/" + scoreId;
+        notificationStatsHelper.updateNotificationStats(request);
     }
 
-    @RequestMapping(value = "/ignore/revision", method = RequestMethod.POST)
+    @RequestMapping(value = "/ignore/revision/", method = RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.OK)
-    public void ignoreRevision(@ModelAttribute("playerInstanceId") Integer playerInstanceId) {
+    public void ignoreRevision(@ModelAttribute("playerInstanceId") Integer playerInstanceId, HttpServletRequest request) {
         scoreBo.ignoreRevision(playerInstanceId);
+
+        notificationStatsHelper.updateNotificationStats(request);
     }
 }

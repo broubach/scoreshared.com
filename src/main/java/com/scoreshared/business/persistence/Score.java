@@ -441,4 +441,28 @@ public class Score extends BaseEntity implements Cloneable {
         result.delete(result.length() - DOUBLES_SEPARATOR.length(), result.length());
         return result.toString();
     }
+
+    public PlayerInstance getPlayerInstance(Integer revisionRequesterId) {
+        for (PlayerInstance playerInstance : getAllPlayers()) {
+            if (playerInstance.getId().equals(revisionRequesterId)) {
+                return playerInstance;
+            }
+        }
+        return null;
+    }
+
+    public void copyDateAndScoreFrom(PlayerInstance playerInstance) {
+        setSet1Left(playerInstance.getRevisionSet1Left());
+        setSet1Right(playerInstance.getRevisionSet1Right());
+        setSet2Left(playerInstance.getRevisionSet2Left());
+        setSet2Right(playerInstance.getRevisionSet2Right());
+        setSet3Left(playerInstance.getRevisionSet3Left());
+        setSet3Right(playerInstance.getRevisionSet3Right());
+        setSet4Left(playerInstance.getRevisionSet4Left());
+        setSet4Right(playerInstance.getRevisionSet4Right());
+        setSet5Left(playerInstance.getRevisionSet5Left());
+        setSet5Right(playerInstance.getRevisionSet5Right());
+        setDate(playerInstance.getRevisionDate());
+        setTime(playerInstance.getRevisionTime());
+    }
 }

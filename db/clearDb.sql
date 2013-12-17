@@ -1,10 +1,10 @@
-delete from invitation;
 delete from score_playerinstance_left;
 delete from score_playerinstance_right;
 delete from score;
 delete from playerinstancecomment;
 delete from playerinstance;
 delete from player;
+delete from invitation;
 update user set profile_id = null;
 delete from profile;
 update file set owner_Id = null;

@@ -86,23 +86,17 @@ var NotificationUtil = {
 		}
 	},
 
-	pendingScoreRevisionsHandleClick: function(id, kind, contextPath) {
-		var url = contextPath + kind + '/revision/';
+	pendingScoreRevisionsHandleClick: function(scoreId, playerInstanceId, kind, contextPath) {
+		var url = contextPath + '/app/' + kind + '/revision/';
 
-		if (kind != 'review') {
-	    	$.ajax({
-			    url: url,
-			    type: 'POST',
-			    data: {'playerInstanceId': id},
-			    dataType: 'json',
-			    complete: function() {
-			    	ClickContext.tableLine.remove();
-			    }
-			});
-
-		} else {
-			$('#scoreId').val(id);
-			$('#review-form').submit();
-		}
+    	$.ajax({
+		    url: url,
+		    type: 'POST',
+		    data: {'scoreId': scoreId, 'playerInstanceId': playerInstanceId},
+		    dataType: 'json',
+		    complete: function() {
+		    	ClickContext.tableLine.remove();
+		    }
+		});
 	}
 };

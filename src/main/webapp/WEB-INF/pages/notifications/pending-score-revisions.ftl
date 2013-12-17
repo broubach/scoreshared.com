@@ -45,13 +45,13 @@
 										<table>
 											<tbody>
 											<tr>
-												<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/></td>
+												<td><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/></td>
 												<td>${item.detailText}</td>
 												<td>${item.playerInstance.revisionMessage}</td>
 												<td width="30%">
 													<span class="actions hide">
-														<a href="review,${item.score.id}" class="button button-small button-warning"><@spring.message code="label.review"/></a>
-														<a href="ignore,${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
+														<a href="approve,${item.score.id},${item.playerInstance.id}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
+														<a href="ignore,${item.score.id},${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
 													</span>
 												</td>
 											</tr>
@@ -92,12 +92,13 @@ var ClickContext = {
 $(function() {
 	$("td a").click(function (e) {
 		e.preventDefault();
-		ClickContext.tableLine = $(this).parent().parent();
+		ClickContext.tableLine = $(this).closest("li");
 
 		var kind = $(this).attr('href').split(',')[0];
-		var id = $(this).attr('href').split(',')[1];
+		var scoreId = $(this).attr('href').split(',')[1];
+		var playerInstanceId = $(this).attr('href').split(',')[2];
 
-		NotificationUtil.pendingScoreRevisionsHandleClick(id, kind, '<@spring.url relativeUrl="/"/>');
+		NotificationUtil.pendingScoreRevisionsHandleClick(scoreId, playerInstanceId, kind, '<@spring.url relativeUrl="/"/>');
 	});
 });
 </script>
