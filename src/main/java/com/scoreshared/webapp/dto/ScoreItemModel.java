@@ -17,11 +17,11 @@ public class ScoreItemModel {
 
     public Score score;
     private PlayerInstanceComment comment;
-    private User loggedUser;
+    protected User loggedUser;
     private MessageSource messageResource;
     private Locale locale;
-    private DateFormat dateFormat;
-    private DateFormat timeFormat;
+    protected DateFormat dateFormat;
+    protected DateFormat timeFormat;
 
     public ScoreItemModel(Score score, PlayerInstanceComment comment, User loggedUser, MessageSource messageResource, Locale locale) {
         this.score = score;

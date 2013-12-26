@@ -41,20 +41,23 @@
 							<form id="review-form" method="post" action="<@spring.url relativeUrl="/app/review/revision"/>">
 								<input type="hidden" id="scoreId" name="scoreId" />
 								<#list pendingRevisions as item>
-									<li class="item-resultado resultado-perdeu">
+									<li class="item-resultado">
 										<table>
 											<tbody>
-											<tr>
-												<td><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/></td>
-												<td>${item.detailText}</td>
-												<td>${item.playerInstance.revisionMessage}</td>
-												<td width="30%">
-													<span class="actions hide">
-														<a href="approve,${item.score.id},${item.playerInstance.id}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
-														<a href="ignore,${item.score.id},${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
-													</span>
-												</td>
-											</tr>
+												<tr>
+													<td><@spring.message code="label.reviewed_by"/>: <img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/> ${item.playerInstance.player.name}</td>
+													<td width="30%" rowspan="6">
+														<span class="actions hide">
+															<a href="approve,${item.score.id},${item.playerInstance.id}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
+															<a href="ignore,${item.score.id},${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
+														</span>
+													</td>
+												</tr>
+												<tr><td><@spring.message code="label.original_date"/>: ${item.dateTime}</td></tr>
+												<tr><td><@spring.message code="label.reviewed_date"/>: ${item.revisionDateTime}</td></tr>
+												<tr><td><@spring.message code="label.original_score"/>: ${item.opponentsNames} ${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.you"/></td></tr>
+												<tr><td><@spring.message code="label.reviewed_score"/>: ${item.opponentsNames} ${item.revisionScore} <@spring.message code="label.you"/></td></tr>
+												<tr><td><@spring.message code="label.revision_message"/>: ${item.playerInstance.revisionMessage!""}</td></tr>
 											</tbody>
 										</table>
 									</li>

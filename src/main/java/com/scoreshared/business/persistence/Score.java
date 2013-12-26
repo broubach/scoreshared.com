@@ -291,8 +291,11 @@ public class Score extends BaseEntity implements Cloneable {
     }
     
     public String getFinalScore(boolean winnerInLeft, String winnerHightLightStart, String winnerHighLightEnd) {
+        return getFinalScore(winnerInLeft, winnerHightLightStart, winnerHighLightEnd, getFinalScoreArray());
+    }
+    
+    public static String getFinalScore(boolean winnerInLeft, String winnerHightLightStart, String winnerHighLightEnd, Integer[][] finalScore) {
         StringBuilder result = new StringBuilder();
-        Integer[][] finalScore = getFinalScoreArray();
         for (Integer[] set : finalScore) {
             if (set[0] != null && set[1] != null) {
                 if (winnerInLeft) {
@@ -312,6 +315,7 @@ public class Score extends BaseEntity implements Cloneable {
             }
         }
         return result.toString().trim();
+        
     }
 
     public String getFinalScore(boolean winnerInLeft) {

@@ -26,4 +26,24 @@ public class ScoreItemWithPlayerInstanceModel extends ScoreItemModel {
     public void setPlayerInstance(PlayerInstance playerInstance) {
         this.playerInstance = playerInstance;
     }
+
+    public String getRevisionDateTime() {
+        StringBuilder result = new StringBuilder();
+        if (playerInstance.getRevisionDate() != null) {
+            result.append(dateFormat.format(playerInstance.getRevisionDate())).append(" ");
+        }
+        if (playerInstance.getRevisionTime() != null) {
+            result.append(timeFormat.format(playerInstance.getRevisionTime()));
+        }
+        return result.toString().trim();
+    }
+
+    public String getRevisionScore() {
+        return Score.getFinalScore(true, "<span class='winner'>", "</span>", new Integer[][] {
+                new Integer[] { playerInstance.getRevisionSet1Left(), playerInstance.getRevisionSet1Right() },
+                new Integer[] { playerInstance.getRevisionSet2Left(), playerInstance.getRevisionSet2Right() },
+                new Integer[] { playerInstance.getRevisionSet3Left(), playerInstance.getRevisionSet3Right() },
+                new Integer[] { playerInstance.getRevisionSet4Left(), playerInstance.getRevisionSet4Right() },
+                new Integer[] { playerInstance.getRevisionSet5Left(), playerInstance.getRevisionSet5Right() } });
+    }
 }
