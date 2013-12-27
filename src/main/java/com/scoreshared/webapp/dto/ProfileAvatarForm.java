@@ -2,7 +2,7 @@ package com.scoreshared.webapp.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class WelcomeStep3Form {
+public class ProfileAvatarForm {
     private Double x;
     private Double y;
     private Double x2;

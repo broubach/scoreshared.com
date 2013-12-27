@@ -22,7 +22,7 @@
 			<div class="section-container vertical-tabs" data-section="vertical-tabs">
 				<section class="active">
 					<p class="title" data-section-title="">
-						<a href="<@spring.url relativeUrl="/app/account-settings/terms-and-conditions"/>"><@spring.message code="label.terms_and_conditions"/></a>
+						<a href="#"><@spring.message code="label.terms_and_conditions"/></a>
 					</p>
 					<div class="content" data-section-content="">
 						<p><h3><@spring.message code="label.terms_and_conditions"/></h3></p>

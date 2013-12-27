@@ -1,14 +1,9 @@
 package com.scoreshared.webapp.controller;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Date;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
@@ -24,21 +19,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.File;
 import com.scoreshared.business.persistence.User;
-import com.scoreshared.scaffold.CustomMultipartFile;
+import com.scoreshared.scaffold.AvatarHelper;
 import com.scoreshared.scaffold.LoggedUser;
-import com.scoreshared.scaffold.UserLoggedListener;
+import com.scoreshared.webapp.dto.ProfileAvatarForm;
 import com.scoreshared.webapp.dto.WelcomeStep1Form;
-import com.scoreshared.webapp.dto.WelcomeStep3Form;
 import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
 
 @Controller
 @RequestMapping(value = "/welcome")
-@SessionAttributes({ "welcomeStep1Form", "welcomeStep3Form" })
+@SessionAttributes({ "welcomeStep1Form", "profileAvatarForm" })
 public class WelcomeController extends BaseController {
 
     @Inject
@@ -46,6 +38,9 @@ public class WelcomeController extends BaseController {
 
     @Inject
     private ConnectionRepository connectionRepository;
+    
+    @Inject
+    private AvatarHelper avatarHelper;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
@@ -94,81 +89,22 @@ public class WelcomeController extends BaseController {
 
     @RequestMapping(value = "/step3", method = RequestMethod.GET)
     public String getStep3(ModelMap modelMap, @LoggedUser User loggedUser, HttpSession session, SessionStatus status) {
-        WelcomeStep3Form step3Form = new WelcomeStep3Form();
-        if (!modelMap.containsAttribute("welcomeStep3Form")) {
-            modelMap.addAttribute(step3Form);
-        }
-
-        Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
-        if (facebookConnection != null && loggedUser.getProfile() != null
-                && StringUtils.isEmpty(loggedUser.getProfile().getAvatarHash())) {
-            try {
-                MultipartFile multipartFile = new CustomMultipartFile(facebookConnection.getImageUrl());
-                step3Form.setFile(multipartFile);
-                step3Form.setAvatarUploaded(Boolean.TRUE);
-                saveStep3(step3Form, loggedUser, session, status);
-
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        avatarHelper.getProfileAvatar(modelMap, loggedUser, session, status);
         return "welcome/step3";
     }
 
     @RequestMapping(value = "/step3", method = RequestMethod.POST)
-    public String saveStep3(@ModelAttribute WelcomeStep3Form step3Form, @LoggedUser User loggedUser,
+    public String saveStep3(@ModelAttribute ProfileAvatarForm step3Form, @LoggedUser User loggedUser,
             HttpSession session, SessionStatus status) {
-        try {
-            if (Boolean.TRUE.equals(step3Form.getAvatarUploaded())) {
-                createFileAndSaveAvatar(loggedUser, session, step3Form.getFile());
-                step3Form.setAvatarUploaded(Boolean.FALSE);
-                return "welcome/step3";
-            }
-            if (getSavedAvatar(session) != null) {
-                bo.cropResizeAndSaveAvatars(loggedUser, getSavedAvatar(session), step3Form.getX().intValue(), step3Form
-                        .getY().intValue(), step3Form.getX2().intValue(), step3Form.getY2().intValue());
-                session.setAttribute(UserLoggedListener.LOGGED_USER_AVATAR_HASH, loggedUser.getProfile().getAvatarHash());
-            }
-
-            status.setComplete();
-
-            cleanSavedAvatar(session);
-
-            return "redirect:/app/home";
-        } catch (IOException e) {
-            throw new RuntimeException();
+        boolean avatarUploaded = false;
+        if (Boolean.TRUE.equals(step3Form.getAvatarUploaded())) {
+            avatarUploaded = true;
         }
-    }
-
-    private File createFileAndSaveAvatar(User loggedUser, HttpSession session, MultipartFile avatar) throws IOException {
-        File file = new File();
-        file.setDate(new Date());
-        if (avatar.getOriginalFilename().length() > 45) {
-            file.setName(avatar.getOriginalFilename().substring(avatar.getOriginalFilename().length() - 45,
-                    avatar.getOriginalFilename().length()));
-        } else {
-            file.setName(avatar.getOriginalFilename());
+        avatarHelper.postProfileAvatar(step3Form, loggedUser, session, status);
+        if (avatarUploaded) {
+            return "welcome/step3";
         }
-        file.setSize(avatar.getSize());
-        file.setData(avatar.getBytes());
-        file.setOwner(loggedUser);
 
-        saveAvatar(session, file);
-
-        return file;
-    }
-
-    private void saveAvatar(HttpSession session, File file) {
-        session.setAttribute("savedFile", file);
-    }
-
-    private File getSavedAvatar(HttpSession session) {
-        return (File) session.getAttribute("savedFile");
-    }
-
-    private void cleanSavedAvatar(HttpSession session) {
-        session.removeAttribute("savedFile");
+        return "redirect:/app/home";
     }
 }

@@ -17,7 +17,8 @@ import org.hibernate.annotations.Where;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "avatarIdByHashQuery", query = "select avatar.id from Profile profile join profile.avatar avatar where profile.avatarHash = :avatarHash"),
-        @NamedQuery(name = "smallAvatarIdByHashQuery", query = "select smallAvatar.id from Profile profile join profile.smallAvatar smallAvatar where profile.avatarHash = :avatarHash") })
+        @NamedQuery(name = "smallAvatarIdByHashQuery", query = "select smallAvatar.id from Profile profile join profile.smallAvatar smallAvatar where profile.avatarHash = :avatarHash"),
+        @NamedQuery(name = "avatarByHashQuery", query = "select avatar from Profile profile join profile.avatar avatar where profile.avatarHash = :avatarHash") })
 @Table(name = "file")
 @SQLDelete(sql="UPDATE file SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")

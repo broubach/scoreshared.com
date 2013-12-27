@@ -207,6 +207,10 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return dao.findByPk(File.class, id);
     }
 
+    public List<File> findAvatarByHash(String hash) {
+        return dao.findByNamedQuery("avatarByHashQuery", hash);
+    }
+
     /**
      * @param filtersArray 0: firstName; 1: lastName; 2: city; 3: country
      */

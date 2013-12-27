@@ -5,7 +5,7 @@
 <head>
 	<#assign head_title="ScoreShared: Welcome3">
 	<#assign head_additional_css=["/css/jquery.Jcrop-0.9.12.min.css"]>
-	<#assign head_additional_js=["/js/jquery.Jcrop-0.9.12.min.js", "/js/welcome.js"]>
+	<#assign head_additional_js=["/js/jquery.Jcrop-0.9.12.min.js", "/js/profile-avatar.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -38,17 +38,17 @@
 			</div>
 
 			<form id="fileUpload-form" action="<@spring.url relativeUrl="/app/welcome/step3"/>" enctype="multipart/form-data" method="POST">
-				<@spring.formHiddenInput "welcomeStep3Form.x", "" />
-				<@spring.formHiddenInput "welcomeStep3Form.y", "" />
-				<@spring.formHiddenInput "welcomeStep3Form.x2", "" />
-				<@spring.formHiddenInput "welcomeStep3Form.y2", "" />
-				<@spring.formHiddenInput "welcomeStep3Form.avatarUploaded", "" />
+				<@spring.formHiddenInput "profileAvatarForm.x", "" />
+				<@spring.formHiddenInput "profileAvatarForm.y", "" />
+				<@spring.formHiddenInput "profileAvatarForm.x2", "" />
+				<@spring.formHiddenInput "profileAvatarForm.y2", "" />
+				<@spring.formHiddenInput "profileAvatarForm.avatarUploaded", "" />
 
 				<span id="leftPanel">
 					<ol>
 						<li>
 							<@spring.message code="label.select_your_favorite_picture"/><br/>
-							<@spring.formInput "welcomeStep3Form.file", "", "file"/>
+							<@spring.formInput "profileAvatarForm.file", "", "file"/>
 						</li>
 						<li>
 							<@spring.message code="label.cut_your_best_angle_and_see_how_it_looks"/>
@@ -58,7 +58,7 @@
 
 				<div class="row">
 					<div class="small-4 columns">
-							<div style="width:104px;height:104px;overflow:hidden;margin-left:5px;border:0px;"> 
+							<div style="width:104px;height:104px;overflow:hidden;margin-left:5px;border:0px;" class="avatar"> 
 								<img id="preview" style="max-width: none" src="<@spring.url relativeUrl="/app/avatar"/>?${((.now?datetime)?string)?replace(" ", "")}"/>
 							</div>
 					</div>
