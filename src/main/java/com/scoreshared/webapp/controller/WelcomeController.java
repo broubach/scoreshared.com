@@ -25,12 +25,12 @@ import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.AvatarHelper;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.ProfileAvatarForm;
-import com.scoreshared.webapp.dto.WelcomeStep1Form;
-import com.scoreshared.webapp.validation.WelcomeStep1FormValidator;
+import com.scoreshared.webapp.dto.PersonalInformationForm;
+import com.scoreshared.webapp.validation.PersonalInformationFormValidator;
 
 @Controller
 @RequestMapping(value = "/welcome")
-@SessionAttributes({ "welcomeStep1Form", "profileAvatarForm" })
+@SessionAttributes({ "personalInformationForm", "profileAvatarForm" })
 public class WelcomeController extends BaseController {
 
     @Inject
@@ -44,26 +44,27 @@ public class WelcomeController extends BaseController {
 
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
-        if (binder.getTarget() instanceof WelcomeStep1Form) {
-            binder.setValidator(new WelcomeStep1FormValidator());
+        if (binder.getTarget() instanceof PersonalInformationForm) {
+            binder.setValidator(new PersonalInformationFormValidator());
         }
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
     public String getStep1(ModelMap modelMap) {
-        if (!modelMap.containsAttribute("welcomeStep1Form")) {
-            modelMap.addAttribute(new WelcomeStep1Form());
+        if (!modelMap.containsAttribute("personalInformationForm")) {
+            modelMap.addAttribute(new PersonalInformationForm());
         }
         return "welcome/step1";
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.POST)
     public String validateAndSaveStep1(@LoggedUser User loggedUser, ModelMap modelMap,
-            @ModelAttribute @Valid WelcomeStep1Form form, BindingResult result) {
+            @ModelAttribute @Valid PersonalInformationForm form, BindingResult result, SessionStatus status) {
         if (result.hasErrors()) {
             return "welcome/step1";
         }
         bo.saveProfile(loggedUser, form.getProfile(), form.getCoach());
+        status.setComplete();
         return getStep2(modelMap);
     }
 

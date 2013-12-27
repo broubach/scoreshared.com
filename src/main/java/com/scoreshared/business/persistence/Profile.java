@@ -1,5 +1,10 @@
 package com.scoreshared.business.persistence;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -7,15 +12,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 @Entity
 @Table(name = "profile")
 @NamedQuery(name = "profileDetailsQuery", query = "from User user where (:city is null or user.profile.city like :city) and (:country is null or user.profile.country like :country) and (:firstName is null or user.firstName like :firstName) and (:lastName is null or user.lastName like :lastName)")
 @SQLDelete(sql="UPDATE profile SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
-public class Profile extends BaseEntity {
+public class Profile extends BaseEntity implements Cloneable {
 
     private String city;
     private String country;
@@ -161,5 +169,46 @@ public class Profile extends BaseEntity {
 
     public void setSignupProcessCompleted(Boolean signupProcessCompleted) {
         this.signupProcessCompleted = signupProcessCompleted;
+    }
+
+    @Override
+    public Object clone() {
+        Profile newProfile = new Profile();
+        try {
+            BeanUtils.copyProperties(newProfile, this);
+            return newProfile;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String[] getDirtyProperties(Profile currentState) {
+        List<String> dirtyProperties = new ArrayList<String>();
+        BeanWrapper currentStateWrapper = new BeanWrapperImpl(currentState);
+        BeanWrapper initialStateWrapper = new BeanWrapperImpl(this);
+        for (PropertyDescriptor propertyDescriptor : currentStateWrapper.getPropertyDescriptors()) {
+            if (initialStateWrapper.getPropertyValue(propertyDescriptor.getName()) != null 
+                    && !initialStateWrapper.getPropertyValue(propertyDescriptor.getName()).equals(currentStateWrapper.getPropertyValue(propertyDescriptor.getName()))
+                    && propertyDescriptor.getWriteMethod() != null) {
+                dirtyProperties.add(propertyDescriptor.getName());
+            }
+        }
+
+        return dirtyProperties.toArray(new String[dirtyProperties.size()]);
+    }
+
+    public Profile copyDirtyPropertiesFrom(Profile current) {
+        BeanWrapper currentStateWrapper = new BeanWrapperImpl(current);
+        BeanWrapper initialStateWrapper = new BeanWrapperImpl(this);
+        String[] dirtyProperties = getDirtyProperties(current);
+        if (dirtyProperties.length > 0) {
+            for (String dirtyProperty : dirtyProperties) {
+                initialStateWrapper.setPropertyValue(dirtyProperty, currentStateWrapper.getPropertyValue(dirtyProperty));
+            }
+            return this;
+        }
+        return null;
     }
 }

@@ -2,13 +2,20 @@ package com.scoreshared.webapp.dto;
 
 import com.scoreshared.business.persistence.Profile;
 
-public class WelcomeStep1Form {
+public class PersonalInformationForm {
 
     private Profile profile;
     private String coach;
 
-    public WelcomeStep1Form() {
+    public PersonalInformationForm() {
         this.profile = new Profile();
+    }
+
+    public PersonalInformationForm(Profile profile) {
+        this.profile = (Profile) profile.clone();
+        if (profile.getCoach() != null) {
+            this.coach = profile.getCoach().getName();
+        }
     }
 
     public Profile getProfile() {

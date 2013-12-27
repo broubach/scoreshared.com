@@ -67,7 +67,7 @@
 
 							<div class="row">
 								<div class="columns small-12 direita">
-									<button type="submit" class="button button-large button-primary centralizado"><@spring.message code="label.save"/></button>
+									<button type="submit" class="button button-large button-primary button-enroll"><@spring.message code="label.save"/></button>
 								</div>
 							</div>
 						</form>
