@@ -18,7 +18,10 @@ public class CustomConnectController extends ConnectController {
     @Override
     protected RedirectView connectionStatusRedirect(String providerId, NativeWebRequest request) {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-        String path = servletRequest.getServletPath() + "/welcome/step2";
+        String path = servletRequest.getServletPath() + "/profile/social-networks";
+        if (Boolean.TRUE.equals(request.getAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, NativeWebRequest.SCOPE_SESSION))) {
+            path = servletRequest.getServletPath() + "/welcome/step2";
+        }
         return new RedirectView(path, true);
     }
 }

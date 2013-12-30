@@ -4,10 +4,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.facebook.api.Facebook;
-import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -23,9 +19,10 @@ import org.springframework.web.context.request.WebRequest;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.AvatarHelper;
+import com.scoreshared.scaffold.ConnectionsHelper;
 import com.scoreshared.scaffold.LoggedUser;
-import com.scoreshared.webapp.dto.ProfileAvatarForm;
 import com.scoreshared.webapp.dto.PersonalInformationForm;
+import com.scoreshared.webapp.dto.ProfileAvatarForm;
 import com.scoreshared.webapp.validation.PersonalInformationFormValidator;
 
 @Controller
@@ -37,7 +34,7 @@ public class WelcomeController extends BaseController {
     private UserBo bo;
 
     @Inject
-    private ConnectionRepository connectionRepository;
+    private ConnectionsHelper connectionsHelper;
     
     @Inject
     private AvatarHelper avatarHelper;
@@ -50,7 +47,8 @@ public class WelcomeController extends BaseController {
     }
 
     @RequestMapping(value = "/step1", method = RequestMethod.GET)
-    public String getStep1(ModelMap modelMap) {
+    public String getStep1(ModelMap modelMap, HttpSession session) {
+        session.setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.TRUE);
         if (!modelMap.containsAttribute("personalInformationForm")) {
             modelMap.addAttribute(new PersonalInformationForm());
         }
@@ -70,21 +68,7 @@ public class WelcomeController extends BaseController {
 
     @RequestMapping(value = "/step2", method = RequestMethod.GET)
     public String getStep2(ModelMap modelMap) {
-        Connection<Twitter> twitterConnection = connectionRepository.findPrimaryConnection(Twitter.class);
-        if (twitterConnection != null) {
-            modelMap.addAttribute("twitterAccount", twitterConnection.fetchUserProfile().getUsername());
-            modelMap.addAttribute("twitterConnected", true);
-        } else {
-            modelMap.addAttribute("twitterConnected", false);
-        }
-
-        Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
-        if (facebookConnection != null) {
-            modelMap.addAttribute("facebookAccount", facebookConnection.fetchUserProfile().getUsername());
-            modelMap.addAttribute("facebookConnected", true);
-        } else {
-            modelMap.addAttribute("facebookConnected", false);
-        }
+        connectionsHelper.populateModelMapWithConnections(modelMap);
         return "welcome/step2";
     }
 

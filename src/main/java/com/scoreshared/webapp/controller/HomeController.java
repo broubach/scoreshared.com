@@ -32,6 +32,7 @@ import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
+import com.scoreshared.scaffold.ConnectionsHelper;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.ScoreItemModel;
 import com.scoreshared.webapp.dto.SearchModel;
@@ -68,6 +69,7 @@ public class HomeController extends BaseController {
             ObjectMapper mapper = new ObjectMapper();
 
             loggedUser.setProfile(userBo.markSignupProcessAsCompleted(loggedUser).getProfile());
+            request.getSession().setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.FALSE);
 
             if (!scores.isEmpty()) {
                 Integer[] winLoss = scoreBo.calculateWinLoss(loggedUser.getId());
