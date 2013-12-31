@@ -73,6 +73,11 @@
 						</form>
 					</div>
 				</section>
+				<section>
+					<p class="title" data-section-title="">
+						<a href="<@spring.url relativeUrl="/app/profile/players/ascending/true"/>"><@spring.message code="label.players"/></a>
+					</p>
+				</section>
 			</div>
 		</div>
 	</div>

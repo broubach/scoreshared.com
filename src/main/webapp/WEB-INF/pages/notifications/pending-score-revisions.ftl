@@ -22,17 +22,17 @@
 
 			<div style="" class="section-container auto notificacoes" data-section="">
 				<section>
-					<p style="left: 112px;" class="title" data-section-title="">
+					<p class="title" data-section-title="">
 						<a href="<@spring.url relativeUrl="/app/notifications/contactRequests"/>"><@spring.message code="label.contact_requests"/> <#if (_total_pending_friend_requests > 0)><span>(${_total_pending_friend_requests})</span></#if></a>
 					</p>
 				</section>
 				<section>
-					<p style="left: 0px;" class="title" data-section-title="">
+					<p class="title" data-section-title="">
 						<a href="<@spring.url relativeUrl="/app/notifications/pendingScoreApprovals"/>"><@spring.message code="label.pending_score_approvals"/> <#if (_total_pending_score_approvals > 0)><span>(${_total_pending_score_approvals})</span></#if></a>
 					</p>
 				</section>
 				<section class="active">
-					<p style="left: 217px;" class="title" data-section-title="">
+					<p class="title" data-section-title="">
 						<a href="#"><@spring.message code="label.pending_score_revisions"/> <#if (_total_pending_score_revisions > 0)><span>(${_total_pending_score_revisions})</span></#if></a>
 					</p>
 					<div class="content" data-section-content="">

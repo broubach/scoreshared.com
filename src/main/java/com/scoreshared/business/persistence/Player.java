@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -22,6 +23,7 @@ import org.hibernate.annotations.Where;
         @NamedQuery(name = "playerByNameAndOwnerQuery", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
         @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery", query = "from Player player where player.owner.id = :ownerId and (player.association.id <> :ownerId or player.association.id is null)"),
         @NamedQuery(name = "playerByAssociationAndOwnerQuery", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
+        @NamedQuery(name = "playerIdWithMatchesByPlayerIdsQuery", query = "select player.id from PlayerInstance playerInstance join playerInstance.player player where player.id in (:playerIds)"),
         @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitation.hash = :invitationHash"),
         @NamedQuery(name = "pendingInvitationsQuery", query= "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null" ),
         @NamedQuery(name = "countPendingInvitationsQuery", query= "select count(p.owner.id) from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null" )})
@@ -41,6 +43,9 @@ public class Player extends BaseEntity implements PlayerBehavior {
     private Invitation invitation;
 
     private Boolean shouldNotReinvite;
+    
+    @Transient
+    private boolean hasMatchAssociated;
 
     public Player() {
     }
@@ -91,6 +96,14 @@ public class Player extends BaseEntity implements PlayerBehavior {
 
     public void setShouldNotReinvite(Boolean shouldNotReinvite) {
         this.shouldNotReinvite = shouldNotReinvite;
+    }
+
+    public boolean isHasMatchAssociated() {
+        return hasMatchAssociated;
+    }
+
+    public void setHasMatchAssociated(boolean hasMatchAssociated) {
+        this.hasMatchAssociated = hasMatchAssociated;
     }
 
     @Override

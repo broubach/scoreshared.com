@@ -574,6 +574,9 @@ button:active, .button:active {
 .lista-resultados .item-resultado:nth-child(even) {
    background-color: rgba(20,20,20,.10);
 }
+.lista-resultados {
+	list-style-type: none;
+}
 .item-resultado {
 	color: #999;
 	padding:.8em;

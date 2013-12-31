@@ -54,6 +54,11 @@
 						<a href="<@spring.url relativeUrl="/app/profile/avatar"/>"><@spring.message code="label.avatar"/></a>
 					</p>
 				</section>
+				<section>
+					<p class="title" data-section-title="">
+						<a href="<@spring.url relativeUrl="/app/profile/players/ascending/true"/>"><@spring.message code="label.players"/></a>
+					</p>
+				</section>
 			</div>
 		</div>
 	</div>
