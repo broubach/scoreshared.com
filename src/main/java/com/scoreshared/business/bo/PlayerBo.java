@@ -1,11 +1,14 @@
 package com.scoreshared.business.bo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.scoreshared.business.exception.EmptyPlayerNameException;
+import com.scoreshared.business.exception.LongPlayerNameException;
 import com.scoreshared.business.exception.PlayerLinkedException;
 import com.scoreshared.business.exception.PlayerNotLinkedException;
 import com.scoreshared.business.exception.PlayerWithRegisteredMatchException;
@@ -14,10 +17,17 @@ import com.scoreshared.business.persistence.Player;
 @Component
 public class PlayerBo extends BaseBo<Player> {
 
-    public List<Player> getPlayersByOwnerExceptOwnerFlaggingPlayersWithoutScore(Integer ownerId, Boolean ascending) {
+    public List<Player> getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(Integer ownerId, Boolean ascending) {
         List<Player> result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", ownerId);
+
+        flagPlayersWithScore(result);
+
+        return result;
+    }
+
+    private void flagPlayersWithScore(List<Player> players) {
         Map<Integer, Player> playerByIdMap = new HashMap<Integer, Player>();
-        for (Player player : result) {
+        for (Player player : players) {
             playerByIdMap.put(player.getId(), player);
         }
 
@@ -25,19 +35,49 @@ public class PlayerBo extends BaseBo<Player> {
         for (Integer playerId : playersWithMatches) {
             playerByIdMap.get(playerId).setHasMatchAssociated(Boolean.TRUE);
         }
-
-        return result;
     }
 
-    public void renamePlayer(String id, String newName, Integer ownerId) throws PlayerLinkedException {
-        // check if player is not linked to anyone
+    private void flagPlayerWithScore(Player player) {
+        List<Player> players = new ArrayList<Player>();
+        players.add(player);
+        flagPlayersWithScore(players);
     }
 
-    public void removePlayer(String id, Integer ownerId) throws PlayerWithRegisteredMatchException {
-        // check if player does not have a match registered
+    public void renamePlayer(Integer playerId, String newName, Integer ownerId) throws PlayerLinkedException, EmptyPlayerNameException, LongPlayerNameException {
+        if (newName.isEmpty()) {
+            throw new EmptyPlayerNameException();
+        }
+        if (newName.length() > 45) {
+            throw new LongPlayerNameException();
+        }
+        Player player = dao.findByPk(Player.class, playerId);
+        if (player.getAssociation() != null) {
+            throw new PlayerLinkedException();
+        }
+        player.setName(newName);
+        dao.saveOrUpdate(player);
     }
 
-    public void removePlayerLink(String id, Integer ownerId) throws PlayerNotLinkedException {
-        // check if player is linked
+    public void removePlayer(Integer playerId, Integer ownerId) throws PlayerWithRegisteredMatchException {
+        Player player = dao.findByPk(Player.class, playerId);
+        flagPlayerWithScore(player);
+        if (player.isHasMatchAssociated()) {
+            throw new PlayerWithRegisteredMatchException();
+        }
+        dao.execute("deletePlayerQuery", playerId);
+        if (player.getInvitation() != null) {
+            dao.execute("deleteInvitationQuery", player.getInvitation().getId());
+        }
+    }
+
+    public void removePlayerLink(Integer playerId, Integer ownerId) throws PlayerNotLinkedException {
+        // TODO: has to be two-ways
+        Player player = dao.findByPk(Player.class, playerId);
+        if (player.getAssociation() == null) {
+            throw new PlayerNotLinkedException();
+        }
+        player.setAssociation(null);
+        player.getInvitation().setResponse(null);
+        dao.saveOrUpdate(player);
     }
 }

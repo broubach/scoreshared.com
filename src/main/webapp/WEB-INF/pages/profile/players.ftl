@@ -7,7 +7,8 @@
 	<#assign head_additional_js=["/js/steps.js",
 								"/js/score.js",
 								"/js/json2.js",
-								"/js/scaffold/friendRequestUtil.js"]>
+								"/js/scaffold/friendRequestUtil.js",
+								"/js/players.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -44,6 +45,7 @@
 						<a href="#"><@spring.message code="label.players"/></a>
 					</p>
 					<div class="content" data-section-content="">
+						<input type="hidden" id="playerName" name="playerName"/>
 						<p><h3><@spring.message code="label.players"/></h3></p>
 
 						<#if (players?size <= 0)><p><@spring.message code="label.you_have_no_players_to_manage_at_the_moment"/></p></#if>
@@ -54,20 +56,20 @@
 										<tbody>
 											<tr>
 												<#if player.association??>
-													<td><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(player.association.profile.avatarHash?html)!}&small"/>"/></td>
+													<td id="avatar-column"><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(player.association.profile.avatarHash?html)!}&small"/>"/></td>
 													<td>${player.name}</td>
-													<td width="50%">
+													<td id="actions-column" width="50%">
 														<span class="actions hide">
 															<a href="removeLink,${player.id}" class="button button-small button-primary"><@spring.message code="label.remove_link"/></a>
 														</span>
 													</td>
 												<#else>
 													<td></td>
-													<td>${player.name}</td>
+													<td id="name-column">${player.name}</td>
 													<td width="50%">
 														<span class="actions hide">
-															<a href="rename,${player.id},${player.name}" class="button button-small button-primary"><@spring.message code="label.rename"/></a>
-															<a href="invite,${player.id},${player.name}" class="button button-small button-warning"><@spring.message code="label.invite"/></a>
+															<a href="rename,${player.id}" class="button button-small button-primary"><@spring.message code="label.rename"/></a>
+															<a href="invite,${player.id}" class="button button-small button-warning"><@spring.message code="label.invite"/></a>
 															<#if !player.hasMatchAssociated><a href="remove,${player.id},${player.name}" class="button button-small"><@spring.message code="label.remove"/></a></#if>
 														</span>
 													</td>
@@ -111,77 +113,8 @@
 var ClickContext = {
 	tableLine: {},
 	currentId: {},
-	removeLink: function() {
-		// post deletion
-		// show feedback message
-		// redraw if necessary
-	},
-
-	rename: function() {
-		// post rename
-		// show feedback message
-		// redraw if necessary
-	},
-
-	remove: function() {
-		// post removal
-		// show feedback message
-		// redraw if necessary
-	}
 };
 $(function() {
-	$('.item-resultado').hover(function(){
-		$(this).find('span.actions').fadeIn('fast');
-	}, function(){
-	$(this).find('span.actions').fadeOut();
-	});
-
-	$('#dialog-general-confirm-no').click(function() {
-        $.magnificPopup.close();
-	});
-
-	$("td a").click(function (e) {
-		e.preventDefault();
-		ClickContext.tableLine = $(this).closest("li");
-
-		var kind = $(this).attr('href').split(',')[0];
-		var id = $(this).attr('href').split(',')[1];
-		var name = $(this).attr('href').split(',')[2];
-		if (kind == "removeLink") {
-			$('#confirmation-question').html("<@spring.message code="label.are_you_sure_you_want_to_remove_the_link_to_the_user_"/>" + name);
-			$('#dialog-general-confirm-yes').click(ClickContext.removeLink);
-			$.magnificPopup.open({
-				items : {
-					src : '#dialog-general-confirm',
-					type : 'inline'
-				}
-			});
-
-		} else if (kind == "rename") {
-			$('#dialog-rename-player-rename').click(ClickContent.rename);
-			$.magnificPopup.open({
-				items : {
-					src : '#dialog-rename-player',
-					type : 'inline'
-				}
-			});
-
-		} else if (kind == "invite") {
-			NewPlayerWizard.breadCrumb = [];
-			NewPlayerWizard.start('first');
-
-		} else if (kind == "remove") {
-			$('#confirmation-question').html("<@spring.message code="label.are_you_sure_you_want_to_remove_this_player_from_your_list"/>" + name);
-			$('#dialog-general-confirm-yes').click(ClickContext.remove);
-			$.magnificPopup.open({
-				items : {
-					src : '#dialog-general-confirm',
-					type : 'inline'
-				}
-			});
-		}
-	});
-
 	var newPlayerWizardOptions = {
 			contextPath: "<@spring.url relativeUrl="/"/>",
 			error_please_enter_some_text: "<@spring.message code="error.please_enter_some_text"/>",
@@ -191,11 +124,32 @@ $(function() {
 			label_take_the_opportunity_to_invite: "<@spring.message code="label.take_the_opportunity_to_invite"/>",
 			label_user_not_found: "<@spring.message code="label.user_not_found"/>",
 			loggedUserAvatarHash: "${loggedUserAvatarHash}",
-			continueWithSavingProcessCallback: function() { }
+			continueWithSavingProcessCallback: function() { $.magnificPopup.close(); }
 	};
+	var invitationWizardOptions = {
+		label_no: '<@spring.message code="label.no"/>',
+		label_cancel: '<@spring.message code="label.cancel"/>'
+	};
+	InvitationWizard.init(newPlayerWizardOptions, invitationWizardOptions);
 
-	NewPlayerWizard.init(newPlayerWizardOptions);
-	NewPlayerWizard.steps['first'] = ProvidePlayerListWithSinglePlayerStep.init(newPlayerWizardOptions);
-	NewPlayerWizard.steps[BuildDataWithI18nStep.name] = BuildDataWithI18nStep.init();
+	var dialogRemoveOptions = {
+			label_are_you_sure_you_want_to_remove_this_player_from_your_list: "<@spring.message code="label.are_you_sure_you_want_to_remove_this_player_from_your_list"/>",
+			label_player_removed_successfully: "<@spring.message code="label.player_removed_successfully"/>"
+	};
+	DialogRemove.init(dialogRemoveOptions);
+	
+	var dialogRemoveLinkOptions = {
+			label_are_you_sure_you_want_to_remove_the_link_to_this_user: "<@spring.message code="label.are_you_sure_you_want_to_remove_the_link_to_this_user"/>",
+			label_refresh_page_to_see_new_actions_available: "<@spring.message code="label.refresh_page_to_see_new_actions_available"/>",
+			label_link_removed_successfully: "<@spring.message code="label.link_removed_successfully"/>",
+			context_path: '<@spring.url relativeUrl="/"/>'
+	};
+	DialogRemoveLink.init(dialogRemoveLinkOptions);
+
+	DialogRename.init();
+
+	DialogGeneralConfirm.init();
+
+	PlayerCrud.init();
 });
 </script>

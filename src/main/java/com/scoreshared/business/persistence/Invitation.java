@@ -4,9 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQuery(name = "deleteInvitationQuery", query = "delete from Invitation i where i.id = :invitationId")
 @Table(name = "invitation")
 public class Invitation extends BaseEntity {
 
