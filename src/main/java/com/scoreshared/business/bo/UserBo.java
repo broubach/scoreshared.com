@@ -375,8 +375,14 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     }
 
     public Integer createPlayer(User loggedUser, String playerName) {
-        Player player = new Player(playerName.trim(), loggedUser);
-        dao.saveOrUpdate(player);
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwnerQuery", playerName, loggedUser.getId());
+        Player player = null;
+        if (players.size() > 0) {
+            player = players.get(0);
+        } else {
+            player = new Player(playerName.trim(), loggedUser);
+            dao.saveOrUpdate(player);
+        }
         return player.getId();
     }
 

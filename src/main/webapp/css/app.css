@@ -586,6 +586,9 @@ button:active, .button:active {
 	margin-right: .5em;
 	text-align:center;
 }
+.item-resultado td {
+    height: 35px;
+}
 .item-resultado .placar {
 	color:#222;
 	font-weight: bold;

@@ -58,7 +58,7 @@ public class ProfilePlayersController {
         } catch (PlayerLinkedException e) {
             result.put(
                     "errorMessage",
-                    messageResource.getMessage("error.a_linked_player_cant_be_renamed", null,
+                    messageResource.getMessage("error.a_linked_player_cannot_be_renamed", null,
                             localeResolver.resolveLocale(request)));
         } catch (EmptyPlayerNameException e) {
             result.put(
@@ -80,10 +80,15 @@ public class ProfilePlayersController {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             bo.removePlayer(playerId, loggedUser.getId());
+        } catch (PlayerLinkedException e) {
+            result.put(
+                    "errorMessage",
+                    messageResource.getMessage("error.a_linked_player_cannot_be_removed", null,
+                            localeResolver.resolveLocale(request)));
         } catch (PlayerWithRegisteredMatchException e) {
             result.put(
                     "errorMessage",
-                    messageResource.getMessage("error.a_player_with_registered_match_cant_be_removed", null,
+                    messageResource.getMessage("error.a_player_with_registered_match_cannot_be_removed", null,
                             localeResolver.resolveLocale(request)));
         }
         return result;

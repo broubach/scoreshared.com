@@ -86,7 +86,7 @@ var ClickContext = {
 $(function() {
 	$("td a").click(function (e) {
 		e.preventDefault();
-		ClickContext.tableLine = $(this).parent().parent().parent().parent().parent().parent();
+		ClickContext.tableLine = $(this).closest("li");
 
 		var kind = $(this).attr('href').split(',')[0];
 		var id = $(this).attr('href').split(',')[1];

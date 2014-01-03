@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.exception.EmptyPlayerNameException;
@@ -16,11 +18,16 @@ import com.scoreshared.business.persistence.Player;
 
 @Component
 public class PlayerBo extends BaseBo<Player> {
+    
+    @Inject
+    private GraphBo graphBo;
 
     public List<Player> getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(Integer ownerId, Boolean ascending) {
         List<Player> result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", ownerId);
 
-        flagPlayersWithScore(result);
+        if (!result.isEmpty()) {
+            flagPlayersWithScore(result);
+        }
 
         return result;
     }
@@ -51,16 +58,19 @@ public class PlayerBo extends BaseBo<Player> {
             throw new LongPlayerNameException();
         }
         Player player = dao.findByPk(Player.class, playerId);
-        if (player.getAssociation() != null) {
+        if (player.isConnected()) {
             throw new PlayerLinkedException();
         }
         player.setName(newName);
         dao.saveOrUpdate(player);
     }
 
-    public void removePlayer(Integer playerId, Integer ownerId) throws PlayerWithRegisteredMatchException {
+    public void removePlayer(Integer playerId, Integer ownerId) throws PlayerWithRegisteredMatchException, PlayerLinkedException {
         Player player = dao.findByPk(Player.class, playerId);
         flagPlayerWithScore(player);
+        if (player.isConnected()) {
+            throw new PlayerLinkedException();
+        }
         if (player.isHasMatchAssociated()) {
             throw new PlayerWithRegisteredMatchException();
         }
@@ -71,13 +81,10 @@ public class PlayerBo extends BaseBo<Player> {
     }
 
     public void removePlayerLink(Integer playerId, Integer ownerId) throws PlayerNotLinkedException {
-        // TODO: has to be two-ways
         Player player = dao.findByPk(Player.class, playerId);
-        if (player.getAssociation() == null) {
+        if (!player.isConnected()) {
             throw new PlayerNotLinkedException();
         }
-        player.setAssociation(null);
-        player.getInvitation().setResponse(null);
-        dao.saveOrUpdate(player);
+        graphBo.removeConnection(player.getAssociation().getId(), ownerId);
     }
 }

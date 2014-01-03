@@ -316,7 +316,7 @@ var ChoosePlayerFromListStep = {
 		$("#dialog-choosePlayerFromList table tbody").html('');
 		for ( var i = 0; i < data.playerList.length; i++) {
             var row = "<tr><td><a class='mfp-prevent-close' href='"+i+"'>";
-            row += "<img src='" + context.options.contextPath + "/app/avatar?hash="
+            row += "<img class='avatar' src='" + context.options.contextPath + "/app/avatar?hash="
                     + data.playerList[i][1] + "&small'/>";
             row += "</a></td><td><a class='mfp-prevent-close' href='"+i+"'>";
             row += data.playerList[i][2];

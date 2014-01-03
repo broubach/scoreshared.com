@@ -55,7 +55,7 @@
 									<table>
 										<tbody>
 											<tr>
-												<#if player.association??>
+												<#if player.connected>
 													<td id="avatar-column"><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(player.association.profile.avatarHash?html)!}&small"/>"/></td>
 													<td>${player.name}</td>
 													<td id="actions-column" width="50%">
