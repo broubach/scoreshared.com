@@ -6,8 +6,8 @@
 				<p id="general-confirmation-question"></p>
 				<div class="row">
 					<div class="columns small-12 direita">
-						<a class="button mfp-prevent-close" id="dialog-general-confirm-no"><@spring.message code="label.no"/></a>
 						<button class="button button-primary mfp-prevent-close" id="dialog-general-confirm-yes"><@spring.message code="label.yes"/></button>
+						<a class="button mfp-prevent-close" id="dialog-general-confirm-no"><@spring.message code="label.no"/></a>
 					</div>
 				</div>
 			</div>

@@ -1,11 +1,57 @@
 var PlayerCrud = {
-	init: function() {
+	options: {},
+	playerAdded: '',
+
+	postAdd: function(data) {
+		$('#add-new-player-button').removeAttr('disabled');
+		if (data.errorMessage == undefined) {
+			$('#player-added-panel').removeClass('alert');
+			$('#player-added-panel').html(PlayerCrud.options.label_player_added_successfully);
+			$('#player-added-panel').show();
+			$('#add-new-player-input').val('');
+
+			if ($('#empty-players-message').length > 0) {
+				location.reload();
+
+			} else {
+				var newLine = "<li class='item-resultado'><table><tbody><tr>" +
+				"<td></td>" +
+				"<td id='name-column'>" + PlayerCrud.playerAdded + "</td>" +
+				"<td width='50%'>"+PlayerCrud.options.label_refresh_page_to_see_new_actions_available+"</td>" +
+				"</tr></tbody></table></li>";
+				$(".lista-resultados").append(newLine);
+			}
+		} else {
+			$('#player-added-panel').addClass('alert');
+			$('#player-added-panel').html(data.errorMessage);
+			$('#player-added-panel').show();
+		}
+		setTimeout(function() { $('#player-added-panel').hide() }, 2000);
+	},
+
+	init: function(options) {
 		$('.item-resultado').hover(function(){
 			$(this).find('span.actions').fadeIn('fast');
 		}, function(){
 		$(this).find('span.actions').fadeOut();
 		});
-		
+
+		$("#add-new-player-button").click(function(e) {
+			e.preventDefault();
+			PlayerCrud.playerAdded = $('#add-new-player-input').val();
+			$('#add-new-player-button').attr('disabled', '');
+			$.ajax({
+				url: PlayerCrud.options.context_path + '/app/profile/players/addPlayer',
+				data: {
+						'playerName': PlayerCrud.playerAdded
+					  },
+				type: 'POST',
+				dataType: 'json',
+				cache: false,
+				success: PlayerCrud.postAdd
+			});
+		});
+
 		$("td a").click(function (e) {
 			e.preventDefault();
 			ClickContext.tableLine = $(this).closest("li");
@@ -27,6 +73,8 @@ var PlayerCrud = {
 				DialogRemove.start(id);
 			}
 		});
+		
+		PlayerCrud.options = options;
 	}
 };
 
@@ -51,7 +99,7 @@ var DialogRemoveLink = {
 			$('#actions-column', ClickContext.tableLine).html(DialogRemoveLink.options.label_refresh_page_to_see_new_actions_available);
 			$('#general-info-panel').show();
 			$('#general-info-panel').html(DialogRemoveLink.options.label_link_removed_successfully);
-			setTimeout(function() { $.magnificPopup.close(); }, 3000);
+			setTimeout(function() { $.magnificPopup.close(); }, 2000);
 
 		} else {
 			$('#dialog-general-confirm-yes,#dialog-general-confirm-no').removeAttr('disabled');
@@ -86,7 +134,7 @@ var DialogRemove = {
 	remove: function() {
 		$('#dialog-general-confirm-yes,#dialog-general-confirm-no').attr('disabled', '');
 		$.ajax({
-			url: DialogRemoveLink.options.context_path + '/app/profile/players/remove/' + DialogRemove.playerId,
+			url: DialogRemove.options.context_path + '/app/profile/players/remove/' + DialogRemove.playerId,
 			type: 'DELETE',
 			dataType: 'json',
 			cache: false,
@@ -99,7 +147,7 @@ var DialogRemove = {
 			ClickContext.tableLine.remove();
 			$('#general-info-panel').show();
 			$('#general-info-panel').html(DialogRemove.options.label_player_removed_successfully);
-			setTimeout(function() { $.magnificPopup.close(); }, 3000);
+			setTimeout(function() { $.magnificPopup.close(); }, 2000);
 
 		} else {
 			$('#dialog-general-confirm-yes,#dialog-general-confirm-no').removeAttr('disabled');
@@ -137,7 +185,7 @@ var InvitationWizard = {
 	init: function(newPlayerWizardOptions, invitationWizardOptions) {
 		NewPlayerWizard.init(newPlayerWizardOptions);
 		NewPlayerWizard.steps['first'] = ProvidePlayerListWithSinglePlayerStep.init(newPlayerWizardOptions);
-		NewPlayerWizard.steps[BuildDataWithI18nStep.name] = BuildDataWithI18nStep.init();
+		NewPlayerWizard.steps[BuildDataWithI18nStep.name] = BuildDataWithI18nStep.init("/app/profile/players/buildDataWithI18n");
 
 		$('#dialog-confirm-save_without_invitation').html(invitationWizardOptions.label_no);
 		$('#dialog-confirm-save_without_invitation').removeClass('button-primary');

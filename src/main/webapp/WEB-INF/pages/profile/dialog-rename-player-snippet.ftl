@@ -45,15 +45,15 @@ var DialogRename = {
 			$('#name-column', ClickContext.tableLine).html($('#dialog-rename-player-new_name').val());
 			$('#info-panel').show();
 			$('#info-panel').html('<@spring.message code="label.player_renamed_successfully"/>');
-			setTimeout(function() { $.magnificPopup.close(); }, 3000);
+			setTimeout(function() { $.magnificPopup.close(); }, 2000);
 
 		} else {
-			$('#dialog-rename-player-new_name').removeAttr('readonly');
-			$('#dialog-rename-player-rename').removeAttr('disabled', '');
 			$('#info-panel').addClass('alert');
 			$('#info-panel').show();
 			$('#info-panel').html(data.errorMessage);
 		}
+		$('#dialog-rename-player-new_name').removeAttr('readonly');
+		$('#dialog-rename-player-rename').removeAttr('disabled', '');
 	},
 
 	start: function(playerId, playerName) {

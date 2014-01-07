@@ -48,7 +48,25 @@
 						<input type="hidden" id="playerName" name="playerName"/>
 						<p><h3><@spring.message code="label.players"/></h3></p>
 
-						<#if (players?size <= 0)><p><@spring.message code="label.you_have_no_players_to_manage_at_the_moment"/></p></#if>
+						<div id="player-added-panel" class="label radius" style="display: none"></div>
+						<div class="row">
+							<div class="columns small-4 direita"><input type="text" name="add-new-player-input" id="add-new-player-input" placeholder="<@spring.message code="label.add_new_player"/>"></input></div>
+							<div class="columns small-3"><button id="add-new-player-button" class="button button-small no-margin-top"><@spring.message code="label.add"/></button></div>
+							<div class="columns small-4 direita">
+								<#if (players?size > 0)>
+									<#if (request.requestUri?ends_with("false"))>
+										<a href="<@spring.url relativeUrl="/app/profile/players/ascending/true"/>"><@spring.message code="label.ascending"/></a>
+									<#else>
+										<a href="<@spring.url relativeUrl="/app/profile/players/ascending/false"/>"><@spring.message code="label.descending"/></a>
+									</#if>
+								<#else>
+									&nbsp;
+								</#if>
+							</div>
+							<div class="columns small-1">
+							</div>
+						</div>
+						<#if (players?size <= 0)><p id="empty-players-message"><@spring.message code="label.you_have_no_players_to_manage_at_the_moment"/></p></#if>
 						<ul class="lista-resultados lista-aprovacoes">
 							<#list players as player>
 								<li class="item-resultado">
@@ -134,7 +152,8 @@ $(function() {
 
 	var dialogRemoveOptions = {
 			label_are_you_sure_you_want_to_remove_this_player_from_your_list: "<@spring.message code="label.are_you_sure_you_want_to_remove_this_player_from_your_list"/>",
-			label_player_removed_successfully: "<@spring.message code="label.player_removed_successfully"/>"
+			label_player_removed_successfully: "<@spring.message code="label.player_removed_successfully"/>",
+			context_path: '<@spring.url relativeUrl="/"/>'
 	};
 	DialogRemove.init(dialogRemoveOptions);
 	
@@ -150,6 +169,11 @@ $(function() {
 
 	DialogGeneralConfirm.init();
 
-	PlayerCrud.init();
+	var playerCrudOptions = {
+			label_player_added_successfully: "<@spring.message code="label.player_added_successfully"/>",
+			label_refresh_page_to_see_new_actions_available: "<@spring.message code="label.refresh_page_to_see_new_actions_available"/>",
+			context_path: '<@spring.url relativeUrl="/"/>'
+	};
+	PlayerCrud.init(playerCrudOptions);
 });
 </script>

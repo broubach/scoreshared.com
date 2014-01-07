@@ -108,4 +108,37 @@ public class ProfilePlayersController {
         }
         return result;
     }
+
+    @RequestMapping(value = "/profile/players/addPlayer", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addPlayer(@LoggedUser User loggedUser, @ModelAttribute("playerName") String playerName, HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            bo.createPlayer(playerName, loggedUser);
+        } catch (EmptyPlayerNameException e) {
+            result.put(
+                    "errorMessage",
+                    messageResource.getMessage("error.player_name_cannot_be_empty", null,
+                            localeResolver.resolveLocale(request)));
+        } catch (LongPlayerNameException e) {
+            result.put("errorMessage", messageResource.getMessage(
+                    "error.player_name_cannot_be_longer_than_45_characters", null,
+                    localeResolver.resolveLocale(request)));
+        }
+        return result;
+    }
+
+    @RequestMapping(value= "/profile/players/buildDataWithI18n", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> buildDataWithI18n(@ModelAttribute("playerName") String playerName, @LoggedUser User loggedUser, HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Object[] shouldPlayerBeInvited = bo.shouldPlayerBeInvited(playerName, loggedUser);
+        result.put("proceedWithConfirmation", "true");
+        result.put("title", messageResource.getMessage("label.invite_to_your_contacts",
+                new String[] { playerName }, localeResolver.resolveLocale(request)));
+        if (shouldPlayerBeInvited.length > 1) {
+            result.put("playerId", ((Player) shouldPlayerBeInvited[1]).getId().toString());
+        }
+        return result;
+    }
 }

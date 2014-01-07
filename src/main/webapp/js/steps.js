@@ -76,9 +76,13 @@ var ProvidePlayerListWithSinglePlayerStep = {
 
 var BuildDataWithI18nStep = {
 	name: 'buildDataWithI18n',
+	buildDataPath: undefined,
 	execute: function(context) {
+		if (BuildDataWithI18nStep.buildDataPath == undefined) {
+			BuildDataWithI18nStep.buildDataPath = "/app/home/buildDataWithI18n";
+		}
 		$.ajax({
-			url: context.options.contextPath+"/app/home/buildDataWithI18n",
+			url: context.options.contextPath+BuildDataWithI18nStep.buildDataPath,
 			data: {'playerName': context.players[context.currentPlayer].playerName},
 			type: 'POST',
 			dataType: 'json',
@@ -99,7 +103,8 @@ var BuildDataWithI18nStep = {
 		return false;
 	},
 
-	init: function() {
+	init: function(buildDataPath) {
+		BuildDataWithI18nStep.buildDataPath = buildDataPath;
 		return BuildDataWithI18nStep;
 	}
 };

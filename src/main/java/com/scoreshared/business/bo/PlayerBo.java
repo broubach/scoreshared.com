@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.exception.EmptyPlayerNameException;
@@ -15,15 +13,18 @@ import com.scoreshared.business.exception.PlayerLinkedException;
 import com.scoreshared.business.exception.PlayerNotLinkedException;
 import com.scoreshared.business.exception.PlayerWithRegisteredMatchException;
 import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.User;
 
 @Component
-public class PlayerBo extends BaseBo<Player> {
+public class PlayerBo extends GraphBo {
     
-    @Inject
-    private GraphBo graphBo;
-
     public List<Player> getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(Integer ownerId, Boolean ascending) {
-        List<Player> result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", ownerId);
+        List<Player> result = null;
+        if (ascending) {
+            result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", ownerId);
+        } else {
+            result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQueryDesc", ownerId);
+        }
 
         if (!result.isEmpty()) {
             flagPlayersWithScore(result);
@@ -85,6 +86,16 @@ public class PlayerBo extends BaseBo<Player> {
         if (!player.isConnected()) {
             throw new PlayerNotLinkedException();
         }
-        graphBo.removeConnection(player.getAssociation().getId(), ownerId);
+        removeConnection(player.getAssociation().getId(), ownerId);
+    }
+
+    public void createPlayer(String playerName, User owner) throws EmptyPlayerNameException, LongPlayerNameException {
+        if (playerName.isEmpty()) {
+            throw new EmptyPlayerNameException();
+        }
+        if (playerName.length() > 45) {
+            throw new LongPlayerNameException();
+        }
+        dao.saveOrUpdate(new Player(playerName, owner));
     }
 }

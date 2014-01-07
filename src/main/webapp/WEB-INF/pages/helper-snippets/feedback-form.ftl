@@ -40,7 +40,7 @@
 			cache: false,
 			complete: function(data) {
 				$('#feedback-panel').html('<@spring.message code="label.sent_thank_you_very_much_well_try_our_best_to_answer_your_message"/>');
-				setTimeout(function() { $.magnificPopup.close(); }, 3000);
+				setTimeout(function() { $.magnificPopup.close(); }, 2500);
 			}
 		});
 

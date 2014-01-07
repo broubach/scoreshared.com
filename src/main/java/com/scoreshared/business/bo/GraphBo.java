@@ -102,11 +102,13 @@ public class GraphBo extends BaseBo<Player> {
     	Player player = findPlayerByAssociationAndOwner(user1Id, user2Id);
         player.getInvitation().setDate(null);
         player.getInvitation().setResponse(null);
+        player.setShouldNotReinvite(null);
         dao.saveOrUpdate(player);
 
     	player = findPlayerByAssociationAndOwner(user2Id, user1Id);
         player.getInvitation().setDate(null);
         player.getInvitation().setResponse(null);
+        player.setShouldNotReinvite(null);
         dao.saveOrUpdate(player);
     }
 
