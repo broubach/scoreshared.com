@@ -33,8 +33,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	    <maven.compiler.source>1.6</maven.compiler.source>
 	    <maven.compiler.target>1.6</maven.compiler.target>
-		<org.springframework-version>3.1.0.RELEASE</org.springframework-version>
+		<org.springframework-version>3.2.6.RELEASE</org.springframework-version>
 		<org.springframework.social-version>1.0.2.RELEASE</org.springframework.social-version>
+		<org.springframework.security-version>3.1.4.RELEASE</org.springframework.security-version>
+		<org.hibernate-version>4.2.8.Final</org.hibernate-version>
+		<org.hibernate.search-version>4.4.2.Final</org.hibernate.search-version>
 	</properties>
 
 	<dependencies>
@@ -95,55 +98,37 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>${org.springframework.security-version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>${org.springframework.security-version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>${org.springframework.security-version}</version>
 		</dependency>
 
 		<dependency>
-		  <groupId>org.hibernate</groupId>
-		  <artifactId>hibernate-core</artifactId>
-		  <version>3.3.1.GA</version>
-		  <exclusions>
-		  	<exclusion>
-		  		<artifactId>xml-apis</artifactId>
-		  		<groupId>xml-apis</groupId>
-		  	</exclusion>
-		  </exclusions>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-search-orm</artifactId>
+		   <version>${org.hibernate.search-version}</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-c3p0</artifactId>
-		    <version>3.3.1.GA</version>
-		</dependency>
-
-		<dependency>
-		  <groupId>org.hibernate</groupId>
-		  <artifactId>ejb3-persistence</artifactId>
-		  <version>1.0.2.GA</version>
-		</dependency>
-
-		<dependency>
-		  <groupId>org.hibernate</groupId>
-		  <artifactId>hibernate-annotations</artifactId>
-		  <version>3.4.0.GA</version>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-core</artifactId>
+		   <version>${org.hibernate-version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.0.Final</version>
+			<version>5.0.2.Final</version>
 		</dependency>
 
 		<dependency>

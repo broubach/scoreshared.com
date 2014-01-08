@@ -1,6 +1,7 @@
 package com.scoreshared.business.persistence;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -44,6 +45,7 @@ public class Player extends BaseEntity implements PlayerBehavior {
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Invitation invitation;
 
+    @Column(columnDefinition = "BIT", length = 1)
     private Boolean shouldNotReinvite;
     
     @Transient

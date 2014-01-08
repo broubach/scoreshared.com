@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -28,11 +29,14 @@ public class Profile extends BaseEntity implements Cloneable {
     private String city;
     private String country;
     private String academy;
+
+    @Column(columnDefinition = "BIT", length = 1)
     private Boolean leftHanded;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Player coach;
 
+    @Column(columnDefinition = "BIT", length = 1)
     private Boolean showContactInfoToFriends;
     private String phone;
     private String avatarHash;
@@ -46,6 +50,7 @@ public class Profile extends BaseEntity implements Cloneable {
     private File smallAvatar;
     private SportEnum sport;
 
+    @Column(columnDefinition = "BIT", length = 1)
     private Boolean signupProcessCompleted;
 
     public String getCity() {

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -63,6 +64,7 @@ public class Score extends BaseEntity implements Cloneable {
     @JoinTable(name = "score_playerinstance_right", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerinstance_id") })
     private Set<PlayerInstance> rightPlayers;
 
+    @Column(columnDefinition = "BIT", length = 1)
     private boolean winnerDefined;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -70,6 +72,7 @@ public class Score extends BaseEntity implements Cloneable {
     
     private SportEnum sport;
     
+    @Column(columnDefinition = "BIT", length = 1)
     private Boolean confirmed;
 
     @Transient

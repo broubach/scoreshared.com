@@ -1,5 +1,6 @@
 package com.scoreshared.business.persistence;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ public class BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
+    @Column(columnDefinition = "BIT", length = 1)
     private boolean deleted;
 
     public BaseEntity() {

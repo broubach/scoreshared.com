@@ -14,18 +14,24 @@ import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-public class GenericOperationsDao extends HibernateDaoSupport {
+public class GenericOperationsDao {
+
+    private SessionFactory sessionFactory;
+    
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     protected Logger logger = Logger.getLogger(GenericOperationsDao.class.getName());
 
     public <T> T findByPk(Class<T> clazz, Integer id, String... collectionsToLoad) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             Object entity = session.get(clazz, id);
             if (collectionsToLoad != null) {
                 for (String collection : collectionsToLoad) {
@@ -49,14 +55,6 @@ public class GenericOperationsDao extends HibernateDaoSupport {
         }
     }
 
-    public List<?> find(String query) {
-        return getHibernateTemplate().find(query);
-    }
-
-    public <T> List<T> findAll(Class<T> c) {
-        return getHibernateTemplate().loadAll(c);
-    }
-
     public List findByNamedQuery(String namedQuery, Object... paramValues) {
         return findByNamedQueryWithLimits(namedQuery, null, null, paramValues);
     }
@@ -64,7 +62,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     public List findByNamedQueryWithLimits(String namedQuery, Integer firstResult, Integer maxResults, Object... paramValues) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             Query query = session.getNamedQuery(namedQuery);
             populateQuery(firstResult, maxResults, query, paramValues);
             return query.list();
@@ -111,13 +109,28 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     }
 
     public List findByNamedQueryAndNamedParam(String queryName, String[] paramNames, Object[] values) {
-        return getHibernateTemplate().findByNamedQueryAndNamedParam(queryName, paramNames, values);
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            Query query = session.getNamedQuery(queryName);
+            for (int i = 0; i < paramNames.length; i++) {
+                query.setParameter(paramNames[i], values[i]);
+            }
+            return query.list();
+
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public <T> T findFirst(Class<T> clazz) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             Criteria criteria = session.createCriteria(clazz);
             criteria.setFirstResult(0);
             criteria.setMaxResults(1);
@@ -135,7 +148,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     public <T extends BaseEntity> T findFirst(Class<T> clazz, T notToBe) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             Criteria criteria = session.createCriteria(clazz);
             criteria.setFirstResult(0);
             criteria.setMaxResults(1);
@@ -152,19 +165,54 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     }
 
     public <T> void saveOrUpdate(T entity) {
-        getHibernateTemplate().saveOrUpdate(entity);
+        Session session = null;
+        Transaction tx = null;
+        try {
+            session = sessionFactory.openSession();
+            tx = session.beginTransaction();
+            session.saveOrUpdate(entity);
+            tx.commit();
+
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public <T> void remove(T entity) {
-        getHibernateTemplate().delete(entity);
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            session.delete(entity);
+
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public <T> void removeAll(Class<T> entityClass) {
-        getHibernateTemplate().deleteAll(this.findAll(entityClass));
-    }
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            session.createQuery("delete from " + entityClass.getName()).executeUpdate();
 
-    public <T> T merge(T entity) {
-        return getHibernateTemplate().merge(entity);
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public static boolean isInitialized(Object obj, String proxy) {
@@ -185,19 +233,19 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     }
 
     public Transaction beginTransaction() {
-        return getHibernateTemplate().getSessionFactory().getCurrentSession().beginTransaction();
+        return sessionFactory.getCurrentSession().beginTransaction();
     }
 
     public void rollbackTransaction(Transaction tx) {
         tx.rollback();
-        getHibernateTemplate().getSessionFactory().getCurrentSession().close();
+        sessionFactory.getCurrentSession().close();
     }
 
     public int execute(String namedQuery, Object... paramValues) {
         Session session = null;
         Transaction t = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             t = session.beginTransaction();
             Query query = session.getNamedQuery(namedQuery);
             populateQuery(null, null, query, paramValues);
@@ -218,7 +266,7 @@ public class GenericOperationsDao extends HibernateDaoSupport {
     public List findByQueryWithLimits(String queryStr, Integer firstResult, Integer maxResults, Object... paramValues) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             Query query = session.createQuery(queryStr);
             populateQuery(firstResult, maxResults, query, paramValues);
             return query.list();

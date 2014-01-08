@@ -24,7 +24,7 @@ public class PlayerInstanceComment extends BaseEntity implements Cloneable {
 
     private String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private PlayerInstance playerInstance;
 
     public User getOwner() {
