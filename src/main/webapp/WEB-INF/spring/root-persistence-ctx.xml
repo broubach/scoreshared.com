@@ -32,6 +32,8 @@
 				<prop key="hibernate.c3p0.max_statements">0</prop>
 
 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+				<prop key="hibernate.search.default.directory_provider">filesystem</prop>
+				<prop key="hibernate.search.default.indexBase">${lucene.index.folder}</prop>
 			</props>
 		</property>
 	</bean>

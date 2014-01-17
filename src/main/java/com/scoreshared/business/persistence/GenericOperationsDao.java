@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -17,6 +19,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 
 public class GenericOperationsDao {
 
@@ -275,5 +280,53 @@ public class GenericOperationsDao {
                 session.close();
             }
         }
+    }
+
+    public void initializeLuceneIndex() {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            FullTextSession fullTextSession = Search.getFullTextSession(session);
+            fullTextSession.createIndexer().startAndWait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public <T> List<T> searchInLucene(Class<T> clazz, String term, Object[] sortField, String... fields) {
+        Session session = null;
+        Transaction tx = null;
+        List<T> result = null;
+        try {
+            session = sessionFactory.openSession();
+            FullTextSession fullTextSession = Search.getFullTextSession(session);
+            tx = fullTextSession.beginTransaction();
+
+            QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(clazz).get();
+            org.apache.lucene.search.Query query = qb.keyword().onFields(fields)
+                    .matching(term).createQuery();
+
+            org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, clazz);
+            if (sortField != null) {
+                Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1]));
+                hibQuery.setSort(sort);
+            }
+
+            result = hibQuery.list();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return result;
     }
 }

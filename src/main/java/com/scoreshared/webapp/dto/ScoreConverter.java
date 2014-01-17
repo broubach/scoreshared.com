@@ -45,6 +45,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
                 if (!StringUtils.isEmpty(playerLeft)) {
                     playerInstance = new PlayerInstance(playerLeft.trim(), src.getOwner());
                     leftPlayers.add(playerInstance);
+                    playerInstance.setScoreLeft(dest);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerLeft.trim())) {
                         playerInstance.setShouldNotReinvite(Boolean.TRUE);
                     }
@@ -57,6 +58,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
                 if (!StringUtils.isEmpty(playerRight)) {
                     playerInstance = new PlayerInstance(playerRight.trim(), src.getOwner());
                     rightPlayers.add(playerInstance);
+                    playerInstance.setScoreRight(dest);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerRight.trim())) {
                         playerInstance.setShouldNotReinvite(Boolean.TRUE);
                     }

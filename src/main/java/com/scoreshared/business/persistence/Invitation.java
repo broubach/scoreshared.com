@@ -4,8 +4,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 
 @Entity
 @NamedQuery(name = "deleteInvitationQuery", query = "delete from Invitation i where i.id = :invitationId")
@@ -13,11 +18,18 @@ import javax.persistence.Table;
 public class Invitation extends BaseEntity {
 
     private static final int HASH_EXPIRATION_DAYS = 2;
+
+    @ContainedIn
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "invitation")
+    private Player player;
+
     private Date date;
     private String hash;
     private Date hashExpirationDate;
     private String email;
     private String message;
+
+    @Field
     private InvitationResponseEnum response;
     private InvitationTypeEnum type;
 
@@ -43,6 +55,14 @@ public class Invitation extends BaseEntity {
 
     public Invitation(InvitationResponseEnum response) {
         this.response = response;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public String getHash() {

@@ -174,7 +174,7 @@ public class GraphBo extends BaseBo<Player> {
             Player player = players.get(0);
 
             if (!(player.getAssociation() != null && player.getAssociation().getId().equals(owner.getId()))
-                    && (player.getInvitation() == null || player.getInvitation().getDate() == null) && (!Boolean.TRUE.equals(player.getShouldNotReinvite()))) {
+                    && !player.isConnected() && (!Boolean.TRUE.equals(player.getShouldNotReinvite()))) {
                 return new Object[] { true, player };
             }
             return new Object[] { false };

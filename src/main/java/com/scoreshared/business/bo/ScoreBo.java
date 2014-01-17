@@ -18,6 +18,7 @@ import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
+import com.scoreshared.webapp.controller.ScoreOutcomeFilterEnum;
 
 @Component
 public class ScoreBo extends BaseBo<Score> {
@@ -172,6 +173,10 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByPk(Score.class, scoreId);
     }
 
+    public <T> T findById(Class<T> clazz, Integer scoreId) {
+        return dao.findByPk(clazz, scoreId);
+    }
+
     public PlayerInstanceComment findCommentByPlayerInstanceId(Integer playerInstanceId) {
         List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdQuery", playerInstanceId);
         return comments.size() > 0 ? comments.get(0) : null;
@@ -296,5 +301,13 @@ public class ScoreBo extends BaseBo<Score> {
 
     public List<Score> findPendingScoreRevisions(Integer ownerId) {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
+    }
+
+    public List<Score> searchScore(String term, ScoreOutcomeFilterEnum all, boolean b) {
+        return dao.searchInLucene(Score.class, term, null, "player.name", "comments.comment");
+    }
+
+    public void initializeLuceneIndex() {
+        dao.initializeLuceneIndex();
     }
 }

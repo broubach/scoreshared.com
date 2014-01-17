@@ -11,6 +11,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 
 @Entity
 @Table(name = "playerinstancecomment")
@@ -22,8 +26,10 @@ public class PlayerInstanceComment extends BaseEntity implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private User owner;
 
+    @Field(analyze = Analyze.YES, analyzer = @Analyzer(definition = "defaultAnalyzer"))
     private String comment;
 
+    @ContainedIn
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private PlayerInstance playerInstance;
 

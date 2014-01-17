@@ -1,6 +1,7 @@
 package com.scoreshared.business.persistence;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,10 +9,13 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 @Entity
 @NamedQueries({
@@ -20,8 +24,21 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Table(name = "playerinstance")
 public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 
+    @IndexedEmbedded
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	private Player player;
+
+    @ContainedIn
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    private Score scoreLeft;
+
+    @ContainedIn
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    private Score scoreRight;
+
+    @IndexedEmbedded
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "playerInstance")
+    private List<PlayerInstanceComment> comments;
 
     private ApprovalResponseEnum approvalResponse;
 
@@ -53,6 +70,22 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
+
+    public Score getScoreLeft() {
+        return scoreLeft;
+    }
+
+    public void setScoreLeft(Score scoreLeft) {
+        this.scoreLeft = scoreLeft;
+    }
+
+    public Score getScoreRight() {
+        return scoreRight;
+    }
+
+    public void setScoreRight(Score scoreRight) {
+        this.scoreRight = scoreRight;
+    }
 
 	public ApprovalResponseEnum getApprovalResponse() {
 		return approvalResponse;

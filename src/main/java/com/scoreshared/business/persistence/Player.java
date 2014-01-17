@@ -1,5 +1,7 @@
 package com.scoreshared.business.persistence;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -14,6 +18,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * Players are considered to be the edges in the graph model implemented at scoreshared, because it connects an owner and an associated user. 
@@ -34,16 +43,24 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
 public class Player extends BaseEntity implements PlayerBehavior {
+
+    @Field(analyze = Analyze.YES, analyzer = @Analyzer(definition = "defaultAnalyzer"))
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User owner;
 
+    @IndexedEmbedded
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User association;
-    
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+
+    @IndexedEmbedded
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Invitation invitation;
+
+    @ContainedIn
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "player", cascade = { CascadeType.ALL })
+    private Set<PlayerInstance> playerInstances;
 
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean shouldNotReinvite;

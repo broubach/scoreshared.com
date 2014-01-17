@@ -9,19 +9,27 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.MappingCharFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.CharFilterDef;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 @Entity
 @Table(name = "score")
@@ -36,13 +44,20 @@ import org.hibernate.annotations.Where;
         @NamedQuery(name = "scoresByOwner", query = "from Score s where s.owner.id = :ownerId")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
+@AnalyzerDef(name = "defaultAnalyzer", 
+    charFilters = @CharFilterDef(factory = MappingCharFilterFactory.class, params = { @Parameter(name = "mapping", value = "mapping-chars.properties") }),
+    tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), 
+    filters = @TokenFilterDef(factory = LowerCaseFilterFactory.class))
+@Indexed
 public class Score extends BaseEntity implements Cloneable {
     private static final String DOUBLES_SEPARATOR = " / ";
 
+    @Field
     private Date date;
     private Date time;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @IndexedEmbedded
     private User owner;
 
     private Integer set1Left;
@@ -56,23 +71,25 @@ public class Score extends BaseEntity implements Cloneable {
     private Integer set5Left;
     private Integer set5Right;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(name = "score_playerinstance_left", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerinstance_id") })
+    @IndexedEmbedded
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreLeft")
     private Set<PlayerInstance> leftPlayers;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(name = "score_playerinstance_right", joinColumns = { @JoinColumn(name = "score_id") }, inverseJoinColumns = { @JoinColumn(name = "playerinstance_id") })
+    @IndexedEmbedded
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreRight")
     private Set<PlayerInstance> rightPlayers;
 
     @Column(columnDefinition = "BIT", length = 1)
+    @Field
     private boolean winnerDefined;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Player coach;
     
     private SportEnum sport;
-    
+
     @Column(columnDefinition = "BIT", length = 1)
+    @Field
     private Boolean confirmed;
 
     @Transient
