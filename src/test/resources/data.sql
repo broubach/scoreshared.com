@@ -20,7 +20,7 @@ INSERT INTO invitation (id, date, hash, hashExpirationDate, email, message, resp
 -- Dumping data for table player
 --
 
-INSERT INTO player (id, name, owner_id, association_id, invitation_id, shouldNotReinvite, deleted) VALUES (139,'Bernardo Roubach',38,38,57,NULL,false),(140,'Pete Sampras',39,38,61,NULL,false),(141,'Andre Agassi',NULL,38,NULL,NULL,false),(142,'Patrick Rafter',NULL,38,NULL,NULL,false),(143,'Pete Sampras',39,39,58,NULL,false),(144,'Bernardo Roubach',38,39,62,NULL,false);
+INSERT INTO player (id, name, association_id, owner_id, invitation_id, shouldNotReinvite, deleted) VALUES (139,'Bernardo Roubach',38,38,57,NULL,false),(140,'Pete Sampras',39,38,61,NULL,false),(141,'Andre Agassi',NULL,38,NULL,NULL,false),(142,'Patrick Rafter',NULL,38,NULL,NULL,false),(143,'Pete Sampras',39,39,58,NULL,false),(144,'Bernardo Roubach',38,39,62,NULL,false);
 
 --
 -- Dumping data for table file
@@ -30,21 +30,3 @@ INSERT INTO file (id, name, size, date, mime, owner_id, deleted) VALUES (4, 'fot
 
 update profile set avatar_id=55, smallAvatar_id=56 where id = 35;
 update profile set avatar_id=57, smallAvatar_id=58 where id = 36;
-
---
--- Dumping data for table score
---
-
-INSERT INTO score (id, date, set1Left, set1Right, set2Left, set2Right, set3Left, set3Right, set4Left, set4Right, set5Left, set5Right, time, winnerDefined, owner_id, coach_id, sport, confirmed, deleted) VALUES (9,'2014-01-10 00:00:00',6,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,38,NULL,0,NULL,false);
-
---
--- Dumping data for table playerinstance
---
-
-INSERT INTO playerinstance (id, player_id, scoreLeft_id, scoreRight_id, approvalResponse, revisionSet1Left, revisionSet1Right, revisionSet2Left, revisionSet2Right, revisionSet3Left, revisionSet3Right, revisionSet4Left, revisionSet4Right, revisionSet5Left, revisionSet5Right, revisionMessage, revisionDate, revisionTime, deleted) VALUES (13,140,9,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false),(14,139,NULL,9,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false);
-
---
--- Dumping data for table playerinstancecomment
---
-
-INSERT INTO playerinstancecomment (id, owner_id, playerInstance_id, comment,deleted) VALUES (7,38,14,'Foi um prazer jogar com um dos maiores de todos os tempos! Passei um pouco de vergonha, mas foi muito legal! =)',false);

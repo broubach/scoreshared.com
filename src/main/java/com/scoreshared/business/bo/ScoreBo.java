@@ -1,6 +1,8 @@
 package com.scoreshared.business.bo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.scoreshared.business.persistence.ApprovalResponseEnum;
 import com.scoreshared.business.persistence.Player;
@@ -22,6 +27,9 @@ import com.scoreshared.webapp.controller.ScoreOutcomeFilterEnum;
 
 @Component
 public class ScoreBo extends BaseBo<Score> {
+    
+    @Inject
+    private GraphBo graphBo;
 
     private static final int PAGE_SIZE = 25;
 
@@ -68,6 +76,8 @@ public class ScoreBo extends BaseBo<Score> {
             }
         }
         if (comment != null) {
+            score.getAssociatedPlayer(owner.getId()).setComments(new HashSet<PlayerInstanceComment>());
+            score.getAssociatedPlayer(owner.getId()).getComments().add(comment);
             comment.setPlayerInstance(score.getAssociatedPlayer(owner.getId()));
             comment.setOwner(owner);
         }
@@ -303,8 +313,55 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
     }
 
-    public List<Score> searchScore(String term, ScoreOutcomeFilterEnum all, boolean b) {
-        return dao.searchInLucene(Score.class, term, null, "player.name", "comments.comment");
+    public List<Score> searchScore(String term, ScoreOutcomeFilterEnum scoreOutcomeFilter, boolean asc, Integer ownerId) {
+        List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, scoreOutcomeFilter);
+
+        List<Score> result = new ArrayList<Score>();
+        if (playerInstanceIds.isEmpty()) {
+            return result;
+        }
+
+        List<Object[]> fieldAndValuePairs = new ArrayList<Object[]>();
+        fieldAndValuePairs.add(new Object[] { "id",
+                StringUtils.collectionToDelimitedString(playerInstanceIds, " ") });
+        if (term != null && !term.isEmpty()) {
+            fieldAndValuePairs
+                    .add(new Object[] {
+                            "comments.comment score.playerInstances.player.name",
+                            term });
+        }
+
+        List<PlayerInstance> playerInstances = dao.searchInLucene(PlayerInstance.class, null, fieldAndValuePairs);
+
+        result.addAll(extractScores(playerInstances));
+        Collections.sort(result, new Comparator<Score>() {
+            @Override
+            public int compare(Score o1, Score o2) {
+                if (o1 != null && o1.getDate() != null && o2 != null && o2.getDate() != null) {
+                    return o1.getDate().compareTo(o2.getDate());
+                } else if (o1 == null && o2 == null) {
+                    return 0;
+                } else if (o1 == null) {
+                    return 1;
+                } else if (o2 == null) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
+        if (!asc) {
+            Collections.reverse(result);
+        }
+
+        return result;
+    }
+
+    private Set<Score> extractScores(List<PlayerInstance> playerInstances) {
+        Set<Score> result = new HashSet<Score>();
+        for (PlayerInstance playerInstance : playerInstances) {
+            result.add(playerInstance.getScore());
+        }
+        return result;
     }
 
     public void initializeLuceneIndex() {

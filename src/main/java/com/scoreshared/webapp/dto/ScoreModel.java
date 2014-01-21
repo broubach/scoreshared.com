@@ -171,14 +171,6 @@ public class ScoreModel {
         this.comment = comment;
     }
 
-    public boolean getPrivate() {
-        return pvt;
-    }
-
-    public void setPrivate(boolean pvt) {
-        this.pvt = pvt;
-    }
-
     public boolean getPostInTwitter() {
         return postInTwitter;
     }

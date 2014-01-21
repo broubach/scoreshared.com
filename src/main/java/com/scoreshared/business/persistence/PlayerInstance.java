@@ -1,7 +1,7 @@
 package com.scoreshared.business.persistence;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,13 +15,18 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerInstanceLeftByPlayerAndScoreQuery", query = "select pp from Score s join s.leftPlayers pp where s.id = :scoreId and pp.player.id = :playerId"),
-        @NamedQuery(name = "playerInstanceRightByPlayerAndScoreQuery", query = "select pp from Score s join s.rightPlayers pp where s.id = :scoreId and pp.player.id = :playerId")})
+        @NamedQuery(name = "playerInstanceRightByPlayerAndScoreQuery", query = "select pp from Score s join s.rightPlayers pp where s.id = :scoreId and pp.player.id = :playerId"),
+        @NamedQuery(name = "connectedPlayerInstancesByAssociationAndOutcomeWinQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.scoreRight is null "),
+        @NamedQuery(name = "connectedPlayerInstancesByAssociationAndOutcomeLossQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.scoreLeft is null"),
+        @NamedQuery(name = "connectedPlayerInstancesByAssociationQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0")})
 @Table(name = "playerinstance")
+@Indexed
 public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 
     @IndexedEmbedded
@@ -29,16 +34,18 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 	private Player player;
 
     @ContainedIn
+    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Score scoreLeft;
 
     @ContainedIn
+    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Score scoreRight;
 
     @IndexedEmbedded
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "playerInstance")
-    private List<PlayerInstanceComment> comments;
+    private Set<PlayerInstanceComment> comments;
 
     private ApprovalResponseEnum approvalResponse;
 
@@ -244,6 +251,14 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
         this.revisionSet5Right = revisionSet5Right;
     }
 
+    public Set<PlayerInstanceComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<PlayerInstanceComment> comments) {
+        this.comments = comments;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -265,5 +280,15 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
     public int hashCode() {
         Integer ownerId = getOwner() != null ? getOwner().getId() : null;
         return new HashCodeBuilder(17, 37).append(getName()).append(ownerId).toHashCode();
+    }
+
+    public Score getScore() {
+        if (scoreLeft != null) {
+            return scoreLeft;
+        }
+        if (scoreRight != null) {
+            return scoreRight;
+        }
+        return null;
     }
 }

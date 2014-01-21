@@ -16,6 +16,7 @@ import com.scoreshared.business.persistence.Invitation;
 import com.scoreshared.business.persistence.InvitationResponseEnum;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.User;
+import com.scoreshared.webapp.controller.ScoreOutcomeFilterEnum;
 
 @Component
 public class GraphBo extends BaseBo<Player> {
@@ -185,5 +186,16 @@ public class GraphBo extends BaseBo<Player> {
 
     public List<Object[]> findPendingInvitations(Integer id) {
         return dao.findByNamedQuery("pendingInvitationsQuery", id);
+    }
+
+    public List<Integer> findConnectedPlayerInstancesByAssociation(Integer associationId, ScoreOutcomeFilterEnum scoreOutcomeFilter) {
+        if (ScoreOutcomeFilterEnum.LOSS.equals(scoreOutcomeFilter)) {
+            return dao.findByNamedQuery("connectedPlayerInstancesByAssociationAndOutcomeLossQuery", associationId);
+
+        } else if (ScoreOutcomeFilterEnum.WIN.equals(scoreOutcomeFilter)) {
+            return dao.findByNamedQuery("connectedPlayerInstancesByAssociationAndOutcomeWinQuery", associationId);
+        }
+
+        return dao.findByNamedQuery("connectedPlayerInstancesByAssociationQuery", associationId);
     }
 }

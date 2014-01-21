@@ -22,7 +22,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * Players are considered to be the edges in the graph model implemented at scoreshared, because it connects an owner and an associated user. 
@@ -50,11 +49,9 @@ public class Player extends BaseEntity implements PlayerBehavior {
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User owner;
 
-    @IndexedEmbedded
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private User association;
 
-    @IndexedEmbedded
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Invitation invitation;
 

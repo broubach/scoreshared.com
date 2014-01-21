@@ -24,8 +24,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.CharFilterDef;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
@@ -48,16 +48,13 @@ import org.hibernate.search.annotations.TokenizerDef;
     charFilters = @CharFilterDef(factory = MappingCharFilterFactory.class, params = { @Parameter(name = "mapping", value = "mapping-chars.properties") }),
     tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), 
     filters = @TokenFilterDef(factory = LowerCaseFilterFactory.class))
-@Indexed
 public class Score extends BaseEntity implements Cloneable {
     private static final String DOUBLES_SEPARATOR = " / ";
 
-    @Field
     private Date date;
     private Date time;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    @IndexedEmbedded
     private User owner;
 
     private Integer set1Left;
@@ -71,16 +68,17 @@ public class Score extends BaseEntity implements Cloneable {
     private Integer set5Left;
     private Integer set5Right;
 
-    @IndexedEmbedded
+    @ContainedIn
+    @IndexedEmbedded(prefix = "playerInstances.")
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreLeft")
     private Set<PlayerInstance> leftPlayers;
 
-    @IndexedEmbedded
+    @ContainedIn
+    @IndexedEmbedded(prefix = "playerInstances.")
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreRight")
     private Set<PlayerInstance> rightPlayers;
 
     @Column(columnDefinition = "BIT", length = 1)
-    @Field
     private boolean winnerDefined;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })

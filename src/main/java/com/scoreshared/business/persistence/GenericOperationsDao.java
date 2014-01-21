@@ -19,9 +19,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.TermContext;
 
 public class GenericOperationsDao {
 
@@ -297,7 +300,7 @@ public class GenericOperationsDao {
         }
     }
 
-    public <T> List<T> searchInLucene(Class<T> clazz, String term, Object[] sortField, String... fields) {
+    public <T> List<T> searchInLucene(Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
         Session session = null;
         Transaction tx = null;
         List<T> result = null;
@@ -307,10 +310,27 @@ public class GenericOperationsDao {
             tx = fullTextSession.beginTransaction();
 
             QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(clazz).get();
-            org.apache.lucene.search.Query query = qb.keyword().onFields(fields)
-                    .matching(term).createQuery();
+            TermContext termContext = qb.keyword();
 
-            org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, clazz);
+            List<org.apache.lucene.search.Query> queries = new ArrayList<org.apache.lucene.search.Query>();
+            for (Object[] fieldAndValuePair : fieldAndValuePairs) {
+                queries.add(termContext.onFields(((String)fieldAndValuePair[0]).split(" ")).matching(fieldAndValuePair[1])
+                        .createQuery());
+            }
+
+            org.apache.lucene.search.Query finalQuery = null;
+            if (queries.size() > 0) {
+                BooleanJunction junction = qb.bool();
+                for (org.apache.lucene.search.Query query : queries) {
+                    junction = junction.must(query);
+                }
+                finalQuery = junction.createQuery();
+
+            } else if (queries.size() == 1) {
+                finalQuery = queries.get(0);
+            }
+
+            FullTextQuery hibQuery = fullTextSession.createFullTextQuery(finalQuery, clazz);
             if (sortField != null) {
                 Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1]));
                 hibQuery.setSort(sort);
