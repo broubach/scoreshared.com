@@ -1,5 +1,5 @@
 package com.scoreshared.webapp.controller;
 
-public enum ScoreOutcomeFilterEnum {
+public enum ScoreOutcomeEnum {
     WIN, LOSS, ALL
 }

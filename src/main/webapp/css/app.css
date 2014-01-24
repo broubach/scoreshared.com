@@ -312,6 +312,10 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus
 	paddin: 7px;
 }
 
+.radio label {
+	display: inline-block;
+}
+
 /* DatePicker */
 .picker__holder {
 	width:90%;

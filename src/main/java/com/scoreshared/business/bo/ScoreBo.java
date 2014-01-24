@@ -23,7 +23,7 @@ import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
-import com.scoreshared.webapp.controller.ScoreOutcomeFilterEnum;
+import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
 @Component
 public class ScoreBo extends BaseBo<Score> {
@@ -154,31 +154,6 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    public List<Score> findScores(Integer pageNumber, Boolean ascending, User owner) {
-        String query = new StringBuilder()
-                .append("select distinct score from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :ownerId) or (rp.approvalResponse = 0 and rp.player.association.id = :ownerId)) order by cast(score.date as date)")
-                .append(ascending ? " asc" : " desc").append(", score.time").append(ascending ? " asc" : " desc").toString();
-        List<Score> scores = dao.findByQueryWithLimits(query, pageNumber != null ? ((pageNumber - 1) * PAGE_SIZE)
-                : null, pageNumber != null ? PAGE_SIZE : null, owner.getId());
-
-        List<Integer> ids = new ArrayList<Integer>();
-        Map<Integer, Score> scoresByIdMap = new HashMap<Integer, Score>();
-        for (Score score : scores) {
-            Integer associatedPlayerId = score.getAssociatedPlayer(owner.getId()).getId();
-            ids.add(associatedPlayerId);
-            scoresByIdMap.put(associatedPlayerId, score);
-        }
-
-        if (!ids.isEmpty()) {
-            List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdsQuery", ids);
-            for (PlayerInstanceComment comment : comments) {
-                scoresByIdMap.get(comment.getPlayerInstance().getId()).setComment(comment);
-            }
-        }
-
-        return scores;
-    }
-
     public Score findById(Integer scoreId) {
         return dao.findByPk(Score.class, scoreId);
     }
@@ -188,7 +163,9 @@ public class ScoreBo extends BaseBo<Score> {
     }
 
     public PlayerInstanceComment findCommentByPlayerInstanceId(Integer playerInstanceId) {
-        List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdQuery", playerInstanceId);
+        List<Integer> playerInstanceIds = new ArrayList<Integer>();
+        playerInstanceIds.add(playerInstanceId);
+        List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdsQuery", playerInstanceIds);
         return comments.size() > 0 ? comments.get(0) : null;
     }
 
@@ -209,6 +186,11 @@ public class ScoreBo extends BaseBo<Score> {
         List<Score> scores = dao.findByNamedQuery("scoresForWinLossQuery", ownerId);
         populateLeftPlayers(scores);
 
+        return calculateWinLoss(scores, ownerId);
+    }
+
+    
+    public Integer[] calculateWinLoss(List<Score> scores, Integer ownerId) {
         Integer win = 0;
         Integer loss = 0;
         for (Score score : scores) {
@@ -241,8 +223,18 @@ public class ScoreBo extends BaseBo<Score> {
     public void acceptScore(Integer userId, Integer scoreId) {
         Score score = findById(scoreId);
         PlayerInstance player = score.getAssociatedPlayer(userId);
-        player.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
-        dao.saveOrUpdate(player);
+
+        if (isOwnerAndPlayerInstanceInDifferentSidesOfScore(score, player)) {
+            for (PlayerInstance playerInstance : score.getAllPlayers()) {
+                playerInstance.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+            }
+            score.setConfirmed(Boolean.TRUE);
+            dao.saveOrUpdate(score);
+
+        } else {
+            player.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+            dao.saveOrUpdate(player);
+        }
     }
 
     public void ignoreScore(Integer userId, Integer scoreId) {
@@ -313,8 +305,8 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
     }
 
-    public List<Score> searchScore(String term, ScoreOutcomeFilterEnum scoreOutcomeFilter, boolean asc, Integer ownerId) {
-        List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, scoreOutcomeFilter);
+    public List<Score> findScores(Integer pageNumber, String term, ScoreOutcomeEnum outcome, boolean asc, Integer ownerId) {
+        List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, outcome);
 
         List<Score> result = new ArrayList<Score>();
         if (playerInstanceIds.isEmpty()) {
@@ -331,9 +323,34 @@ public class ScoreBo extends BaseBo<Score> {
                             term });
         }
 
-        List<PlayerInstance> playerInstances = dao.searchInLucene(PlayerInstance.class, null, fieldAndValuePairs);
+        List<PlayerInstance> playerInstances = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, null, fieldAndValuePairs);
 
         result.addAll(extractScores(playerInstances));
+        sortScores(result, asc);
+
+        fillComments(ownerId, result);
+
+        return result;
+    }
+
+    private void fillComments(Integer ownerId, List<Score> result) {
+        List<Integer> ids = new ArrayList<Integer>();
+        Map<Integer, Score> scoresByIdMap = new HashMap<Integer, Score>();
+        for (Score score : result) {
+            Integer associatedPlayerId = score.getAssociatedPlayer(ownerId).getId();
+            ids.add(associatedPlayerId);
+            scoresByIdMap.put(associatedPlayerId, score);
+        }
+
+        if (!ids.isEmpty()) {
+            List<PlayerInstanceComment> comments = dao.findByNamedQuery("commentByScoreIdsQuery", ids);
+            for (PlayerInstanceComment comment : comments) {
+                scoresByIdMap.get(comment.getPlayerInstance().getId()).setComment(comment);
+            }
+        }
+    }
+
+    private void sortScores(List<Score> result, boolean asc) {
         Collections.sort(result, new Comparator<Score>() {
             @Override
             public int compare(Score o1, Score o2) {
@@ -352,8 +369,6 @@ public class ScoreBo extends BaseBo<Score> {
         if (!asc) {
             Collections.reverse(result);
         }
-
-        return result;
     }
 
     private Set<Score> extractScores(List<PlayerInstance> playerInstances) {
@@ -362,9 +377,5 @@ public class ScoreBo extends BaseBo<Score> {
             result.add(playerInstance.getScore());
         }
         return result;
-    }
-
-    public void initializeLuceneIndex() {
-        dao.initializeLuceneIndex();
     }
 }

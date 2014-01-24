@@ -70,12 +70,12 @@ public class Score extends BaseEntity implements Cloneable {
 
     @ContainedIn
     @IndexedEmbedded(prefix = "playerInstances.")
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreLeft")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "scoreLeft")
     private Set<PlayerInstance> leftPlayers;
 
     @ContainedIn
     @IndexedEmbedded(prefix = "playerInstances.")
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "scoreRight")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "scoreRight")
     private Set<PlayerInstance> rightPlayers;
 
     @Column(columnDefinition = "BIT", length = 1)

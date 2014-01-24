@@ -118,6 +118,22 @@ public class ScoreItemModel {
         return result.toString().trim();
     }
 
+    public String getDate() {
+        StringBuilder result = new StringBuilder();
+        if (score.getDate() != null) {
+            result.append(dateFormat.format(score.getDate())).append(" ");
+        }
+        return result.toString().trim();
+    }
+
+    public String getTime() {
+        StringBuilder result = new StringBuilder();
+        if (score.getTime() != null) {
+            result.append(timeFormat.format(score.getTime()));
+        }
+        return result.toString().trim();
+    }
+
     public String getSampleOpponentName() {
         PlayerInstance sampleOpponent = score.getSampleOpponent(loggedUser);
         if (sampleOpponent != null) {

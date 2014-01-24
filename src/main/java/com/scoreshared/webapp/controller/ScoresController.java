@@ -1,7 +1,6 @@
 package com.scoreshared.webapp.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,24 +35,25 @@ public class ScoresController extends BaseController {
     @Inject
     private LocaleResolver localeResolver;
 
-    @RequestMapping(value = "{pageNumber}/{sortField}/{ascending}", method = RequestMethod.GET)
-	public ModelAndView list(@LoggedUser final User loggedUser, HttpServletRequest request, @PathVariable Integer pageNumber, @PathVariable String sortField, @PathVariable final Boolean ascending) {
-    	ModelAndView result = new ModelAndView("scores");
-    	
-    	SortFieldEnum sortFieldEnum = null;
-    	try {
-    	    sortFieldEnum = SortFieldEnum.valueOf(sortField.toUpperCase());
-    	} catch (IllegalArgumentException e) {
-            return result;
-    	}
+    @RequestMapping(value = "{pageNumber}/{outcome}/{ascending}", method = RequestMethod.GET)
+    public ModelAndView listWithoutTerm(@LoggedUser final User loggedUser, HttpServletRequest request,
+            @PathVariable Integer pageNumber, @PathVariable ScoreOutcomeEnum outcome,
+            @PathVariable final Boolean ascending) {
+        return doList(loggedUser, request, pageNumber, null, outcome, ascending);
+    }
 
-    	List<Score> scores = bo.findScores(pageNumber, ascending, loggedUser);
-    	
-    	if (sortFieldEnum.equals(SortFieldEnum.PLAYER)) {
-    	    Collections.sort(scores, new PlayerComparator(loggedUser, ascending));
-    	} else if (sortFieldEnum.equals(SortFieldEnum.SCORE)) {
-            Collections.sort(scores, new ScoreComparator(loggedUser, ascending));
-    	}
+    @RequestMapping(value = "{pageNumber}/{term}/{outcome}/{ascending}", method = RequestMethod.GET)
+    public ModelAndView list(@LoggedUser final User loggedUser, HttpServletRequest request,
+            @PathVariable Integer pageNumber, @PathVariable String term, @PathVariable ScoreOutcomeEnum outcome,
+            @PathVariable final Boolean ascending) {
+        return doList(loggedUser, request, pageNumber, term, outcome, ascending);
+    }
+
+    private ModelAndView doList(final User loggedUser, HttpServletRequest request, Integer pageNumber, String term,
+            ScoreOutcomeEnum outcome, final Boolean ascending) {
+        ModelAndView result = new ModelAndView("scores/scores");
+
+    	List<Score> scores = bo.findScores(pageNumber, term, outcome, ascending, loggedUser.getId());
 
     	List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
     	for (Score score : scores) {
@@ -61,11 +61,11 @@ public class ScoresController extends BaseController {
     	}
     	result.addObject("scores", items);
 
-    	Integer[] winLoss = bo.calculateWinLoss(loggedUser.getId());
+    	Integer[] winLoss = bo.calculateWinLoss(scores, loggedUser.getId());
     	result.addObject("win", winLoss[0]);
         result.addObject("loss", winLoss[1]);
 		return result;
-	}
+    }
 
     @RequestMapping(value="{scoreIds}", method = RequestMethod.DELETE)
     @ResponseStatus(value=HttpStatus.OK)

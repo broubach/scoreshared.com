@@ -60,14 +60,14 @@ public class PlayerController extends BaseController {
         Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(user.getId(), loggedUser.getId());
         mav.addObject("player", new PlayerModel(user, associatedPlayer, messageResource, localeResolver.resolveLocale(request)));
 
-        List<Score> scores = scoreBo.findScores(null, false, user);
+        List<Score> scores = scoreBo.findScores(0, null, ScoreOutcomeEnum.ALL, false, user.getId());
         List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
         for (Score score : scores) {
             items.add(new ScoreItemModel(score, score.getComment(), user, messageResource, localeResolver.resolveLocale(request)));
         }
         mav.addObject("scores", items);
 
-        Integer[] winLoss = scoreBo.calculateWinLoss(userId);
+        Integer[] winLoss = scoreBo.calculateWinLoss(scores, userId);
         mav.addObject("win", winLoss[0]);
         mav.addObject("loss", winLoss[1]);
 

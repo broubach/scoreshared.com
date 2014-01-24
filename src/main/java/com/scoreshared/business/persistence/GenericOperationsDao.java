@@ -300,7 +300,7 @@ public class GenericOperationsDao {
         }
     }
 
-    public <T> List<T> searchInLucene(Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
+    public <T> List<T> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
         Session session = null;
         Transaction tx = null;
         List<T> result = null;
@@ -334,6 +334,11 @@ public class GenericOperationsDao {
             if (sortField != null) {
                 Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1]));
                 hibQuery.setSort(sort);
+            }
+            
+            if (pageNumber != null && pageSize != null) {
+                hibQuery.setFirstResult(pageNumber * pageSize);
+                hibQuery.setMaxResults(pageSize);
             }
 
             result = hibQuery.list();

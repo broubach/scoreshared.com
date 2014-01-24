@@ -49,7 +49,7 @@
 					</div>
 				</#list>
 				<div class="vermais direita">
-					<a href="<@spring.url relativeUrl="/app/scores/1/date/true"/>"><@spring.message code="label.see_all_scores"/></a>
+					<a href="<@spring.url relativeUrl="/app/scores/0/ALL/true"/>"><@spring.message code="label.see_all_scores"/></a>
 				</div>
 			</div>
 		</div>

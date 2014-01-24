@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -18,9 +17,7 @@ import org.hibernate.search.annotations.Field;
 
 @Entity
 @Table(name = "playerinstancecomment")
-@NamedQueries({
-        @NamedQuery(name = "commentByScoreIdQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id = :playerInstanceId"),
-        @NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)") })
+@NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)")
 public class PlayerInstanceComment extends BaseEntity implements Cloneable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })

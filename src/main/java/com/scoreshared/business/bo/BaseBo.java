@@ -56,4 +56,8 @@ public class BaseBo<T> {
     protected String getSubjectByTemplateName(String templateName, Locale locale) {
         return messageResource.getMessage(templateName + "_subject", null, locale);
     }
+
+    public void initializeLuceneIndex() {
+        dao.initializeLuceneIndex();
+    }
 }

@@ -1,6 +1,6 @@
 <div class="large-8 columns">
 	<ul class="inline-list links logado right">
-		<li><a href="/scoreshared/painel/home" class="menu-score"><@spring.message code="label.my_scores"/></a></li>
+		<li><a href="<@spring.url relativeUrl="/app/scores/0/ALL/true"/>" class="menu-score"><@spring.message code="label.my_scores"/></a></li>
 		<li><a href="<@spring.url relativeUrl="/app/notifications/contactRequests"/>" class="menu-mensagens<#if (_total_pending_notifications > 0)> new-notification</#if>"><@spring.message code="label.notifications"/></a></li>
 		<li><a href="#" class="menu-profile dropdown" data-dropdown="menu-profile"><@spring.message code="label.profile"/></a></li>
 	</ul>

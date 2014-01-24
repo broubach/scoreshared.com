@@ -112,47 +112,53 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 
     @Override
     public Boolean getShouldNotReinvite() {
-        return player.getShouldNotReinvite();
+        return player != null ? player.getShouldNotReinvite() : null;
     }
 
     @Override
 	public void setShouldNotReinvite(Boolean shouldNotReinvite) {
-		player.setShouldNotReinvite(shouldNotReinvite);
+		if (player != null) {
+	        player.setShouldNotReinvite(shouldNotReinvite);
+		}
 	}
 
     @Override
 	public User getAssociation() {
-		return player.getAssociation();
+        return player != null ? player.getAssociation() : null;
 	}
 
     @Override
     public void setAssociation(User association) {
-        player.setAssociation(association);
+        if (player != null) {
+            player.setAssociation(association);
+        }
     }
 
 	@Override
 	public boolean isConnected() {
-		return player.isConnected();
+		return player != null ? player.isConnected() : false;
 	}
 
     @Override
 	public String getName() {
-		return player.getName();
+		return player != null ? player.getName() : null;
 	}
 
     @Override
 	public String getAvatar() {
-		return player.getAvatar();
+		return player != null ? player.getAvatar() : null;
 	}
 
     @Override
     public User getOwner() {
-		return player.getOwner();
+		return player != null ? player.getOwner() : null;
 	}
 
     @Override
     public void setOwner(User owner) {
-        player.setOwner(owner);
+        if (player != null) {
+            player.setOwner(owner);
+        }
     }
 
     public Date getRevisionDate() {

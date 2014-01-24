@@ -20,5 +20,6 @@ public class CustomContextListener implements ServletContextAware {
         if (servletContext.getAttribute(UserBo.SMALL_DEFAULT_AVATAR_KEY) == null) {
             servletContext.setAttribute(UserBo.SMALL_DEFAULT_AVATAR_KEY, userBo.getSmallDefaultAvatar());
         }
+        userBo.initializeLuceneIndex();
     }
 }
