@@ -47,7 +47,7 @@ public class ProfilePersonalInformationController {
     }
 
     @RequestMapping(value = "/profile/personal-information", method = RequestMethod.POST)
-    public String validateAndSavePersonalInformation(@LoggedUser User loggedUser, ModelMap modelMap,
+    public String validateAndSavePersonalInformation(@LoggedUser User loggedUser,
             @ModelAttribute @Valid PersonalInformationForm form, BindingResult result) {
         if (!result.hasErrors() ) {
             Profile updatedProfile = loggedUser.getProfile().copyDirtyPropertiesFrom(form.getProfile());

@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
@@ -35,9 +37,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerBehavior;
+import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -48,6 +50,7 @@ import com.scoreshared.webapp.validation.ScoreModelValidator;
 
 @Controller
 @RequestMapping("/score")
+@SessionAttributes({ "postSaveUrl" })
 public class ScoreController extends BaseController {
 
     @Inject
@@ -92,6 +95,7 @@ public class ScoreController extends BaseController {
                     score.setSportId(loggedUser.getProfile().getSport().ordinal());
                 }
             }
+            score.setOwnerId(loggedUser.getId());
 
             mav.addObject("score", score);
             mav.addObject("search", new SearchModel());
@@ -119,10 +123,13 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(value = "{scoreId}", method = RequestMethod.GET)
-    public ModelAndView edit(@LoggedUser User loggedUser, @PathVariable Integer scoreId, HttpSession session) {
+    public ModelAndView edit(@LoggedUser User loggedUser, @PathVariable Integer scoreId, HttpServletRequest request, HttpSession session) {
         try {
             ModelAndView mav = new ModelAndView("score");
-            
+            if (request.getParameter("postSaveUrl") != null) {
+                mav.addObject("postSaveUrl", request.getParameter("postSaveUrl"));
+            }
+
             Score score = scoreBo.findById(scoreId);
             if (score == null) {
                 return create(loggedUser, session);
@@ -151,7 +158,8 @@ public class ScoreController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView save(@LoggedUser User loggedUser, @ModelAttribute("score") @Valid ScoreModel scoreModel, BindingResult result) {
+    public ModelAndView save(@LoggedUser User loggedUser, @ModelAttribute("score") @Valid ScoreModel scoreModel, BindingResult result, HttpSession session,
+            SessionStatus status) {
         try {
             ModelAndView mav = new ModelAndView();
             if (result.hasErrors()) {
@@ -166,13 +174,18 @@ public class ScoreController extends BaseController {
                 return mav;
             }
 
-            scoreModel.setOwner(loggedUser);
             Score score = conversionService.convert(scoreModel, Score.class);
             PlayerInstanceComment comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
-            
-            scoreBo.save(loggedUser, score, comment);
 
-            mav.setViewName("redirect:/app/home");
+            scoreBo.save(score.getOwner(), loggedUser, score, comment);
+
+            if (session.getAttribute("postSaveUrl") != null) {
+                mav.setViewName("redirect:" + session.getAttribute("postSaveUrl"));
+                status.setComplete();
+
+            } else {
+                mav.setViewName("redirect:/app/home");
+            }
 
             return mav;
         } catch (JsonGenerationException e) {

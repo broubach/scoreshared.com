@@ -24,7 +24,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
         @NamedQuery(name = "playerInstanceRightByPlayerAndScoreQuery", query = "select pp from Score s join s.rightPlayers pp where s.id = :scoreId and pp.player.id = :playerId"),
         @NamedQuery(name = "connectedPlayerInstancesByAssociationAndOutcomeWinQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.scoreRight is null "),
         @NamedQuery(name = "connectedPlayerInstancesByAssociationAndOutcomeLossQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.scoreLeft is null"),
-        @NamedQuery(name = "connectedPlayerInstancesByAssociationQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0")})
+        @NamedQuery(name = "connectedPlayerInstancesByAssociationQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.approvalResponse = 0")})
 @Table(name = "playerinstance")
 @Indexed
 public class PlayerInstance extends BaseEntity implements PlayerBehavior {

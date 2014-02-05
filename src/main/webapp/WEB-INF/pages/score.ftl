@@ -57,6 +57,7 @@
 						<div class="small-12 large-7 columns">
 							<@spring.formHiddenInput "score.commentId", ""/>
 							<@spring.formHiddenInput "score.id", ""/>
+							<@spring.formHiddenInput "score.ownerId", ""/>
 							<@spring.formHiddenInput "score.newPlayersNotToBeRemembered", ""/>
 							<div class="resultados">
 								<div class="row" id="playersPane">

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Notifications">
+	<#assign head_title="ScoreShared: Scores">
 	<#assign head_additional_js=["/js/vendor/Chart.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -16,7 +16,7 @@
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
 			<a href="#"><@spring.message code="label.my_scores"/></a>
-		</nav>	
+		</nav>
 
 		<div class="box-content">
 
@@ -29,10 +29,19 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="columns small-3"><input type="text" id="search-text" name="search-text" placeholder="<@spring.message code="label.player_or_comment"/>"/></div>
+						<div class="columns small-3"><input type="text" id="search-term" name="search-term" placeholder="<@spring.message code="label.player_or_comment"/>" value="${searchTerm!""}"/></div>
 						<div class="columns small-1"><button id="search-button" class="button button-small no-margin-top"><@spring.message code="label.search"/></button></div>
-						<div class="columns small-4 radio direita"><label><input type="radio" name="scoreOutcomeFilter" value="ALL"><@spring.message code="label.all"/></label>&nbsp;<label><input type="radio" name="scoreOutcomeFilter" value="WIN"><@spring.message code="label.win"/></label>&nbsp;<label><input type="radio" name="scoreOutcomeFilter" value="LOSS"><@spring.message code="label.loss"/></label></div>
-						<div class="columns small-4 direita"><a href="#"><@spring.message code="label.descendent_by_date"/></a></div>
+						<div class="columns small-4 radio direita">
+							<label><input id="radioAll" type="radio" name="scoreOutcomeFilter" value="ALL" <#if outcome = 'ALL'>checked='checked'</#if>><@spring.message code="label.all"/></label>&nbsp;
+							<label><input id="radioWin" type="radio" name="scoreOutcomeFilter" value="WIN" <#if outcome = 'WIN'>checked='checked'</#if>><@spring.message code="label.win"/></label>&nbsp;
+							<label><input id="radioLoss" type="radio" name="scoreOutcomeFilter" value="LOSS" <#if outcome = 'LOSS'>checked='checked'</#if>><@spring.message code="label.loss"/></label></div>
+						<div class="columns small-4 direita">
+							<#if (ascending)>
+								<a id="descendingByDate" href="#"><@spring.message code="label.descending_by_date"/></a>
+							<#else>
+								<a id="ascendingByDate" href="#"><@spring.message code="label.ascending_by_date"/></a>
+							</#if>
+						</div>
 					</div>
 				</div>
 				<div class="columns small-2">
@@ -45,6 +54,7 @@
 
 			<div class="row">
 				<div class="columns small-12">
+					<#if (scores?size <= 0)><p><@spring.message code="label.no_scores_matching_your_criteria_were_found"/></p></#if>
 					<ul class="lista-resultados lista-aprovacoes">
 						<#list scores as item>
 							<li class="item-resultado <#if item.loggedUserWon>resultado-venceu<#else>resultado-perdeu</#if>">
@@ -54,9 +64,9 @@
 										<td><#if item.confirmed!false><img src="<@spring.url relativeUrl="/img/icons/check.png"/>" title="<@spring.message code="label.confirmed_score"/>"></#if></td>
 										<td>${item.date}</td>
 										<td>${item.time}</td>
-										<td>${item.score.leftPlayerNames}</td>
-										<td>6x4 against</td>
-										<td>${item.score.rightPlayerNames}</td>
+										<td>${item.yourTeamNames}</td>
+										<td>${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.against"/></td>
+										<td>${item.opponentsNames}</td>
 										<td>
 											<#if item.comment??>
 												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" title="${item.comment.comment}"/>
@@ -71,8 +81,14 @@
 										<td width="35%">
 											<span class="actions hide">
 												<a href="edit,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.edit"/></a>
-												<a href="remove,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.remove"/></a>
-												<#if associatedPlayer.owner.id == item.score.owner.id><a href="forward,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.forward"/></a></#if>
+												<#if associatedPlayer.owner.id == item.score.owner.id>
+													<#if (item.score.connectedPlayers?size > 1)>
+														<a href="forward,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.forward"/></a>
+													</#if>
+													<a href="remove,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.remove"/></a>
+												<#else>
+													<a href="hide-permanently,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.hide_permanently"/></a>
+												</#if>
 											</span>
 										</td>
 									</tr>
@@ -87,6 +103,24 @@
 		</div>
 	</div>
 
+	<#include "/helper-snippets/dialog-general-confirm-snippet.ftl">
+
+	<div id="dialog-forward" class="modal mfp-hide" style="max-width: 500px">
+		<div class="row content">
+			<div class="columns large-12">
+				<h2><@spring.message code="label.confirmation"/></h2>
+				<div id="general-info-panel" class="label radius" style="display: none"></div>
+				<p id="general-confirmation-question"></p>
+				<div class="row">
+					<div class="columns small-12 direita">
+						<button class="button button-primary mfp-prevent-close" id="dialog-general-confirm-yes"><@spring.message code="label.yes"/></button>
+						<a class="button mfp-prevent-close" id="dialog-general-confirm-no"><@spring.message code="label.no"/></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="row content">
 		<br/>
 	</div>
@@ -98,30 +132,84 @@
 <script type="text/javascript">
 var ClickContext = {
 		tableLine: {},
-		currentId: {},
-		currentUrl: {}
+		id: '',
+		kind: ''
 };
 $(function() {
-	
-	// TODO: add behavior for search, radios, and link
+	$('#search-button,#radioAll,#radioWin,#radioLoss,#descendingByDate,#ascendingByDate').click(function(e){
+		var searchTerm = $('#search-term').val();
+		var outcome = $('input[name=scoreOutcomeFilter]:checked').val();
+		var ascending = ${(!ascending)?c};
+		if (searchTerm) {
+			document.location.href = '<@spring.url relativeUrl="/app/scores/0/"/>' + searchTerm + "/" + outcome + "/" + ascending;
+		} else {
+			document.location.href = '<@spring.url relativeUrl="/app/scores/0/"/>' + outcome + "/" + ascending;
+		}
+	});
+
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	});
 
+	DialogGeneralConfirm.init();
+
+	$('#dialog-general-confirm-yes').click(function(e) {
+		if (ClickContext.kind == 'remove') {
+			$.ajax({
+				url: '<@spring.url relativeUrl="/app/scores/remove/"/>' + ClickContext.id,
+				type: 'DELETE',
+				dataType: 'json',
+				cache: false,
+				success: function(data) { $.magnificPopup.close(); }
+			});
+
+		} else if (ClickContext.kind == 'hide-permanently') {
+			$.ajax({
+				url: '<@spring.url relativeUrl="/app/scores/hidePermanently/"/>',
+				data: {'scoreId': ClickContext.id},
+				type: 'POST',
+				dataType: 'json',
+				cache: false,
+				success: function(data) { $.magnificPopup.close(); }
+			});
+		}
+	});
+
 	$("td a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
+		ClickContext.kind = $(this).attr('href').split(',')[0];
+		ClickContext.id = $(this).attr('href').split(',')[1];
 
-		var kind = $(this).attr('href').split(',')[0];
-		var id = $(this).attr('href').split(',')[1];
+		if (ClickContext.kind == 'edit') {
+			document.location.href = '<@spring.url relativeUrl="/app/score/"/>' + 
+										ClickContext.id + '?postSaveUrl=' + 
+										decodeURIComponent(document.location.href).substring(decodeURIComponent(document.location.href).lastIndexOf('/app/'));
 
-		// TODO: if edit, forward to score edit uc
-		// TODO: if remove, ask for confirmation
-		// TODO: if forward, show forward interface
+		} else if (ClickContext.kind == 'forward') {
+			// TODO: open forward dialog
+
+		} else if (ClickContext.kind == 'remove') {
+			$('#general-confirmation-question').html("<@spring.message code="label.confirm_score_removal"/>");
+			$.magnificPopup.open({
+				items : {
+					src : '#dialog-general-confirm',
+					type : 'inline'
+				}
+			});
+
+		} else if (ClickContext.kind == 'hide-permanently') {
+			$('#general-confirmation-question').html("<@spring.message code="label.confirm_to_hide_score_permanently"/>");
+			$.magnificPopup.open({
+				items : {
+					src : '#dialog-general-confirm',
+					type : 'inline'
+				}
+			});
+		}
 	});
-
 
 	var ctx = $("#estatistica-jogos").get(0).getContext("2d");
 	var data = [

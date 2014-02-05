@@ -33,9 +33,9 @@ public class ScoreBo extends BaseBo<Score> {
 
     private static final int PAGE_SIZE = 25;
 
-    public void save(User owner, Score score, PlayerInstanceComment comment) {
-        consist(owner, score, comment);
-        
+    public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
+        consist(owner, loggedUser, score, comment);
+
         updateProfileWithNewestPreferences(score);
 
         saveScoreAndComment(score, comment);
@@ -44,20 +44,25 @@ public class ScoreBo extends BaseBo<Score> {
     }
 
     private void updateProfileWithNewestPreferences(Score score) {
-        score.getOwner().getProfile().setSport(score.getSport());
-        if (score.getCoach() != null) {
-            score.getOwner().getProfile().setCoach(score.getCoach());
+        if (score.getOwner().getProfile() != null) {
+            score.getOwner().getProfile().setSport(score.getSport());
+            if (score.getCoach() != null) {
+                score.getOwner().getProfile().setCoach(score.getCoach());
+            }
         }
     }
 
-    private void consist(User owner, Score score, PlayerInstanceComment comment) {
+    private void consist(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
+        if (owner.getId().equals(loggedUser.getId())) {
+            owner = loggedUser;
+        }
         score.setOwner(owner);
         score.setWinnerDefined(score.hasWinner());
 
         consist(owner, score, score.getLeftPlayers());
         consist(owner, score, score.getRightPlayers());
 
-        score.getAssociatedPlayer(owner.getId()).setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
+        score.getAssociatedPlayer(loggedUser.getId()).setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
 
         if (score.getCoach() != null) {
             Player coach = null;
@@ -76,10 +81,10 @@ public class ScoreBo extends BaseBo<Score> {
             }
         }
         if (comment != null) {
-            score.getAssociatedPlayer(owner.getId()).setComments(new HashSet<PlayerInstanceComment>());
-            score.getAssociatedPlayer(owner.getId()).getComments().add(comment);
-            comment.setPlayerInstance(score.getAssociatedPlayer(owner.getId()));
-            comment.setOwner(owner);
+            score.getAssociatedPlayer(loggedUser.getId()).setComments(new HashSet<PlayerInstanceComment>());
+            score.getAssociatedPlayer(loggedUser.getId()).getComments().add(comment);
+            comment.setPlayerInstance(score.getAssociatedPlayer(loggedUser.getId()));
+            comment.setOwner(loggedUser);
         }
     }
 
@@ -100,24 +105,22 @@ public class ScoreBo extends BaseBo<Score> {
             if (existentPlayerInstance != null) {
                 it.remove();
                 replacedPlayers.add(existentPlayerInstance);
+            } else {
+                playerInstance.setOwner(owner);
             }
         }
         players.addAll(replacedPlayers);
     }
 
     private PlayerInstance replaceExistentPlayerOrPlayerInstanceAndKeepProperties(User owner, Score score, PlayerInstance playerInstance) {
-        PlayerInstance result = null;
-        if (score.getId() != null) {
-            result = findExistentPlayerInstanceAndKeepProperties(owner, score, playerInstance);
-        }
-
-        if (result == null) {
-            Player player = findExistentPlayerAndKeepProperties(owner, playerInstance);
-            if (player != null) {
-                playerInstance.setPlayer(player);
+        Player player = findExistentPlayerAndKeepProperties(owner, playerInstance);
+        if (player != null) {
+            playerInstance.setPlayer(player);
+            if (score.getId() != null) {
+                return findExistentPlayerInstanceAndKeepProperties(owner, score, playerInstance);
             }
         }
-        return result;
+        return null;
     }
 
     private PlayerInstance findExistentPlayerInstanceAndKeepProperties(User owner, Score score,
@@ -152,6 +155,10 @@ public class ScoreBo extends BaseBo<Score> {
         if (newPlayer.getAssociation() != null && newPlayer.getAssociation().getId().equals(owner.getId())) {
             newPlayer.setAssociation(owner);
         }
+        if (newPlayer instanceof PlayerInstance && oldPlayer instanceof PlayerInstance) {
+            ((PlayerInstance) newPlayer).setScoreLeft(((PlayerInstance) oldPlayer).getScoreLeft());
+            ((PlayerInstance) newPlayer).setScoreRight(((PlayerInstance) oldPlayer).getScoreRight());
+        }
     }
 
     public Score findById(Integer scoreId) {
@@ -169,16 +176,19 @@ public class ScoreBo extends BaseBo<Score> {
         return comments.size() > 0 ? comments.get(0) : null;
     }
 
-    public void deleteScores(Integer[] ids, Integer userId) {
-        List<Score> scores = dao.findByNamedQuery("scoresByIdsQuery", ids);
-        for (Score score : scores) {
-            if (score.getOwner().getId().equals(userId)) {
-                dao.remove(score);
-            } else {
-                PlayerInstance player = score.getAssociatedPlayer(userId);
-                player.setApprovalResponse(ApprovalResponseEnum.HIDDEN);
-                dao.saveOrUpdate(player);
-            }
+    public void removeScore(Integer scoreId, Integer userId) {
+        Score score = findById(scoreId);
+        if (score.getOwner().getId().equals(userId)) {
+            dao.remove(score);
+        }
+    }
+    
+    public void hideScore(Integer scoreId, Integer userId) {
+        Score score = findById(scoreId);
+        if (!score.getOwner().getId().equals(userId)) {
+            PlayerInstance player = score.getAssociatedPlayer(userId);
+            player.setApprovalResponse(ApprovalResponseEnum.HIDDEN);
+            dao.saveOrUpdate(player);
         }
     }
 

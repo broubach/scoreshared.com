@@ -20,7 +20,7 @@ import org.hibernate.search.annotations.Field;
 @NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)")
 public class PlayerInstanceComment extends BaseEntity implements Cloneable {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     private User owner;
 
     @Field(analyze = Analyze.YES, analyzer = @Analyzer(definition = "defaultAnalyzer"))

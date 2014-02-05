@@ -4,11 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.scoreshared.business.persistence.User;
-
 public class ScoreModel {
 
     private Integer id;
+    private Integer ownerId;
     private String date;
     private String time;
     private List<String> playersLeft;
@@ -25,22 +24,26 @@ public class ScoreModel {
     private Integer set5Right;
     private Integer commentId;
     private String comment;
-    private boolean pvt;
     private boolean postInTwitter;
     private boolean postInFacebook;
     private String coach;
     private Integer sportId;
     private List<String> newPlayersNotToBeRemembered;
 
-    // field used exclusively to allow the copy of owner to the resulting players ScoreConverter
-    private User owner;
-    
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getDate() {
@@ -202,14 +205,6 @@ public class ScoreModel {
 	public void setSportId(Integer sportId) {
 		this.sportId = sportId;
 	}
-
-	public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 
     public Map<String, String> getSets() {
         Map<String, String> result = new HashMap<String, String>();

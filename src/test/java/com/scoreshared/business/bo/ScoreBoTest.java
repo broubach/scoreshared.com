@@ -43,7 +43,6 @@ public class ScoreBoTest {
         scoreModel.setSet1Left(6);
         scoreModel.setSet1Right(0);
         scoreModel.setDate("17/01/2014");
-        scoreModel.setOwner(loggedUser1);
 
         List<String> playersLeft = new ArrayList<String>();
         playersLeft.add("Pete Sampras");
@@ -56,6 +55,7 @@ public class ScoreBoTest {
         scoreModel.setPlayersRight(playersRight);
         scoreModel.setNewPlayersNotToBeRemembered(new ArrayList<String>());
         scoreModel.setSportId(0);
+        scoreModel.setOwnerId(38);
 
         scoreModel.setComment("Uau! Ganhamos do Andre Agassi! Muito bom!! 6x0!");
 
@@ -63,7 +63,7 @@ public class ScoreBoTest {
 
         PlayerInstanceComment comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(loggedUser1, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser1, score, comment);
 
         scoreModel = new ScoreModel();
         scoreModel.setSet1Left(6);
@@ -75,7 +75,6 @@ public class ScoreBoTest {
         scoreModel.setSet4Left(6);
         scoreModel.setSet4Right(4);
         scoreModel.setDate("26/08/2002");
-        scoreModel.setOwner(loggedUser2);
 
         playersLeft = new ArrayList<String>();
         playersLeft.add("Pete Sampras");
@@ -86,14 +85,15 @@ public class ScoreBoTest {
         scoreModel.setPlayersRight(playersRight);
         scoreModel.setNewPlayersNotToBeRemembered(new ArrayList<String>());
         scoreModel.setSportId(0);
-        
+        scoreModel.setOwnerId(39);
+
         scoreModel.setComment("Que final jogada!! meoo deoos!");
 
         score = conversionService.convert(scoreModel, Score.class);
 
         comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(loggedUser2, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
     }
 
     @Test

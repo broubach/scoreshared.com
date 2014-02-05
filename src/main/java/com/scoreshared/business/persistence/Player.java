@@ -46,10 +46,10 @@ public class Player extends BaseEntity implements PlayerBehavior {
     @Field(analyze = Analyze.YES, analyzer = @Analyzer(definition = "defaultAnalyzer"))
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
     private User owner;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
     private User association;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })

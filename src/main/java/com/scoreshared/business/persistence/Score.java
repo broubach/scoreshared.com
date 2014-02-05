@@ -40,7 +40,6 @@ import org.hibernate.search.annotations.TokenizerDef;
         @NamedQuery(name = "countPendingScoreApprovalsQuery", query = "select count(distinct s) from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0))"),
         @NamedQuery(name = "pendingScoreRevisionsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 or pr.approvalResponse = 3) and s.owner.id = :ownerId group by s.id"),
         @NamedQuery(name = "countPendingScoreRevisionsQuery", query = "select count(distinct s) from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 or pr.approvalResponse = 3) and s.owner.id = :ownerId"),
-        @NamedQuery(name = "scoresByIdsQuery", query = "from Score s where s.id in(:ids)"),
         @NamedQuery(name = "scoresByOwner", query = "from Score s where s.owner.id = :ownerId")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -366,11 +365,30 @@ public class Score extends BaseEntity implements Cloneable {
         return null;
     }
 
+    public Set<PlayerInstance> getConnectedPlayers() {
+        Set<PlayerInstance> result = new HashSet<PlayerInstance>();
+        for (PlayerInstance playerInstance : getAllPlayers()) {
+            if (playerInstance.isConnected()) {
+                result.add(playerInstance);
+            }
+        }
+        return result;
+    }
+
     public String getOpponentPlayerNames(Integer loggedUserId) {
         if (hasWinner(loggedUserId)) {
             return getRightPlayerNames();
         } else if (hasWinner()) {
             return getLeftPlayerNames();
+        }
+        return "";
+    }
+
+    public String getYourTeamPlayerNames(Integer loggedUserId) {
+        if (hasWinner(loggedUserId)) {
+            return getLeftPlayerNames();
+        } else if (hasWinner()) {
+            return getRightPlayerNames();
         }
         return "";
     }

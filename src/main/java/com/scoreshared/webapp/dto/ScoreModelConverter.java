@@ -20,6 +20,7 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             ScoreModel dest = new ScoreModel();
             
             dest.setId(src.getId());
+            dest.setOwnerId(src.getOwner().getId());
             dest.setDate(getDate(src.getDate()));
             if (src.getTime() != null) {
                 dest.setTime(getTime(src.getTime()));

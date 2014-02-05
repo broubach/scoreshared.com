@@ -16,6 +16,7 @@ import com.scoreshared.business.persistence.Player;
 import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.SportEnum;
+import com.scoreshared.business.persistence.User;
 
 public class ScoreConverter extends BaseConverter implements Converter<ScoreModel, Score> {
 
@@ -24,6 +25,9 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
         try {
             Score dest = new Score();
             dest.setId(src.getId());
+            User owner = new User();
+            owner.setId(src.getOwnerId());
+            dest.setOwner(owner);
             dest.setDate(getDate(src.getDate()));
             if (!StringUtils.isEmpty(src.getTime())) {
                 dest.setTime(getTime(src.getTime()));
@@ -43,7 +47,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             PlayerInstance playerInstance = null;
             for (String playerLeft : src.getPlayersLeft()) {
                 if (!StringUtils.isEmpty(playerLeft)) {
-                    playerInstance = new PlayerInstance(playerLeft.trim(), src.getOwner());
+                    playerInstance = new PlayerInstance(playerLeft.trim(), dest.getOwner());
                     leftPlayers.add(playerInstance);
                     playerInstance.setScoreLeft(dest);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerLeft.trim())) {
@@ -56,7 +60,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             Set<PlayerInstance> rightPlayers = new HashSet<PlayerInstance>();
             for (String playerRight : src.getPlayersRight()) {
                 if (!StringUtils.isEmpty(playerRight)) {
-                    playerInstance = new PlayerInstance(playerRight.trim(), src.getOwner());
+                    playerInstance = new PlayerInstance(playerRight.trim(), dest.getOwner());
                     rightPlayers.add(playerInstance);
                     playerInstance.setScoreRight(dest);
                     if (src.getNewPlayersNotToBeRemembered().contains(playerRight.trim())) {
@@ -67,7 +71,7 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             dest.setRightPlayers(rightPlayers);
 
             if (!StringUtils.isEmpty(src.getCoach())) {
-                Player coach = new Player(src.getCoach().trim(), src.getOwner());
+                Player coach = new Player(src.getCoach().trim(), dest.getOwner());
                 dest.setCoach(coach);
                 if (src.getNewPlayersNotToBeRemembered().contains(src.getCoach().trim())) {
                     coach.setShouldNotReinvite(Boolean.TRUE);

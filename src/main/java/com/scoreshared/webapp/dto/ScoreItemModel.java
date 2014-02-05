@@ -162,6 +162,10 @@ public class ScoreItemModel {
         return score.getOpponentPlayerNames(loggedUser.getId());
     }
 
+    public String getYourTeamNames() {
+        return score.getYourTeamPlayerNames(loggedUser.getId());
+    }
+
     public String getDetailTextHighlightingWinnerWithLoggedUserAtRight() {
         if (score.hasWinner(loggedUser.getId())) {
             return score.getFinalScore(false, "<span class='winner'>", "</span>");

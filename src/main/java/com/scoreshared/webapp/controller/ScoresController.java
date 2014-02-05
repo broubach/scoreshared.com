@@ -64,17 +64,21 @@ public class ScoresController extends BaseController {
     	Integer[] winLoss = bo.calculateWinLoss(scores, loggedUser.getId());
     	result.addObject("win", winLoss[0]);
         result.addObject("loss", winLoss[1]);
+        result.addObject("outcome", outcome.toString());
+        result.addObject("searchTerm", term);
+        result.addObject("ascending", ascending);
 		return result;
     }
 
-    @RequestMapping(value="{scoreIds}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/remove/{scoreId}", method = RequestMethod.DELETE)
     @ResponseStatus(value=HttpStatus.OK)
-    public void delete(@LoggedUser User loggedUser, @PathVariable String scoreIds) {
-        String[] ids = scoreIds.split(",");
-        Integer[] integerIds = new Integer[ids.length];
-        for (int i = 0; i<ids.length;i++) {
-            integerIds[i] = Integer.valueOf(ids[i]);
-        }
-        bo.deleteScores(integerIds, loggedUser.getId());
+    public void remove(@LoggedUser User loggedUser, @PathVariable Integer scoreId) {
+        bo.removeScore(scoreId, loggedUser.getId());
+    }
+
+    @RequestMapping(value="/hidePermanently", method = RequestMethod.POST)
+    @ResponseStatus(value=HttpStatus.OK)
+    public void hidePermanently(@LoggedUser User loggedUser, @PathVariable("scoreId") Integer scoreId) {
+        bo.hideScore(scoreId, loggedUser.getId());
     }
 }

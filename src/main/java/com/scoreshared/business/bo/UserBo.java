@@ -249,12 +249,13 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return dao.findByPk(User.class, userId);
     }
 
-    public void saveNewUser(User loggedUser, String invitationHash) {
-        Player player = new Player(loggedUser.getFullName(), loggedUser);
-        player.setAssociation(loggedUser);
+    public void saveNewUser(User newUser, String invitationHash) {
+        Player player = new Player(newUser.getFullName(), newUser);
+        player.setAssociation(newUser);
         player.setInvitation(new Invitation(InvitationResponseEnum.ACCEPTED));
+        dao.saveOrUpdate(newUser);
         if (!StringUtils.isEmpty(invitationHash)) {
-            graphBo.acceptUnregisteredUserInvitation(loggedUser, invitationHash);
+            graphBo.acceptUnregisteredUserInvitation(newUser, invitationHash);
         }
 
         dao.saveOrUpdate(player);
