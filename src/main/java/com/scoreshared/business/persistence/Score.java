@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +19,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.MappingCharFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.AnalyzerDef;
@@ -53,7 +54,7 @@ public class Score extends BaseEntity implements Cloneable {
     private Date date;
     private Date time;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
     private Integer set1Left;
@@ -69,20 +70,23 @@ public class Score extends BaseEntity implements Cloneable {
 
     @ContainedIn
     @IndexedEmbedded(prefix = "playerInstances.")
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "scoreLeft")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "scoreLeft")
+    @Cascade({ CascadeType.ALL })
     private Set<PlayerInstance> leftPlayers;
 
     @ContainedIn
     @IndexedEmbedded(prefix = "playerInstances.")
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "scoreRight")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "scoreRight")
+    @Cascade({ CascadeType.ALL })
     private Set<PlayerInstance> rightPlayers;
 
     @Column(columnDefinition = "BIT", length = 1)
     private boolean winnerDefined;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({ CascadeType.SAVE_UPDATE })
     private Player coach;
-    
+
     private SportEnum sport;
 
     @Column(columnDefinition = "BIT", length = 1)

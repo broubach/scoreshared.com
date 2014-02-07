@@ -1,9 +1,9 @@
 package com.scoreshared.business.persistence;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -27,24 +29,25 @@ import org.hibernate.search.annotations.IndexedEmbedded;
         @NamedQuery(name = "connectedPlayerInstancesByAssociationQuery", query = "select pi.id from PlayerInstance pi join pi.player p join p.invitation i where p.association.id = :associationId and i.response = 0 and pi.approvalResponse = 0")})
 @Table(name = "playerinstance")
 @Indexed
-public class PlayerInstance extends BaseEntity implements PlayerBehavior {
+public class PlayerInstance extends BaseEntity {
 
     @IndexedEmbedded
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({ CascadeType.SAVE_UPDATE })
 	private Player player;
 
     @ContainedIn
     @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
     private Score scoreLeft;
 
     @ContainedIn
     @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
     private Score scoreRight;
 
     @IndexedEmbedded
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "playerInstance")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "playerInstance")
     private Set<PlayerInstanceComment> comments;
 
     private ApprovalResponseEnum approvalResponse;
@@ -68,6 +71,8 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
 
 	public PlayerInstance(String name, User owner) {
 		player = new Player(name, owner);
+		player.setPlayerInstances(new HashSet<PlayerInstance>());
+		player.getPlayerInstances().add(this);
 	}
 
 	public Player getPlayer() {
@@ -110,51 +115,42 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
         this.revisionMessage = revisionMessage;
     }
 
-    @Override
     public Boolean getShouldNotReinvite() {
         return player != null ? player.getShouldNotReinvite() : null;
     }
 
-    @Override
-	public void setShouldNotReinvite(Boolean shouldNotReinvite) {
-		if (player != null) {
-	        player.setShouldNotReinvite(shouldNotReinvite);
-		}
-	}
+    public void setShouldNotReinvite(Boolean shouldNotReinvite) {
+        if (player != null) {
+            player.setShouldNotReinvite(shouldNotReinvite);
+        }
+    }
 
-    @Override
-	public User getAssociation() {
+    public User getAssociation() {
         return player != null ? player.getAssociation() : null;
-	}
+    }
 
-    @Override
     public void setAssociation(User association) {
         if (player != null) {
             player.setAssociation(association);
         }
     }
 
-	@Override
-	public boolean isConnected() {
-		return player != null ? player.isConnected() : false;
-	}
+    public boolean isConnected() {
+        return player != null ? player.isConnected() : false;
+    }
 
-    @Override
-	public String getName() {
-		return player != null ? player.getName() : null;
-	}
+    public String getName() {
+        return player != null ? player.getName() : null;
+    }
 
-    @Override
-	public String getAvatar() {
-		return player != null ? player.getAvatar() : null;
-	}
+    public String getAvatar() {
+        return player != null ? player.getAvatar() : null;
+    }
 
-    @Override
     public User getOwner() {
-		return player != null ? player.getOwner() : null;
-	}
+        return player != null ? player.getOwner() : null;
+    }
 
-    @Override
     public void setOwner(User owner) {
         if (player != null) {
             player.setOwner(owner);
@@ -276,7 +272,7 @@ public class PlayerInstance extends BaseEntity implements PlayerBehavior {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        PlayerBehavior other = (PlayerBehavior) obj;
+        PlayerInstance other = (PlayerInstance) obj;
         Integer ownerId = getOwner() != null ? getOwner().getId() : null;
         Integer objOwnerId = other.getOwner() != null ? other.getOwner().getId() : null;
         return new EqualsBuilder().append(getName(), other.getName()).append(ownerId, objOwnerId).isEquals();

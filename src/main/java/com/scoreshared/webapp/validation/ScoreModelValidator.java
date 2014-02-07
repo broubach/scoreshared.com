@@ -14,16 +14,16 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.scoreshared.business.persistence.PlayerBehavior;
+import com.scoreshared.business.persistence.Player;
 import com.scoreshared.webapp.dto.ScoreModel;
 
 public class ScoreModelValidator implements Validator {
-    private PlayerBehavior associatedPlayer = null;
+    private Player associatedPlayer = null;
     private MessageSource messageResource;
     private Locale locale;
     private DateFormat dateFormat;
 
-    public ScoreModelValidator(PlayerBehavior associatedPlayer, MessageSource messageResource, Locale locale) {
+    public ScoreModelValidator(Player associatedPlayer, MessageSource messageResource, Locale locale) {
         this.associatedPlayer = associatedPlayer;
         this.messageResource = messageResource;
         this.locale = locale;

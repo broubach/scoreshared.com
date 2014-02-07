@@ -67,8 +67,8 @@ public class ScoreItemModel {
 
         if (!opponents.isEmpty()) {
             result.append(" ").append(messageResource.getMessage("label.against", null, locale)).append(" ");
-            for (PlayerInstance player : opponents) {
-                result.append(player.getName());
+            for (PlayerInstance playerInstance : opponents) {
+                result.append(playerInstance.getName());
                 result.append(", ");
             }
 

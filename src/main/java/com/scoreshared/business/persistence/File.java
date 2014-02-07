@@ -2,7 +2,6 @@ package com.scoreshared.business.persistence;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -31,7 +30,7 @@ public class File extends BaseEntity implements Cloneable {
     private Date date;
     private String mime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
     public byte[] getData() {

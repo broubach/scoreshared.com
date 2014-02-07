@@ -250,14 +250,14 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     }
 
     public void saveNewUser(User newUser, String invitationHash) {
-        Player player = new Player(newUser.getFullName(), newUser);
-        player.setAssociation(newUser);
-        player.setInvitation(new Invitation(InvitationResponseEnum.ACCEPTED));
         dao.saveOrUpdate(newUser);
         if (!StringUtils.isEmpty(invitationHash)) {
             graphBo.acceptUnregisteredUserInvitation(newUser, invitationHash);
         }
 
+        Player player = new Player(newUser.getFullName(), newUser);
+        player.setAssociation(newUser);
+        player.setInvitation(new Invitation(InvitationResponseEnum.ACCEPTED));
         dao.saveOrUpdate(player);
     }
 

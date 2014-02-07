@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
@@ -13,6 +12,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,7 +43,8 @@ public class User extends BaseEntity implements UserDetails {
     private String forgotPasswordInstructionsHash;
     private Date forgotPasswordInstructionsDate;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @OneToOne(fetch = FetchType.EAGER)
+    @Cascade({ CascadeType.DELETE })
     private Profile profile;
 
     public String getFirstName() {

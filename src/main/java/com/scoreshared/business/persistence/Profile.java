@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +13,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.beans.BeanWrapper;
@@ -33,7 +34,8 @@ public class Profile extends BaseEntity implements Cloneable {
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean leftHanded;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({ CascadeType.SAVE_UPDATE })
     private Player coach;
 
     @Column(columnDefinition = "BIT", length = 1)
@@ -43,11 +45,14 @@ public class Profile extends BaseEntity implements Cloneable {
     private String style;
     private String site;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({ CascadeType.ALL })
     private File avatar;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({ CascadeType.ALL })
     private File smallAvatar;
+
     private SportEnum sport;
 
     @Column(columnDefinition = "BIT", length = 1)

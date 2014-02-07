@@ -38,7 +38,6 @@ import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerBehavior;
 import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
@@ -74,7 +73,7 @@ public class ScoreController extends BaseController {
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
         if (binder.getTarget() instanceof ScoreModel) {
-            PlayerBehavior player = (PlayerBehavior) request.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER, WebRequest.SCOPE_SESSION);
+            Player player = (Player) request.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER, WebRequest.SCOPE_SESSION);
             binder.setValidator(new ScoreModelValidator(player, messageResource, localeResolver.resolveLocale(((ServletWebRequest)request).getRequest())));
         }
     }
@@ -85,7 +84,7 @@ public class ScoreController extends BaseController {
             ModelAndView mav = new ModelAndView("score");
             ScoreModel score = new ScoreModel();
             score.setPlayersLeft(new ArrayList<String>());
-            PlayerBehavior associatedPlayer = (PlayerBehavior) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
+            Player associatedPlayer = (Player) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
             score.getPlayersLeft().add(associatedPlayer.getName());
             if (loggedUser.getProfile() != null) {
                 if (loggedUser.getProfile().getCoach() != null) {

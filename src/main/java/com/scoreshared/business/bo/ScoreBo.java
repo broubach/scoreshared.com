@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import com.scoreshared.business.persistence.ApprovalResponseEnum;
 import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerBehavior;
 import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
@@ -96,34 +94,28 @@ public class ScoreBo extends BaseBo<Score> {
     }
 
     private void consist(User owner, Score score, Set<PlayerInstance> players) {
-        Set<PlayerInstance> replacedPlayers = new HashSet<PlayerInstance>();
-        PlayerInstance playerInstance = null;
-        for (Iterator<PlayerInstance> it = players.iterator(); it.hasNext(); ) {
-            playerInstance = it.next();
-
-            PlayerInstance existentPlayerInstance = replaceExistentPlayerOrPlayerInstanceAndKeepProperties(owner, score, playerInstance);
-            if (existentPlayerInstance != null) {
-                it.remove();
-                replacedPlayers.add(existentPlayerInstance);
-            } else {
-                playerInstance.setOwner(owner);
+        for (PlayerInstance playerInstance : players) {
+            Player player = findExistentPlayerAndKeepProperties(owner, playerInstance.getPlayer());
+            if (player != null && score.getId() != null) {
+                findExistentPlayerInstanceAndKeepId(owner, score, playerInstance);
             }
+            playerInstance.setOwner(owner);
         }
-        players.addAll(replacedPlayers);
     }
 
-    private PlayerInstance replaceExistentPlayerOrPlayerInstanceAndKeepProperties(User owner, Score score, PlayerInstance playerInstance) {
-        Player player = findExistentPlayerAndKeepProperties(owner, playerInstance);
-        if (player != null) {
-            playerInstance.setPlayer(player);
-            if (score.getId() != null) {
-                return findExistentPlayerInstanceAndKeepProperties(owner, score, playerInstance);
-            }
+    private Player findExistentPlayerAndKeepProperties(User owner, Player player) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("playerName", player.getName());
+        params.put("ownerId", owner.getId());
+        List<Player> players = dao.findByNamedQueryAndNamedParam("playerByNameAndOwnerQuery", params);
+        if (players.size() > 0) {
+            keepProperties(owner, player, players.get(0));
+            return players.get(0);
         }
         return null;
     }
 
-    private PlayerInstance findExistentPlayerInstanceAndKeepProperties(User owner, Score score,
+    private void findExistentPlayerInstanceAndKeepId(User owner, Score score,
             PlayerInstance playerInstance) {
         Map<String, Integer> params = new HashMap<String, Integer>();
         params.put("scoreId", score.getId());
@@ -131,33 +123,22 @@ public class ScoreBo extends BaseBo<Score> {
         List<PlayerInstance> playerInstances = dao.findByNamedQueryAndNamedParam("playerInstanceLeftByPlayerAndScoreQuery", params);
         playerInstances.addAll(dao.findByNamedQueryAndNamedParam("playerInstanceRightByPlayerAndScoreQuery", params));
         if (playerInstances.size() > 0) {
-            keepProperties(owner, playerInstances.get(0), playerInstance);
-            return playerInstances.get(0);
+            playerInstance.setId(playerInstances.get(0).getId());
         }
-        return null;
     }
 
-    private Player findExistentPlayerAndKeepProperties(User owner, PlayerBehavior player) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("playerName", player.getName());
-        params.put("ownerId", owner.getId());
-        List<Player> players = dao.findByNamedQueryAndNamedParam("playerByNameAndOwnerQuery", params);
-        if (players.size() > 0) {
-            keepProperties(owner, players.get(0), player);
-            return players.get(0);
+    private void keepProperties(User owner, Player currentPlayer, Player newPlayer) {
+        currentPlayer.setId(newPlayer.getId());
+        if (newPlayer.getAssociation() != null) {
+            if (!newPlayer.getAssociation().getId().equals(owner.getId())) {
+                currentPlayer.setAssociation(newPlayer.getAssociation());
+            } else {
+                currentPlayer.setAssociation(owner);
+            }
         }
-        return null;
-    }
-
-    private void keepProperties(User owner, PlayerBehavior newPlayer, PlayerBehavior oldPlayer) {
-        newPlayer.setShouldNotReinvite(oldPlayer.getShouldNotReinvite());
-        newPlayer.setOwner(owner);
-        if (newPlayer.getAssociation() != null && newPlayer.getAssociation().getId().equals(owner.getId())) {
-            newPlayer.setAssociation(owner);
-        }
-        if (newPlayer instanceof PlayerInstance && oldPlayer instanceof PlayerInstance) {
-            ((PlayerInstance) newPlayer).setScoreLeft(((PlayerInstance) oldPlayer).getScoreLeft());
-            ((PlayerInstance) newPlayer).setScoreRight(((PlayerInstance) oldPlayer).getScoreRight());
+        if (newPlayer.getInvitation() != null) {
+            newPlayer.getInvitation().setPlayer(newPlayer);
+            currentPlayer.setInvitation(newPlayer.getInvitation());
         }
     }
 

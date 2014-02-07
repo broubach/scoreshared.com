@@ -162,17 +162,23 @@ $(function() {
 				type: 'DELETE',
 				dataType: 'json',
 				cache: false,
-				success: function(data) { $.magnificPopup.close(); }
+				complete: function(data) {
+					ClickContext.tableLine.remove();
+					$.magnificPopup.close(); 
+				}
 			});
 
 		} else if (ClickContext.kind == 'hide-permanently') {
 			$.ajax({
-				url: '<@spring.url relativeUrl="/app/scores/hidePermanently/"/>',
+				url: '<@spring.url relativeUrl="/app/scores/hidePermanently"/>',
 				data: {'scoreId': ClickContext.id},
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
-				success: function(data) { $.magnificPopup.close(); }
+				complete: function(data) {
+					ClickContext.tableLine.remove();
+					$.magnificPopup.close();
+				}
 			});
 		}
 	});

@@ -2,7 +2,6 @@ package com.scoreshared.business.persistence;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Analyze;
@@ -41,22 +42,23 @@ import org.hibernate.search.annotations.Field;
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
-public class Player extends BaseEntity implements PlayerBehavior {
+public class Player extends BaseEntity {
 
     @Field(analyze = Analyze.YES, analyzer = @Analyzer(definition = "defaultAnalyzer"))
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.EAGER)
     private User association;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @OneToOne(fetch = FetchType.EAGER)
+    @Cascade({ CascadeType.ALL })
     private Invitation invitation;
 
     @ContainedIn
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "player", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "player")
     private Set<PlayerInstance> playerInstances;
 
     @Column(columnDefinition = "BIT", length = 1)
@@ -73,7 +75,6 @@ public class Player extends BaseEntity implements PlayerBehavior {
         this.owner = owner;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -82,7 +83,6 @@ public class Player extends BaseEntity implements PlayerBehavior {
         this.name = name;
     }
 
-    @Override
     public User getOwner() {
         return owner;
     }
@@ -91,7 +91,6 @@ public class Player extends BaseEntity implements PlayerBehavior {
         this.owner = owner;
     }
 
-    @Override
     public User getAssociation() {
         return association;
     }
@@ -116,6 +115,14 @@ public class Player extends BaseEntity implements PlayerBehavior {
         this.shouldNotReinvite = shouldNotReinvite;
     }
 
+    public Set<PlayerInstance> getPlayerInstances() {
+        return playerInstances;
+    }
+
+    public void setPlayerInstances(Set<PlayerInstance> playerInstances) {
+        this.playerInstances = playerInstances;
+    }
+
     public boolean isHasMatchAssociated() {
         return hasMatchAssociated;
     }
@@ -135,7 +142,7 @@ public class Player extends BaseEntity implements PlayerBehavior {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        PlayerBehavior other = (PlayerBehavior) obj;
+        Player other = (Player) obj;
         Integer ownerId = owner != null ? owner.getId() : null;
         Integer objOwnerId = other.getOwner() != null ? other.getOwner().getId() : null;
         return new EqualsBuilder().append(name, other.getName()).append(ownerId, objOwnerId).isEquals();
@@ -147,12 +154,10 @@ public class Player extends BaseEntity implements PlayerBehavior {
         return new HashCodeBuilder(17, 37).append(name).append(ownerId).toHashCode();
     }
 
-    @Override
     public boolean isConnected() {
         return association != null && invitation != null && InvitationResponseEnum.ACCEPTED.equals(invitation.getResponse());
     }
 
-    @Override
     public String getAvatar() {
         if (isConnected()) {
             Profile profile = getAssociation().getProfile();

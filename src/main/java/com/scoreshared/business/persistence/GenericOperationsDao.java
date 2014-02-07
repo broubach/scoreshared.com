@@ -182,6 +182,7 @@ public class GenericOperationsDao {
             tx.commit();
 
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (tx != null) {
                 tx.rollback();
             }
