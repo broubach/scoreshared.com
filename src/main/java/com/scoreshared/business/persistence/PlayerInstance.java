@@ -135,7 +135,7 @@ public class PlayerInstance extends BaseEntity {
         }
     }
 
-    public boolean isConnected() {
+    public boolean isPlayerConnected() {
         return player != null ? player.isConnected() : false;
     }
 
@@ -292,5 +292,9 @@ public class PlayerInstance extends BaseEntity {
             return scoreRight;
         }
         return null;
+    }
+
+    public boolean isScoreConnected() {
+        return isPlayerConnected() && ApprovalResponseEnum.ACCEPTED.equals(getApprovalResponse());
     }
 }

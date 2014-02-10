@@ -44,7 +44,7 @@ public class User extends BaseEntity implements UserDetails {
     private Date forgotPasswordInstructionsDate;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @Cascade({ CascadeType.DELETE })
+    @Cascade({ CascadeType.ALL })
     private Profile profile;
 
     public String getFirstName() {

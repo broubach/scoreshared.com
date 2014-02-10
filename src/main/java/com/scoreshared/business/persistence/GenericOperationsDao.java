@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
@@ -196,11 +197,15 @@ public class GenericOperationsDao {
 
     public <T> void remove(T entity) {
         Session session = null;
+        Transaction t = null;
         try {
             session = sessionFactory.openSession();
+            t = session.beginTransaction();
             session.delete(entity);
+            t.commit();
 
         } catch (HibernateException e) {
+            t.rollback();
             throw new RuntimeException(e);
         } finally {
             if (session != null) {
@@ -354,5 +359,34 @@ public class GenericOperationsDao {
             }
         }
         return result;
+    }
+
+    public BaseEntity mergeAndInitialize(BaseEntity entity, String collectionName) {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            entity = (BaseEntity) session.merge(entity);
+
+            Hibernate.initialize(PropertyUtils.getProperty(entity, collectionName));
+
+            return entity;
+
+        } catch (HibernateException e) {
+            throw new RuntimeException(e);
+
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

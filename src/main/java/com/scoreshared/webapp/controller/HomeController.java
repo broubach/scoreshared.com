@@ -111,7 +111,7 @@ public class HomeController extends BaseController {
         Set<Integer> ids = new HashSet<Integer>();
         for (ScoreItemModel score : scores) {
             for (PlayerInstance player : score.getScore().getAllPlayers()) {
-                if (player.isConnected() && !ids.contains(player.getAssociation().getId())) {
+                if (player.isPlayerConnected() && !ids.contains(player.getAssociation().getId())) {
                     ids.add(player.getAssociation().getId());
                     result.add(new Object[] { player.getAssociation().getId(), player.getName() });
                 }

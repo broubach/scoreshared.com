@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -18,7 +19,9 @@ import org.hibernate.search.annotations.Field;
 
 @Entity
 @Table(name = "playerinstancecomment")
-@NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)")
+@NamedQueries({
+        @NamedQuery(name = "commentByScoreIdsQuery", query = "from PlayerInstanceComment comment where comment.playerInstance.id in (:playerInstanceIds)"),
+        @NamedQuery(name = "removeCommentsByIdsQuery", query = "delete from PlayerInstanceComment comment where comment.id in (:commentIds)") })
 public class PlayerInstanceComment extends BaseEntity implements Cloneable {
 
     @ManyToOne(fetch = FetchType.LAZY)

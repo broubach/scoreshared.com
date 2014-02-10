@@ -369,10 +369,10 @@ public class Score extends BaseEntity implements Cloneable {
         return null;
     }
 
-    public Set<PlayerInstance> getConnectedPlayers() {
+    public Set<PlayerInstance> getConnectedPlayersInScore() {
         Set<PlayerInstance> result = new HashSet<PlayerInstance>();
         for (PlayerInstance playerInstance : getAllPlayers()) {
-            if (playerInstance.isConnected()) {
+            if (playerInstance.isScoreConnected()) {
                 result.add(playerInstance);
             }
         }
@@ -455,7 +455,7 @@ public class Score extends BaseEntity implements Cloneable {
     public PlayerInstance getSamplePlayer(Set<PlayerInstance> players) {
         PlayerInstance result = null;
         for (PlayerInstance player : players) {
-            if (player.isConnected()) {
+            if (player.isPlayerConnected()) {
                 result = player;
                 break;
             }
@@ -486,9 +486,9 @@ public class Score extends BaseEntity implements Cloneable {
         return result.toString();
     }
 
-    public PlayerInstance getPlayerInstance(Integer revisionRequesterId) {
+    public PlayerInstance getPlayerInstance(Integer playerInstanceId) {
         for (PlayerInstance playerInstance : getAllPlayers()) {
-            if (playerInstance.getId().equals(revisionRequesterId)) {
+            if (playerInstance.getId().equals(playerInstanceId)) {
                 return playerInstance;
             }
         }
@@ -508,5 +508,27 @@ public class Score extends BaseEntity implements Cloneable {
         setSet5Right(playerInstance.getRevisionSet5Right());
         setDate(playerInstance.getRevisionDate());
         setTime(playerInstance.getRevisionTime());
+    }
+
+    public boolean isOwnerAndPlayerInstanceInDifferentSidesOfScore(PlayerInstance playerInstance) {
+        return hasWinner(getOwner().getId()) && !hasWinner(playerInstance.getAssociation().getId())
+                || !hasWinner(getOwner().getId()) && hasWinner(playerInstance.getAssociation().getId());
+    }
+
+    public boolean hasConnectedPlayerInOtherSideOfOwner() {
+        Set<PlayerInstance> otherSide = null;
+        if (getLeftPlayers().contains(getAssociatedPlayer(getOwner().getId()))) {
+            otherSide = getRightPlayers();
+        } else {
+            otherSide = getLeftPlayers();
+        }
+        boolean hasConnectedPlayer = false;
+        for (PlayerInstance playerInstance : otherSide) {
+            if (playerInstance.isScoreConnected()) {
+                hasConnectedPlayer = true;
+                break;
+            }
+        }
+        return hasConnectedPlayer;
     }
 }

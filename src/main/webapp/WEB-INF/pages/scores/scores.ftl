@@ -82,7 +82,7 @@
 											<span class="actions hide">
 												<a href="edit,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.edit"/></a>
 												<#if associatedPlayer.owner.id == item.score.owner.id>
-													<#if (item.score.connectedPlayers?size > 1)>
+													<#if (item.score.connectedPlayersInScore?size > 1)>
 														<a href="forward,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.forward"/></a>
 													</#if>
 													<a href="remove,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.remove"/></a>

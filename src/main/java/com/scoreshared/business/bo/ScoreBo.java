@@ -97,7 +97,7 @@ public class ScoreBo extends BaseBo<Score> {
         for (PlayerInstance playerInstance : players) {
             Player player = findExistentPlayerAndKeepProperties(owner, playerInstance.getPlayer());
             if (player != null && score.getId() != null) {
-                findExistentPlayerInstanceAndKeepId(owner, score, playerInstance);
+                findExistentPlayerInstanceAndKeepProperties(owner, score, playerInstance);
             }
             playerInstance.setOwner(owner);
         }
@@ -115,18 +115,6 @@ public class ScoreBo extends BaseBo<Score> {
         return null;
     }
 
-    private void findExistentPlayerInstanceAndKeepId(User owner, Score score,
-            PlayerInstance playerInstance) {
-        Map<String, Integer> params = new HashMap<String, Integer>();
-        params.put("scoreId", score.getId());
-        params.put("playerId", playerInstance.getPlayer().getId());
-        List<PlayerInstance> playerInstances = dao.findByNamedQueryAndNamedParam("playerInstanceLeftByPlayerAndScoreQuery", params);
-        playerInstances.addAll(dao.findByNamedQueryAndNamedParam("playerInstanceRightByPlayerAndScoreQuery", params));
-        if (playerInstances.size() > 0) {
-            playerInstance.setId(playerInstances.get(0).getId());
-        }
-    }
-
     private void keepProperties(User owner, Player currentPlayer, Player newPlayer) {
         currentPlayer.setId(newPlayer.getId());
         if (newPlayer.getAssociation() != null) {
@@ -140,6 +128,37 @@ public class ScoreBo extends BaseBo<Score> {
             newPlayer.getInvitation().setPlayer(newPlayer);
             currentPlayer.setInvitation(newPlayer.getInvitation());
         }
+    }
+
+    private void findExistentPlayerInstanceAndKeepProperties(User owner, Score score,
+            PlayerInstance playerInstance) {
+        Map<String, Integer> params = new HashMap<String, Integer>();
+        params.put("scoreId", score.getId());
+        params.put("playerId", playerInstance.getPlayer().getId());
+        List<PlayerInstance> playerInstances = dao.findByNamedQueryAndNamedParam("playerInstanceLeftByPlayerAndScoreQuery", params);
+        playerInstances.addAll(dao.findByNamedQueryAndNamedParam("playerInstanceRightByPlayerAndScoreQuery", params));
+        if (playerInstances.size() > 0) {
+            keepProperties(playerInstance, playerInstances.get(0));
+        }
+    }
+
+    private void keepProperties(PlayerInstance currentPlayerInstance, PlayerInstance newPlayerInstance) {
+        currentPlayerInstance.setId(newPlayerInstance.getId());
+        currentPlayerInstance.setApprovalResponse(newPlayerInstance.getApprovalResponse());
+        currentPlayerInstance.setApprovalResponse(newPlayerInstance.getApprovalResponse());
+        currentPlayerInstance.setRevisionMessage(newPlayerInstance.getRevisionMessage());
+        currentPlayerInstance.setRevisionDate(newPlayerInstance.getRevisionDate());
+        currentPlayerInstance.setRevisionTime(newPlayerInstance.getRevisionTime());
+        currentPlayerInstance.setRevisionSet1Left(newPlayerInstance.getRevisionSet1Left());
+        currentPlayerInstance.setRevisionSet1Right(newPlayerInstance.getRevisionSet1Right());
+        currentPlayerInstance.setRevisionSet2Left(newPlayerInstance.getRevisionSet2Left());
+        currentPlayerInstance.setRevisionSet2Right(newPlayerInstance.getRevisionSet2Right());
+        currentPlayerInstance.setRevisionSet3Left(newPlayerInstance.getRevisionSet3Left());
+        currentPlayerInstance.setRevisionSet3Right(newPlayerInstance.getRevisionSet3Right());
+        currentPlayerInstance.setRevisionSet4Left(newPlayerInstance.getRevisionSet4Left());
+        currentPlayerInstance.setRevisionSet4Right(newPlayerInstance.getRevisionSet4Right());
+        currentPlayerInstance.setRevisionSet5Left(newPlayerInstance.getRevisionSet5Left());
+        currentPlayerInstance.setRevisionSet5Right(newPlayerInstance.getRevisionSet5Right());
     }
 
     public Score findById(Integer scoreId) {
@@ -160,16 +179,28 @@ public class ScoreBo extends BaseBo<Score> {
     public void removeScore(Integer scoreId, Integer userId) {
         Score score = findById(scoreId);
         if (score.getOwner().getId().equals(userId)) {
+            Set<Integer> commentIdsToBeRemoved = new HashSet<Integer>();
+            for (PlayerInstance playerInstance : score.getAllPlayers()) {
+                playerInstance = (PlayerInstance) dao.mergeAndInitialize(playerInstance, "comments");
+                for (PlayerInstanceComment comment : playerInstance.getComments()) {
+                    commentIdsToBeRemoved.add(comment.getId());
+                }
+            }
+            dao.execute("removeCommentsByIdsQuery", commentIdsToBeRemoved);
             dao.remove(score);
         }
     }
-    
+
     public void hideScore(Integer scoreId, Integer userId) {
         Score score = findById(scoreId);
         if (!score.getOwner().getId().equals(userId)) {
             PlayerInstance player = score.getAssociatedPlayer(userId);
             player.setApprovalResponse(ApprovalResponseEnum.HIDDEN);
-            dao.saveOrUpdate(player);
+
+            if (!score.hasConnectedPlayerInOtherSideOfOwner()) {
+                score.setConfirmed(null);
+            }
+            dao.saveOrUpdate(score);
         }
     }
 
@@ -179,7 +210,6 @@ public class ScoreBo extends BaseBo<Score> {
 
         return calculateWinLoss(scores, ownerId);
     }
-
     
     public Integer[] calculateWinLoss(List<Score> scores, Integer ownerId) {
         Integer win = 0;
@@ -215,7 +245,7 @@ public class ScoreBo extends BaseBo<Score> {
         Score score = findById(scoreId);
         PlayerInstance player = score.getAssociatedPlayer(userId);
 
-        if (isOwnerAndPlayerInstanceInDifferentSidesOfScore(score, player)) {
+        if (score.isOwnerAndPlayerInstanceInDifferentSidesOfScore(player)) {
             for (PlayerInstance playerInstance : score.getAllPlayers()) {
                 playerInstance.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
             }
@@ -266,7 +296,7 @@ public class ScoreBo extends BaseBo<Score> {
     public void approveRevision(Integer scoreId, Integer revisionRequesterId) {
         Score score = dao.findByPk(Score.class, scoreId);
         PlayerInstance revisionRequester = score.getPlayerInstance(revisionRequesterId);
-        if (isOwnerAndPlayerInstanceInDifferentSidesOfScore(score, revisionRequester)) {
+        if (score.isOwnerAndPlayerInstanceInDifferentSidesOfScore(revisionRequester)) {
             for (PlayerInstance playerInstance : score.getAllPlayers()) {
                 playerInstance.setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
             }
@@ -279,11 +309,6 @@ public class ScoreBo extends BaseBo<Score> {
             score.copyDateAndScoreFrom(revisionRequester);
             dao.saveOrUpdate(score);
         }
-    }
-
-    private boolean isOwnerAndPlayerInstanceInDifferentSidesOfScore(Score score, PlayerInstance revisionRequester) {
-        return score.hasWinner(score.getOwner().getId()) && !score.hasWinner(revisionRequester.getAssociation().getId())
-                || !score.hasWinner(score.getOwner().getId()) && score.hasWinner(revisionRequester.getAssociation().getId());
     }
 
     public void ignoreRevision(Integer playerInstanceId) {
