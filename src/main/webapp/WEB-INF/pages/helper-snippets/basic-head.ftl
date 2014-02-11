@@ -1,5 +1,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>${head_title}</title>
+	<#if head_title??>
+		<title>${head_title}</title>
+	<#else>
+		<title><@spring.message code="label.default_pages_title"/></title>
+	</#if>
 
 	<!-- Set the viewport width to device width for mobile -->
 	<meta name="viewport" content="width=device-width" />

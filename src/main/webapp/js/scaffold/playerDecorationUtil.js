@@ -4,7 +4,7 @@ var PlayerDecorationUtil = {
 		context = {
 			'players' : players
 		};
-		$('td,li', elements).each(
+		$(elements).each(
 			function() {
 				for ( var i = 0; i < context.players.length; i++) {
 					var content = $(this).html();

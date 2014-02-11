@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Home">
 	<#assign head_additional_js=["/js/jquery.autosize-1.17.8.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>

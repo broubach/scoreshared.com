@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Notifications">
 	<#assign head_additional_js=["/js/jquery.autosize-1.17.8.min.js",
 								"/js/jquery.maskedinput-1.3.1.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">

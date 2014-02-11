@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: homeNewUser">
 	<#assign head_additional_js=["/js/steps.js",
 								"/js/score.js",
 								"/js/json2.js",

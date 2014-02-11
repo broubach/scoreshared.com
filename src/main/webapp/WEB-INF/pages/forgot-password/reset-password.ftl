@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Sign up">
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>

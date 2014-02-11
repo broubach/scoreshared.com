@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Scores">
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
 	<#assign head_additional_js=["/js/vendor/Chart.min.js", 
 								"/js/scores.js", 

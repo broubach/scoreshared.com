@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Home">
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
 	<#assign head_additional_js=["/js/vendor/select2.js"]>
 	<#include "/helper-snippets/basic-head.ftl">

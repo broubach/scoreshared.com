@@ -54,7 +54,7 @@ public class PlayerController extends BaseController {
 
     @RequestMapping(value = "{userId}", method = RequestMethod.GET)
     public ModelAndView show(@LoggedUser User loggedUser, HttpServletRequest request, @PathVariable Integer userId) {
-        ModelAndView mav = new ModelAndView("player");
+        ModelAndView mav = new ModelAndView("player/player");
 
         User user = userBo.findByPk(userId);
         Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(user.getId(), loggedUser.getId());
@@ -72,13 +72,6 @@ public class PlayerController extends BaseController {
         mav.addObject("loss", winLoss[1]);
 
         return mav;
-    }
-
-    @ResponseBody
-    @RequestMapping(value ="/remove/{userToRemoveId}", method = RequestMethod.DELETE)
-    public Boolean remove(@LoggedUser User loggedUser, @PathVariable Integer userToRemoveId) {
-    	graphBo.removeConnection(loggedUser.getId(), userToRemoveId);
-        return Boolean.TRUE;
     }
 
     @ResponseBody

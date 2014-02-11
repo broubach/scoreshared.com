@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title="ScoreShared: Welcome3">
 	<#assign head_additional_css=["/css/jquery.Jcrop-0.9.12.min.css"]>
 	<#assign head_additional_js=["/js/jquery.Jcrop-0.9.12.min.js", "/js/profile-avatar.js"]>
 	<#include "/helper-snippets/basic-head.ftl">

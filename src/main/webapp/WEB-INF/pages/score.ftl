@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_title><@spring.message code="label.scoreshared"/></#assign>
 	<#assign head_additional_css=["/css/vendor/select2.css",
 								"/css/vendor/pickadate/classic.css",
 								"/css/vendor/pickadate/classic.time.css",
