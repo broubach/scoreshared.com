@@ -38,7 +38,7 @@ public class ScoreBo extends BaseBo<Score> {
 
         saveScoreAndComment(score, comment);
 
-        // TODO: post in twitter or facebook
+        // TODO: post in twitter or facebook, if saving for the first time
     }
 
     private void updateProfileWithNewestPreferences(Score score) {
@@ -393,5 +393,21 @@ public class ScoreBo extends BaseBo<Score> {
             result.add(playerInstance.getScore());
         }
         return result;
+    }
+
+    public Set<PlayerInstance> getConnectedPlayersFromScoreWithoutOwner(User loggedUser, Integer scoreId) {
+        Score score = findById(scoreId);
+        Set<PlayerInstance> connectedPlayersInScore = new HashSet<PlayerInstance>(score.getConnectedPlayersInScore());
+        connectedPlayersInScore.remove(score.getAssociatedPlayer(loggedUser.getId()));
+        return connectedPlayersInScore;
+    }
+
+    public void forward(Integer scoreId, Integer newOwnerId, User loggedUser) {
+        Score score = findById(scoreId);
+        PlayerInstance playerInstanceToBeNewOwner = score.getAssociatedPlayer(newOwnerId);
+        if (playerInstanceToBeNewOwner.isScoreConnected()) {
+            score.setOwner(playerInstanceToBeNewOwner.getAssociation());
+            save(score.getOwner(), loggedUser, score, null);
+        }
     }
 }

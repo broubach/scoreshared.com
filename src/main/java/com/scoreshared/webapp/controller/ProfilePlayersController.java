@@ -132,12 +132,12 @@ public class ProfilePlayersController {
     @ResponseBody
     public Map<String, Object> buildDataWithI18n(@ModelAttribute("playerName") String playerName, @LoggedUser User loggedUser, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String, Object>();
-        Object[] shouldPlayerBeInvited = bo.shouldPlayerBeInvited(playerName, loggedUser);
         result.put("proceedWithConfirmation", "true");
         result.put("title", messageResource.getMessage("label.invite_to_your_contacts",
                 new String[] { playerName }, localeResolver.resolveLocale(request)));
-        if (shouldPlayerBeInvited.length > 1) {
-            result.put("playerId", ((Player) shouldPlayerBeInvited[1]).getId().toString());
+        Player player = bo.findPlayerByNameAndOwner(playerName, loggedUser.getId());
+        if (player != null) {
+            result.put("playerId", player.getId());
         }
         return result;
     }

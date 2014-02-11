@@ -1,7 +1,10 @@
 package com.scoreshared.webapp.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -13,11 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
 import com.scoreshared.scaffold.LoggedUser;
@@ -81,5 +86,28 @@ public class ScoresController extends BaseController {
     @ResponseStatus(value=HttpStatus.OK)
     public void hidePermanently(@LoggedUser User loggedUser, @ModelAttribute("scoreId") Integer scoreId) {
         bo.hideScore(scoreId, loggedUser.getId());
+    }
+
+    @RequestMapping(value="/playerInstancesForScore/{scoreId}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getPlayerInstancesForScore(@LoggedUser User loggedUser, @PathVariable Integer scoreId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Set<PlayerInstance> connectedPlayersInScore = bo.getConnectedPlayersFromScoreWithoutOwner(loggedUser, scoreId);
+
+        List<Object[]> playerNamesAndIds = new ArrayList<Object[]>();
+        for (PlayerInstance playerInstance : connectedPlayersInScore) {
+            if (playerInstance.isScoreConnected()) {
+                playerNamesAndIds.add(new Object[] { playerInstance.getAssociation().getId(), playerInstance.getName() });
+            }
+        }
+        result.put("playerInstances", playerNamesAndIds.toArray());
+
+        return result;
+    }
+
+    @RequestMapping(value="/forward", method = RequestMethod.POST)
+    @ResponseStatus(value=HttpStatus.OK)
+    public void forward(@LoggedUser User loggedUser, @ModelAttribute("scoreId") Integer scoreId, @ModelAttribute("newUserId") Integer newUserId) {
+        bo.forward(scoreId, newUserId, loggedUser);
     }
 }

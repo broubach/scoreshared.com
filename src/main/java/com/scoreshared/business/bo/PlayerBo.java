@@ -98,4 +98,13 @@ public class PlayerBo extends GraphBo {
         }
         dao.saveOrUpdate(new Player(playerName, owner));
     }
+
+    public Player findPlayerByNameAndOwner(String name, Integer ownerId) {
+        List<Player> players = dao.findByNamedQuery("playerByNameAndOwnerQuery", name, ownerId);
+        if (players.size() > 0) {
+            return players.get(0);
+        }
+        return null;
+    }
+
 }
