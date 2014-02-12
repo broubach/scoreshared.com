@@ -6,6 +6,7 @@
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
 	<#assign head_additional_js=["/js/vendor/Chart.min.js", 
 								"/js/scores.js", 
+								"/js/scaffold/playerDecorationUtil.js",
 								"/js/vendor/select2.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -173,5 +174,7 @@ $(function() {
 		loss: ${loss}
 	}
 	Scores.init(options);
+
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

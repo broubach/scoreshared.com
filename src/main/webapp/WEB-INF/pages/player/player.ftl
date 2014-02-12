@@ -4,6 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_js=["/js/vendor/Chart.min.js",
+								 "/js/scaffold/playerDecorationUtil.js",
 								 "/js/scaffold/friendRequestUtil.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -54,47 +55,47 @@
 						</#list>
 					</ul>
 				</div>
+				<div class="columns small-5">
+					<div class="row">
+						<div class="input text"><span class="label secondary"><@spring.message code="label.age" />: </span></div>
+						<div class="columns small-7">${player.age}</div>
+					</div>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.residence" />: </div>
+						<div class="columns small-7">${player.residence}</div>
+					</div>
+					<#if player.showContactInfoToFriends>
+						<div class="row">
+							<div class="columns small-5"><@spring.message code="label.phone_number" />: </div>
+							<div class="columns small-7">${player.phoneNumber}</div>
+						</div>
+					</#if>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.academy" />: </div>
+						<div class="columns small-7">${player.academy}</div>
+					</div>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.plays" />: </div>
+						<div class="columns small-7">${player.plays}</div>
+					</div>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.coach" />: </div>
+						<div class="columns small-7">${player.coach}</div>
+					</div>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.site" />: </div>
+						<div class="columns small-7">${player.site}</div>
+					</div>
+					<div class="row">
+						<div class="columns small-5"><@spring.message code="label.self_definition" />:</div>
+						<div class="columns small-7">${player.style}</div>
+					</div>
+				</div>
 				<div class="columns small-2">
 					<#if (win + loss > 0)>
 						<canvas id="estatistica-jogos"></canvas><br/>
 						<p class="centralizado">${win}/${loss} (${win/(win + loss)} %)</p>
 					</#if>
-				</div>
-				<div class="columns small-5">
-					<dl>
-						<dt><@spring.message code="label.age" />:</dt>
-						<dd>${player.age}</dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.residence" />: </dt>
-						<dd>${player.residence}</dd>
-					</dl>
-					<#if player.showContactInfoToFriends>
-						<dl>
-							<dt><@spring.message code="label.phone_number" />: </dt>
-							<dd>${player.phoneNumber}</dd>
-						</dl>
-					</#if>
-					<dl>
-						<dt><@spring.message code="label.academy" />: </dt>
-						<dd>${player.academy}</dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.plays" />: </dt>
-						<dd>${player.plays}</dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.coach" />: </dt>
-						<dd>${player.coach}</dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.site" />: </dt>
-						<dd>${player.site}</dd>
-					</dl>
-					<dl>
-						<dt><@spring.message code="label.self_definition" />:</dt>
-						<dd>${player.style}</dd>
-					</dl>
 				</div>
 			</div>
 		</div>
@@ -168,5 +169,7 @@ $(function() {
 	}
 	$("#estatistica-jogos").attr('width',$("#estatistica-jogos").parent().width());
 	var chart = new Chart(ctx).Pie(data,options);
+
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

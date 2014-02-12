@@ -107,4 +107,7 @@ public class PlayerBo extends GraphBo {
         return null;
     }
 
+    public List<Object[]> findConnectedPlayerIdAndNameByOwnerId(Integer ownerId) {
+        return dao.findByNamedQuery("findConnectedPlayerIdAndNameByOwnerIdQuery", ownerId);
+   }
 }

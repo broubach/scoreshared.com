@@ -26,7 +26,8 @@ import org.hibernate.search.annotations.Field;
 
 /**
  * Players are considered to be the edges in the graph model implemented at scoreshared, because it connects an owner and an associated user. 
- * Both owner and associated user are nodes (or vertexes) represented by the User object. This association is only valid when there is an accepted invitation.
+ * Both owner and associated user are nodes (or vertexes) represented by the User object. The vertexes (Users) are considered connected only when 
+ * the edge (Player) has an accepted invitation.
  */
 @Entity
 @NamedQueries({
@@ -38,7 +39,8 @@ import org.hibernate.search.annotations.Field;
         @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitation.hash = :invitationHash"),
         @NamedQuery(name = "pendingInvitationsQuery", query = "select p.owner.profile, p.owner.firstName, p.owner.lastName, p.owner.id from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null" ),
         @NamedQuery(name = "countPendingInvitationsQuery", query = "select count(p.owner.id) from Player p where p.association.id = :associationId and p.invitation.date is not null and p.invitation.response is null"),
-        @NamedQuery(name = "deletePlayerQuery", query = "delete from Player p where p.id = :playerId")})
+        @NamedQuery(name = "deletePlayerQuery", query = "delete from Player p where p.id = :playerId"),
+        @NamedQuery(name = "findConnectedPlayerIdAndNameByOwnerIdQuery", query = "select association.id, player.name from Player player join player.invitation invitation join player.association association where player.owner.id = :ownerId and invitation.response = 0")})
 @Table(name = "player")
 @SQLDelete(sql="UPDATE player SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")

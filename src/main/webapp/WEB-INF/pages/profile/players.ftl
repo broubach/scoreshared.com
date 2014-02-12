@@ -7,6 +7,7 @@
 								"/js/score.js",
 								"/js/json2.js",
 								"/js/scaffold/friendRequestUtil.js",
+								"/js/scaffold/playerDecorationUtil.js",
 								"/js/players.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -174,5 +175,7 @@ $(function() {
 			context_path: '<@spring.url relativeUrl="/"/>'
 	};
 	PlayerCrud.init(playerCrudOptions);
+
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

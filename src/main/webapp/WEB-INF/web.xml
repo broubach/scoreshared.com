@@ -108,4 +108,17 @@
 		<filter-name>notificationStatsFilter</filter-name>
 		<url-pattern>/app/*</url-pattern>
 	</filter-mapping>
+
+	<filter>
+		<filter-name>enablePlayersForLinkCreationFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>enablePlayersForLinkCreationFilter</filter-name>
+		<url-pattern>/app/home/*</url-pattern>
+		<url-pattern>/app/notifications/*</url-pattern>
+		<url-pattern>/app/player/*</url-pattern>
+		<url-pattern>/app/profile/players/*</url-pattern>
+		<url-pattern>/app/scores/*</url-pattern>
+	</filter-mapping>
 </web-app>

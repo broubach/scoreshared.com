@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<#assign head_additional_js=["/js/scaffold/playerDecorationUtil.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -71,18 +72,16 @@
 </html>
 
 <script type="text/javascript">
-$(document).ready(function(){
+var ClickContext = {
+		tableLine: {}
+};
+$(function() {
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	})
-});
 
-var ClickContext = {
-		tableLine: {}
-};
-$(function() {
 	$("td a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
@@ -101,5 +100,6 @@ $(function() {
 		    }
 		});
 	});
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

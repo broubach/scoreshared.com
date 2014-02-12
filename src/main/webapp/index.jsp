@@ -1,2 +1,4 @@
 <%@ page contentType="text/html" %>
-<jsp:forward page="/app/home" />
+<%
+    response.sendRedirect(request.getContextPath() + "/app/home/");
+%>

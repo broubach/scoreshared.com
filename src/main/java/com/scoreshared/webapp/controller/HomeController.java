@@ -1,21 +1,14 @@
 package com.scoreshared.webapp.controller;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -58,64 +51,36 @@ public class HomeController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView home(@LoggedUser User loggedUser, HttpServletRequest request) {
-        try {
-            ModelAndView mav = new ModelAndView();
-            mav.addObject("messages", getMessages(loggedUser));
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("messages", getMessages(loggedUser));
 
-            List<ScoreItemModel> scores = getScores(loggedUser, localeResolver.resolveLocale(request));
-            mav.addObject("scores", scores);
+        List<ScoreItemModel> scores = getScores(loggedUser, localeResolver.resolveLocale(request));
+        mav.addObject("scores", scores);
 
-            StringWriter jsonPlayers = new StringWriter();
-            ObjectMapper mapper = new ObjectMapper();
+        loggedUser.setProfile(userBo.markSignupProcessAsCompleted(loggedUser).getProfile());
+        request.getSession().setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.FALSE);
 
-            loggedUser.setProfile(userBo.markSignupProcessAsCompleted(loggedUser).getProfile());
-            request.getSession().setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.FALSE);
+        if (!scores.isEmpty()) {
+            Integer[] winLoss = scoreBo.calculateWinLoss(loggedUser.getId());
+            mav.addObject("win", winLoss[0]);
+            mav.addObject("loss", winLoss[1]);
 
-            if (!scores.isEmpty()) {
-                Integer[] winLoss = scoreBo.calculateWinLoss(loggedUser.getId());
-                mav.addObject("win", winLoss[0]);
-                mav.addObject("loss", winLoss[1]);
+            mav.setViewName("home/home");
 
-                mapper.writeValue(jsonPlayers, listPlayersNameAndIdFromScoreItemModel(scores));
-                mav.addObject("players", jsonPlayers.toString());
+        } else {
+            mav.addObject("search", new SearchModel());
+            mav.addObject("players", listPlayersNameAndIdFromPlayers(userBo
+                    .listPlayersNameExceptLoggedUser(loggedUser)));
 
-                mav.setViewName("home/home");
-
-            } else {
-                mav.addObject("search", new SearchModel());
-                mav.addObject("players", listPlayersNameAndIdFromPlayers(userBo
-                        .listPlayersNameExceptLoggedUser(loggedUser)));
-
-                mav.setViewName("home/homeNewUser");
-            }
-            return mav;
-        } catch (JsonGenerationException e) {
-            throw new RuntimeException(e);
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            mav.setViewName("home/homeNewUser");
         }
+        return mav;
     }
 
     private List<Object[]> listPlayersNameAndIdFromPlayers(List<Player> players) {
         List<Object[]> result = new ArrayList<Object[]>();
         for (Player player : players) {
             result.add(new Object[] { player.getId(), player.getName() });
-        }
-        return result;
-    }
-
-    private List<Object[]> listPlayersNameAndIdFromScoreItemModel(List<ScoreItemModel> scores) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        Set<Integer> ids = new HashSet<Integer>();
-        for (ScoreItemModel score : scores) {
-            for (PlayerInstance player : score.getScore().getAllPlayers()) {
-                if (player.isPlayerConnected() && !ids.contains(player.getAssociation().getId())) {
-                    ids.add(player.getAssociation().getId());
-                    result.add(new Object[] { player.getAssociation().getId(), player.getName() });
-                }
-            }
         }
         return result;
     }

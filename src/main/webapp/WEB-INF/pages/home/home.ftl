@@ -120,7 +120,7 @@
 		$("#estatistica-jogos").attr('width',$("#estatistica-jogos").parent().width());
 		var chart = new Chart(ctx).Pie(data,options);
 
-		PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${players}, '<@spring.url relativeUrl="/"/>')
+		PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 	</script>
 	<div class="row content">
 		<br/>

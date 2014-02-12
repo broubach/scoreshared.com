@@ -46,9 +46,10 @@
 	    <!-- one of the properties available; the maximum file size in bytes -->
 	    <beans:property name="maxUploadSize" value="10000000"/>
 	</beans:bean>
-	
+
 	<beans:bean class="com.scoreshared.scaffold.CustomContextListener"/>
 
 	<beans:bean id="onlyAtSignupFilter" class="com.scoreshared.scaffold.OnlyAtSignupFilter"/>
 	<beans:bean id="notificationStatsFilter" class="com.scoreshared.scaffold.NotificationStatsFilter"/>
+	<beans:bean id="enablePlayersForLinkCreationFilter" class="com.scoreshared.scaffold.EnablePlayersForLinkCreationFilter"/>
 </beans:beans>

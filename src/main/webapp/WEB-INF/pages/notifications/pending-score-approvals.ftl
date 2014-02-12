@@ -4,6 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_js=["/js/jquery.autosize-1.17.8.min.js",
+								"/js/scaffold/playerDecorationUtil.js",
 								"/js/jquery.maskedinput-1.3.1.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
@@ -105,5 +106,7 @@ $(function() {
 			label_send_a_message_to_asking_for_revision_1_send_a_message_to: '<@spring.message code="label.send_a_message_to_asking_for_revision_1_send_a_message_to"/>',
 			label_send_a_message_to_asking_for_revision_2_asking_for_revision: '<@spring.message code="label.send_a_message_to_asking_for_revision_2_asking_for_revision"/>'});
 	});
+
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<#assign head_additional_js=["/js/scaffold/playerDecorationUtil.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -80,18 +81,16 @@
 <script type="text/javascript" src="<@spring.url relativeUrl="/js/scaffold/notificationUtil.js"/>"></script>
 
 <script type="text/javascript">
-$(document).ready(function(){
+var ClickContext = {
+		tableLine: {},
+};
+$(function() {
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	})
-});
 
-var ClickContext = {
-		tableLine: {},
-};
-$(function() {
 	$("td a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
@@ -102,5 +101,6 @@ $(function() {
 
 		NotificationUtil.pendingScoreRevisionsHandleClick(scoreId, playerInstanceId, kind, '<@spring.url relativeUrl="/"/>');
 	});
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>
