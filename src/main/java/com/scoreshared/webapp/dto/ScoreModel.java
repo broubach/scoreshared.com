@@ -29,6 +29,7 @@ public class ScoreModel {
     private String coach;
     private Integer sportId;
     private List<String> newPlayersNotToBeRemembered;
+    private Boolean updatable;
 
     public Integer getId() {
         return id;
@@ -227,5 +228,13 @@ public class ScoreModel {
 
     public void setNewPlayersNotToBeRemembered(List<String> newPlayersNotToBeRemembered) {
         this.newPlayersNotToBeRemembered = newPlayersNotToBeRemembered;
+    }
+
+    public void setUpdatable(Boolean updatable) {
+        this.updatable = updatable;
+    }
+    
+    public Boolean getUpdatable() {
+        return updatable;
     }
 }

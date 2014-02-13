@@ -36,7 +36,7 @@ public class ScoreBo extends BaseBo<Score> {
 
         updateProfileWithNewestPreferences(score);
 
-        saveScoreAndComment(score, comment);
+        saveScoreAndComment(loggedUser.getId(), score, comment);
 
         // TODO: post in twitter or facebook, if saving for the first time
     }
@@ -56,6 +56,7 @@ public class ScoreBo extends BaseBo<Score> {
         }
         score.setOwner(owner);
         score.setWinnerDefined(score.hasWinner());
+        score.setConfirmed(findScoreIsConfirmedById(score.getId()));
 
         consist(owner, score, score.getLeftPlayers());
         consist(owner, score, score.getRightPlayers());
@@ -86,9 +87,21 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    private void saveScoreAndComment(Score score, PlayerInstanceComment comment) {
-        dao.saveOrUpdate(score);
-        if (comment != null) {
+    private Boolean findScoreIsConfirmedById(Integer scoreId) {
+        if (scoreId != null) {
+            List<Boolean> confirmedFields = dao.findByNamedQuery("findScoreIsConfirmedByIdQuery", scoreId);
+            if (confirmedFields.size() > 0) {
+                return confirmedFields.get(0);
+            }
+        }
+        return null;
+    }
+
+    private void saveScoreAndComment(Integer loggedUserId, Score score, PlayerInstanceComment comment) {
+        if (Boolean.TRUE.equals(score.isUpdatable(loggedUserId))) {
+            dao.saveOrUpdate(score);
+        }
+        if (comment != null && score.isUpdatable(loggedUserId) != null) {
             dao.saveOrUpdate(comment);
         }
     }

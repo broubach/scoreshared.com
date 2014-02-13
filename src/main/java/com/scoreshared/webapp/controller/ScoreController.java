@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.business.persistence.Player;
+import com.scoreshared.business.persistence.PlayerInstance;
 import com.scoreshared.business.persistence.PlayerInstanceComment;
 import com.scoreshared.business.persistence.Score;
 import com.scoreshared.business.persistence.User;
@@ -95,6 +97,7 @@ public class ScoreController extends BaseController {
                 }
             }
             score.setOwnerId(loggedUser.getId());
+            score.setUpdatable(Boolean.TRUE);
 
             mav.addObject("score", score);
             mav.addObject("search", new SearchModel());
@@ -103,6 +106,7 @@ public class ScoreController extends BaseController {
             ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
             mav.addObject("playersList", playersList.toString());
+            mav.addObject("unusedPlayersList", playersList.toString());
             return mav;
         } catch (JsonGenerationException e) {
             throw new RuntimeException(e);
@@ -125,27 +129,37 @@ public class ScoreController extends BaseController {
     public ModelAndView edit(@LoggedUser User loggedUser, @PathVariable Integer scoreId, HttpServletRequest request, HttpSession session) {
         try {
             ModelAndView mav = new ModelAndView("score");
-            if (request.getParameter("postSaveUrl") != null) {
-                mav.addObject("postSaveUrl", request.getParameter("postSaveUrl"));
-            }
-
             Score score = scoreBo.findById(scoreId);
             if (score == null) {
                 return create(loggedUser, session);
+
+            } else if (score.isUpdatable(loggedUser.getId()) == null) {
+                throw new RuntimeException("score can't be edit by you");
+            }
+
+            if (request.getParameter("postSaveUrl") != null) {
+                mav.addObject("postSaveUrl", request.getParameter("postSaveUrl"));
             }
 
             PlayerInstanceComment comment = scoreBo.findCommentByPlayerInstanceId(score.getAssociatedPlayer(loggedUser.getId()).getId());
             score.setComment(comment);
 
             ScoreModel scoreModel = conversionService.convert(score, ScoreModel.class);
+            scoreModel.setUpdatable(score.isUpdatable(loggedUser.getId()));
 
             mav.addObject("score", scoreModel);
             mav.addObject("search", new SearchModel());
 
-            StringWriter playersList = new StringWriter();
+            StringWriter stringWriter = new StringWriter();
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
-            mav.addObject("playersList", playersList.toString());
+            List<String> playerList = toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser));
+            mapper.writeValue(stringWriter, playerList);
+            mav.addObject("playersList", stringWriter.toString());
+
+            List<String> unusedPlayerList = removeUsedPlayers(playerList, score.getAllPlayers());
+            stringWriter = new StringWriter();
+            mapper.writeValue(stringWriter, unusedPlayerList);
+            mav.addObject("unusedPlayersList", stringWriter.toString());
             return mav;
         } catch (JsonGenerationException e) {
             throw new RuntimeException(e);
@@ -154,6 +168,14 @@ public class ScoreController extends BaseController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> removeUsedPlayers(List<String> playerList, Set<PlayerInstance> allPlayers) {
+        List<String> unusedPlayers = new ArrayList<String>(playerList);
+        for (PlayerInstance playerInstance : allPlayers) {
+            unusedPlayers.remove(playerInstance.getName());
+        }
+        return unusedPlayers;
     }
 
     @RequestMapping(method = RequestMethod.POST)

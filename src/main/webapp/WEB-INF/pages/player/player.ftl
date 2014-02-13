@@ -22,8 +22,8 @@
 		<div class="box-content">
 			<div class="row">
 				<div class="columns small-2"><img src="<@spring.url relativeUrl="/app/avatar?hash=${player.avatarHash}"/>" class="avatar"/></div>
-				<div class="columns small-4"><h2>${player.user.fullName}</h2></div>
-				<div class="columns small-6">
+				<div class="columns small-5"><h2>${player.user.fullName}</h2></div>
+				<div class="columns small-5">
 					<#if !player.connected && !player.invitationDate??>
 						<button id="connect" class="button button-small"><@spring.message code="label.connect"/></button>
 					</#if>&nbsp;
@@ -57,37 +57,37 @@
 				</div>
 				<div class="columns small-5">
 					<div class="row">
-						<div class="input text"><span class="label secondary"><@spring.message code="label.age" />: </span></div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.age" /></div>
 						<div class="columns small-7">${player.age}</div>
 					</div>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.residence" />: </div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.residence" /></div>
 						<div class="columns small-7">${player.residence}</div>
 					</div>
 					<#if player.showContactInfoToFriends>
 						<div class="row">
-							<div class="columns small-5"><@spring.message code="label.phone_number" />: </div>
+							<div class="columns small-5 input text direita"><@spring.message code="label.phone_number" /></div>
 							<div class="columns small-7">${player.phoneNumber}</div>
 						</div>
 					</#if>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.academy" />: </div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.academy" /></div>
 						<div class="columns small-7">${player.academy}</div>
 					</div>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.plays" />: </div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.plays" /></div>
 						<div class="columns small-7">${player.plays}</div>
 					</div>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.coach" />: </div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.coach" /></div>
 						<div class="columns small-7">${player.coach}</div>
 					</div>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.site" />: </div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.site" /></div>
 						<div class="columns small-7">${player.site}</div>
 					</div>
 					<div class="row">
-						<div class="columns small-5"><@spring.message code="label.self_definition" />:</div>
+						<div class="columns small-5 input text direita"><@spring.message code="label.self_definition" /></div>
 						<div class="columns small-7">${player.style}</div>
 					</div>
 				</div>

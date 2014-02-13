@@ -8,13 +8,14 @@ var Sets = {
 	loggedUserPlayerName: "",
 	count: 1,
 
-	init: function(playersPane, setsPane, nthSetLabel, setLabel, playersList, loggedUserPlayerName) {
+	init: function(playersPane, setsPane, nthSetLabel, setLabel, playersList, loggedUserPlayerName, isScoreUpdatable) {
 		Sets.playersPane = playersPane;
 		Sets.setsPane = setsPane;
 		Sets.nthSetLabel = nthSetLabel;
 		Sets.setLabel = setLabel;
 		Sets.playersList = playersList;
 		Sets.loggedUserPlayerName = loggedUserPlayerName;
+		Sets.isScoreUpdatable = isScoreUpdatable;
 		$('label', document.getElementById(Sets.setsPane)).append(Sets.count + Sets.nthSetLabel);
 		$('input', document.getElementById(Sets.setsPane)).blur(Sets.switchSidesIfNeeded);
 		Sets.updateAllSetsInfo();
@@ -42,7 +43,7 @@ var Sets = {
 		        var data = [];
 		        $(ProvidePlayerListStep.createList(element.val())).each(function () {
 		        	var isLocked = false;
-		        	if (Sets.loggedUserPlayerName.toUpperCase() == this.playerName.toUpperCase()) {
+		        	if (Sets.loggedUserPlayerName.toUpperCase() == this.playerName.toUpperCase() || !Sets.isScoreUpdatable) {
 		        		isLocked = true;
 		        	}
 		            data.push({id: this.playerName, text: this.playerName, locked: isLocked});
@@ -57,6 +58,7 @@ var Sets = {
 		    	}
 		    }
 		});
+		$("#playersLeft,#playersRight").select2("readonly", !Sets.isScoreUpdatable);
 	},
 	
 	destroyDropDown: function() {

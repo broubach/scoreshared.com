@@ -162,6 +162,8 @@
 
 <script type="text/javascript">
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	DialogGeneralConfirm.init();
 	
 	var options = {
@@ -174,7 +176,5 @@ $(function() {
 		loss: ${loss}
 	}
 	Scores.init(options);
-
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

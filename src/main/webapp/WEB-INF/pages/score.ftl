@@ -58,6 +58,12 @@
 							<@spring.formHiddenInput "score.id", ""/>
 							<@spring.formHiddenInput "score.ownerId", ""/>
 							<@spring.formHiddenInput "score.newPlayersNotToBeRemembered", ""/>
+							<@spring.formHiddenInput "score.updatable", ""/>
+							<#assign isScoreUpdatableReadonlyAttributes>
+								<#if !score.updatable>
+									readonly="readonly"
+								</#if>
+							</#assign>
 							<div class="resultados">
 								<div class="row" id="playersPane">
 									<div class="columns small-6 large-6">
@@ -67,22 +73,26 @@
 										<div class="input text"><@spring.formInput "score.playersRight", "style='width:100%'", "text"/></div>
 									</div>
 								</div>
+								<#assign player1Attribute>class='player1' maxlength='2' ${isScoreUpdatableReadonlyAttributes}</#assign>
+								<#assign player2Attribute>maxlength='2' ${isScoreUpdatableReadonlyAttributes}</#assign>
 								<div class="resultado-set" id="setsPane">
 									<div class="row">
 										<div class="columns small-2 large-2">
 											<label class="nset"><@spring.message code="label.set"/> 1</label>
 										</div>
 										<div class="columns large-3 small-3 placar">
-											<div class="input text"><@spring.formInput "score.set1Left", "class='player1'", "text"/></div>		
+											<div class="input text"><@spring.formInput "score.set1Left", player1Attribute, "text"/></div>		
 										</div>
 										<div class="columns large-2 small-2">
 											&nbsp;
 										</div>
 										<div class="columns large-3 small-3 placar">
-											<div class="input text"><@spring.formInput "score.set1Right", "", "text"/></div>
+											<div class="input text"><@spring.formInput "score.set1Right", player2Attribute, "text"/></div>
 											</div>
 										<div class="columns small-2 large-2">
+											<#if score.updatable>
 											<a href="javascript:Sets.deleteY(1);" class="js-remove-set"><img src="<@spring.url relativeUrl="/img/icons/menos.png"/>" alt="" /></a>
+											</#if>
 										</div>
 									</div>
 								</div>
@@ -103,27 +113,39 @@
 												<div class="input text"><@spring.formInput "score.set${i}Right", "", "text"/></div>
 											</div>
 											<div class="columns small-2 large-2">
+												<#if score.updatable>
 												<a href="javascript:Sets.deleteY(${i});" class="js-remove-set"><img src="<@spring.url relativeUrl="/img/icons/menos.png"/>" alt="" /></a>
+												</#if>
 											</div>
 										</div>
 									</div>
 								</#list>
-								<a href="javascript:Sets.increase();" class="js-add-set"><img src="<@spring.url relativeUrl="/img/icons/mais.png"/>" alt="" /></a>
-								<hr/>
-								<p>
-									<span class="label round"><@spring.message code="label.use_ctrl_space_to_get_a_list_of_existing_players"/></span>
-									<br/>
-									<span class="label round"><@spring.message code="label.is_it_doubles_use_comma_to_list_more_than_one_player_per_side"/></span>
-								</p>
+								<#if score.updatable>
+									<a href="javascript:Sets.increase();" class="js-add-set"><img src="<@spring.url relativeUrl="/img/icons/mais.png"/>" alt="" /></a>
+									<hr/>
+									<p>
+										<span class="label round"><@spring.message code="label.use_ctrl_space_to_get_a_list_of_existing_players"/></span>
+										<br/>
+										<span class="label round"><@spring.message code="label.is_it_doubles_use_comma_to_list_more_than_one_player_per_side"/></span>
+									</p>
+								</#if>
 							</div>
 						</div>
 						<div class="small-12 large-5 columns">
-							<div class="input text"><label for="data"><@spring.message code="label.date"/> (<@spring.message code="label.required"/>)</label><@spring.formInput "score.date", "class=\"datepicker\"", "text"/></div>
-							<div class="input text"><label for="hora"><@spring.message code="label.time"/> (<@spring.message code="label.optional"/>)</label><@spring.formInput "score.time", "class=\"timepicker\"", "text"/></div>
+							<#assign isScoreUpdatableAttributes>
+								<#if !score.updatable>
+									disabled="disabled" readonly="readonly"
+								</#if>
+							</#assign>
+							<#assign dateAttributes>class="datepicker" ${isScoreUpdatableAttributes}</#assign>
+							<#assign timeAttributes>class="timepicker" ${isScoreUpdatableAttributes}</#assign>
+							<div class="input text"><label for="data"><@spring.message code="label.date"/> (<@spring.message code="label.required"/>)</label><@spring.formInput "score.date", dateAttributes, "text"/></div>
+							<div class="input text"><label for="hora"><@spring.message code="label.time"/> (<@spring.message code="label.optional"/>)</label><@spring.formInput "score.time", timeAttributes, "text"/></div>
 							<#assign label_comment_sample>class='autosize' placeholder='<@spring.message code="label.comment_sample"/>' cols='30' rows='6'</#assign>			
 							<div class="input textarea"><label for="private_comment"><@spring.message code="label.private_comment"/></label><@spring.formTextarea "score.comment", label_comment_sample/></div>
 							<br/>
-							<div class="input text"><label for="coach"><@spring.message code="label.share_the_comment_with_your_coach"/></label><@spring.formInput "score.coach", "placeholder=''", "text" /></div>
+							<div class="input text"><label for="coach"><@spring.message code="label.share_the_comment_with_your_coach"/></label><@spring.formInput "score.coach", isScoreUpdatableAttributes, "text" /></div>
+							<#assign with100Attribute>style='width:100%' ${isScoreUpdatableAttributes}</#assign>
 							<div class="input select">
 								<label for="score.sportId"><@spring.message code="label.what_sport_do_you_intend_to_score" /></label>
 								<#assign label_sport_tennis><@spring.message code="label.sport_tennis"/></#assign>
@@ -134,7 +156,7 @@
 								<#assign label_sport_paddle><@spring.message code="label.sport_paddle"/></#assign>
 								<#assign label_sport_other><@spring.message code="label.sport_other"/></#assign>
 								<#assign sportsHash = {"0":label_sport_tennis, "1":label_sport_table_tennis, "2":label_sport_badminton, "3":label_sport_squash, "4":label_sport_beach_tennis, "5":label_sport_paddle, "6":label_sport_other} >
-								<@spring.formSingleSelect "score.sportId", sportsHash, "style='width:100%'" />
+								<@spring.formSingleSelect "score.sportId", sportsHash, with100Attribute />
 							</div>
 							<br/>
 
@@ -210,7 +232,7 @@
 		});
 
 		$("#set1Left,#set1Right,#set2Left,#set2Right,#set3Left,#set3Right,#set4Left,#set4Right,#set5Left,#set5Right").numeric({ decimal: false, negative: false });
-		Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>", ${playersList}, "${associatedPlayer.name}");
+		Sets.init("playersPane", "setsPane", "<@spring.message code="label.nth_set"/>", "<@spring.message code="label.set"/>", ${playersList}, "${associatedPlayer.name}", ${(score.updatable)?c});
 
 		var newPlayerWizardOptions = {
 			contextPath: "<@spring.url relativeUrl="/"/>",
@@ -225,10 +247,14 @@
 		};
 		NewPlayerWizard.init(newPlayerWizardOptions);
 
-		$("#playersRight").select2("open");
+		<#if (score.updatable)>
+			$("#playersRight").select2("open");
+		<#else>
+			$("#comment").focus();
+		</#if>
 	});
 </script>
-<#if playersList == '[]'>
+<#if (unusedPlayersList == '[]' || !score.updatable)>
 	<style>
 			.select2-drop { display: none !important };
 	</style>

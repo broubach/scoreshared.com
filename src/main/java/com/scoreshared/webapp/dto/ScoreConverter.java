@@ -28,7 +28,9 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             User owner = new User();
             owner.setId(src.getOwnerId());
             dest.setOwner(owner);
-            dest.setDate(getDate(src.getDate()));
+            if (!StringUtils.isEmpty(src.getDate())) {
+                dest.setDate(getDate(src.getDate()));
+            }
             if (!StringUtils.isEmpty(src.getTime())) {
                 dest.setTime(getTime(src.getTime()));
             }

@@ -92,7 +92,7 @@ var Scores = {
 	},
 
 	initTableClickBehavior: function() {
-		$("td a").click(function (e) {
+		$("td .actions a").click(function (e) {
 			e.preventDefault();
 			ClickContext.tableLine = $(this).closest("li");
 			ClickContext.kind = $(this).attr('href').split(',')[0];
@@ -205,6 +205,8 @@ var Scores = {
 	init: function(options) {
 		Scores.options = options;
 
+		Scores.initTableClickBehavior();
+
 		Scores.initSearchBarBehavior();
 
 		Scores.initDialogGeneral();
@@ -212,8 +214,6 @@ var Scores = {
 		Scores.initDialogsForward();
 
 		Scores.initTableHoverBehavior();
-
-		Scores.initTableClickBehavior();
 
 		Scores.initStats();
 	}

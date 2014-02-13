@@ -40,6 +40,10 @@ public class ScoreModelValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        if (!Boolean.valueOf(errors.getFieldValue("updatable").toString())) {
+            return;
+        }
+
         // date mandatory 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "error.field_is_required",
                 new Object[] { messageResource.getMessage("label.validation_date", null, locale) });

@@ -41,6 +41,7 @@ import org.hibernate.search.annotations.TokenizerDef;
         @NamedQuery(name = "countPendingScoreApprovalsQuery", query = "select count(distinct s) from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0))"),
         @NamedQuery(name = "pendingScoreRevisionsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 or pr.approvalResponse = 3) and s.owner.id = :ownerId group by s.id"),
         @NamedQuery(name = "countPendingScoreRevisionsQuery", query = "select count(distinct s) from Score s join s.leftPlayers pl join s.rightPlayers pr where (pl.approvalResponse = 3 or pr.approvalResponse = 3) and s.owner.id = :ownerId"),
+        @NamedQuery(name = "findScoreIsConfirmedByIdQuery", query = "select score.confirmed from Score score where score.id = :id"),
         @NamedQuery(name = "scoresByOwner", query = "from Score s where s.owner.id = :ownerId")})
 @SQLDelete(sql="UPDATE score SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")
@@ -530,5 +531,17 @@ public class Score extends BaseEntity implements Cloneable {
             }
         }
         return hasConnectedPlayer;
+    }
+
+    public Boolean isUpdatable(Integer loggedUserId) {
+        if (getAssociatedPlayer(loggedUserId) == null) {
+            return null;
+
+        } else if (!Boolean.TRUE.equals(getConfirmed()) && getOwner().getId().equals(loggedUserId)) {
+            return Boolean.TRUE;
+
+        } else {
+            return Boolean.FALSE;
+        }
     }
 }
