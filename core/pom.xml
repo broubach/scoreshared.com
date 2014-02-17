@@ -16,5 +16,6 @@
 
     <modules>
         <module>web</module>
+        <module>persistence</module>
     </modules>
 </project>

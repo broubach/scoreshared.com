@@ -3,14 +3,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scoreshared</groupId>
-    <artifactId>barragem_net-importer</artifactId>
+    <artifactId>persistence</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Barragem.net Importer</name>
+    <name>Persistence</name>
 
     <parent>
         <groupId>com.scoreshared</groupId>
-        <artifactId>tools</artifactId>
+        <artifactId>core</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -39,26 +39,55 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	    <maven.compiler.source>1.6</maven.compiler.source>
 	    <maven.compiler.target>1.6</maven.compiler.target>
+		<org.springframework-version>3.2.6.RELEASE</org.springframework-version>
+		<org.springframework.security-version>3.1.4.RELEASE</org.springframework.security-version>
+		<org.hibernate-version>4.2.8.Final</org.hibernate-version>
+		<org.hibernate.search-version>4.4.2.Final</org.hibernate.search-version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-		    <groupId>net.barragem</groupId>
-		    <artifactId>domain</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/lib/barragem_domain.jar</systemPath>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${org.springframework.security-version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.scoreshared</groupId>
-			<artifactId>persistence</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-search-orm</artifactId>
+		   <version>${org.hibernate.search-version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-core</artifactId>
+		   <version>${org.hibernate-version}</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
+		  <version>3.1</version>
+  		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${org.springframework-version}</version>
+			<scope>test</scope>
 		</dependency>
    	</dependencies>
 
