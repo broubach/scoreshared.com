@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/barragem_net</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">root</property>
+
+		<property name="hibernate.show_sql">false</property>
+		<!-- property name="hibernate.hbm2ddl.auto">validate</property -->
+
+		<property name="hibernate.connection.pool_size">100</property>
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		<property name="hibernate.c3p0.acquire_increment">5</property>
+		<property name="hibernate.c3p0.idle_test_period">100</property>
+		<property name="hibernate.c3p0.min_size">10</property>
+		<property name="hibernate.c3p0.max_size">100</property>
+		<property name="hibernate.c3p0.timeout">100</property>
+		<property name="hibernate.c3p0.max_statements">0</property>
+
+		<mapping class="net.barragem.persistence.entity.BaseEntity"/>
+		<mapping class="net.barragem.persistence.entity.Arquivo"/>
+		<mapping class="net.barragem.persistence.entity.Atualizacao"/>
+		<mapping class="net.barragem.persistence.entity.AtualizacaoTwitter"/>
+		<mapping class="net.barragem.persistence.entity.Barragem"/>
+		<mapping class="net.barragem.persistence.entity.Bonus"/>
+		<mapping class="net.barragem.persistence.entity.Categoria"/>
+		<mapping class="net.barragem.persistence.entity.Ciclo"/>
+		<mapping class="net.barragem.persistence.entity.CicloJogador"/>
+		<mapping class="net.barragem.persistence.entity.Conta"/>
+		<mapping class="net.barragem.persistence.entity.Evento"/>
+		<mapping class="net.barragem.persistence.entity.Jogador"/>
+		<mapping class="net.barragem.persistence.entity.JogadorEvento"/>
+		<mapping class="net.barragem.persistence.entity.JogadorJogo"/>
+		<mapping class="net.barragem.persistence.entity.JogadorJogoBarragem"/>
+		<mapping class="net.barragem.persistence.entity.Jogo"/>
+		<mapping class="net.barragem.persistence.entity.JogoBarragem"/>
+		<mapping class="net.barragem.persistence.entity.Mensagem"/>
+		<mapping class="net.barragem.persistence.entity.Operacao"/>
+		<mapping class="net.barragem.persistence.entity.OperacaoCarga"/>
+		<mapping class="net.barragem.persistence.entity.OperacaoDebitoJogoBarragem"/>
+		<mapping class="net.barragem.persistence.entity.OperacaoDevolucao"/>
+		<mapping class="net.barragem.persistence.entity.ParametroCiclo"/>
+		<mapping class="net.barragem.persistence.entity.Parcial"/>
+		<mapping class="net.barragem.persistence.entity.Perfil"/>
+		<mapping class="net.barragem.persistence.entity.Placar"/>
+		<mapping class="net.barragem.persistence.entity.Predicado"/>
+    	<mapping class="net.barragem.persistence.entity.RequisicaoRecuperarSenha"/>
+		<mapping class="net.barragem.persistence.entity.Rodada"/>
+		<mapping class="net.barragem.persistence.entity.TextoAtualizacao"/>
+		<mapping class="net.barragem.persistence.entity.Treino"/>
+		<mapping class="net.barragem.persistence.entity.Usuario"/>
+    </session-factory>
+
+</hibernate-configuration>

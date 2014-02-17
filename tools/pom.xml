@@ -3,13 +3,18 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scoreshared</groupId>
-    <artifactId>baseline</artifactId>
+    <artifactId>tools</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Main Projects</name>
+    <name>Tools</name>
+
+    <parent>
+        <groupId>com.scoreshared</groupId>
+        <artifactId>baseline</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
     <modules>
-        <module>core</module>
-        <module>tools</module>
+        <module>barragem_net-importer</module>
     </modules>
 </project>
