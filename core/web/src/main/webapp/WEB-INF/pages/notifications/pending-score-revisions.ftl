@@ -48,8 +48,8 @@
 													<td><@spring.message code="label.reviewed_by"/>: <img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/> ${item.playerInstance.player.name}</td>
 													<td width="30%" rowspan="6">
 														<span class="actions hide">
-															<a href="approve,${item.score.id},${item.playerInstance.id}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
-															<a href="ignore,${item.score.id},${item.playerInstance.id}" class="button button-small"><@spring.message code="label.ignore"/></a>
+															<a href="approve,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
+															<a href="ignore,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small"><@spring.message code="label.ignore"/></a>
 														</span>
 													</td>
 												</tr>

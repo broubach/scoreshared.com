@@ -37,8 +37,8 @@
 											<td>${item[1]} ${item[2]}</td>
 											<td width="30%">
 												<span class="actions hide">
-													<a href="accept,${item[3]}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
-													<a href="ignore,${item[3]}" class="button button-small"><@spring.message code="label.ignore"/></a>
+													<a href="accept,${item[3]?c}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
+													<a href="ignore,${item[3]?c}" class="button button-small"><@spring.message code="label.ignore"/></a>
 												</span>
 											</td>
 										</tr>

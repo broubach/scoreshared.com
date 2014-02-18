@@ -17,6 +17,7 @@
 
 		<property name="hibernate.connection.pool_size">100</property>
 		<property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		<property name="hibernate.search.default.indexBase">/temp</property>
 		<property name="hibernate.c3p0.acquire_increment">5</property>
 		<property name="hibernate.c3p0.idle_test_period">100</property>
 		<property name="hibernate.c3p0.min_size">10</property>
@@ -24,15 +25,15 @@
 		<property name="hibernate.c3p0.timeout">100</property>
 		<property name="hibernate.c3p0.max_statements">0</property>
 
-		<mapping class="com.scoreshared.business.persistence.BaseEntity"/>
-		<mapping class="com.scoreshared.business.persistence.File"/>
-		<mapping class="com.scoreshared.business.persistence.Invitation"/>
-		<mapping class="com.scoreshared.business.persistence.Player"/>
-		<mapping class="com.scoreshared.business.persistence.PlayerInstance"/>
-		<mapping class="com.scoreshared.business.persistence.PlayerInstanceComment"/>
-		<mapping class="com.scoreshared.business.persistence.Profile"/>
-		<mapping class="com.scoreshared.business.persistence.Score"/>
-		<mapping class="com.scoreshared.business.persistence.User"/>
+		<mapping class="com.scoreshared.domain.entity.BaseEntity"/>
+		<mapping class="com.scoreshared.domain.entity.File"/>
+		<mapping class="com.scoreshared.domain.entity.Invitation"/>
+		<mapping class="com.scoreshared.domain.entity.Player"/>
+		<mapping class="com.scoreshared.domain.entity.PlayerInstance"/>
+		<mapping class="com.scoreshared.domain.entity.PlayerInstanceComment"/>
+		<mapping class="com.scoreshared.domain.entity.Profile"/>
+		<mapping class="com.scoreshared.domain.entity.Score"/>
+		<mapping class="com.scoreshared.domain.entity.User"/>
     </session-factory>
 
 </hibernate-configuration>

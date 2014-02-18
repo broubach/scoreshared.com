@@ -78,7 +78,7 @@
 													<td>${player.name}</td>
 													<td id="actions-column" width="50%">
 														<span class="actions hide">
-															<a href="removeLink,${player.id}" class="button button-small button-primary"><@spring.message code="label.remove_link"/></a>
+															<a href="removeLink,${player.id?c}" class="button button-small button-primary"><@spring.message code="label.remove_link"/></a>
 														</span>
 													</td>
 												<#else>
@@ -86,9 +86,9 @@
 													<td id="name-column">${player.name}</td>
 													<td width="50%">
 														<span class="actions hide">
-															<a href="rename,${player.id}" class="button button-small button-primary"><@spring.message code="label.rename"/></a>
-															<a href="invite,${player.id}" class="button button-small button-warning"><@spring.message code="label.invite"/></a>
-															<#if !player.hasMatchAssociated><a href="remove,${player.id},${player.name}" class="button button-small"><@spring.message code="label.remove"/></a></#if>
+															<a href="rename,${player.id?c}" class="button button-small button-primary"><@spring.message code="label.rename"/></a>
+															<a href="invite,${player.id?c}" class="button button-small button-warning"><@spring.message code="label.invite"/></a>
+															<#if !player.hasMatchAssociated><a href="remove,${player.id?c},${player.name}" class="button button-small"><@spring.message code="label.remove"/></a></#if>
 														</span>
 													</td>
 												</#if>

@@ -47,9 +47,9 @@
 											<td><img src="<@spring.url relativeUrl="/img/icons/time.png"/>" alt="${item.dateTime}" title="${item.dateTime}">${item.dateTime}</td>
 											<td width="40%">
 												<span class="actions hide">
-													<a href="accept,${item.score.id},${item.score.owner.fullName}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
-													<a href="review,${item.score.id},${item.score.owner.fullName}" class="button button-small button-warning"><@spring.message code="label.ask_for_revision"/></a>
-													<a href="ignore,${item.score.id},${item.score.owner.fullName}" class="button button-small"><@spring.message code="label.ignore"/></a>
+													<a href="accept,${item.score.id?c},${item.score.owner.fullName}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
+													<a href="review,${item.score.id?c},${item.score.owner.fullName}" class="button button-small button-warning"><@spring.message code="label.ask_for_revision"/></a>
+													<a href="ignore,${item.score.id?c},${item.score.owner.fullName}" class="button button-small"><@spring.message code="label.ignore"/></a>
 												</span>
 											</td>
 										</tr>

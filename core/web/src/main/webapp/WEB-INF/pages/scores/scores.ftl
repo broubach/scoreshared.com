@@ -83,14 +83,14 @@
 										</td>
 										<td id="actions-column" width="35%">
 											<span class="actions hide">
-												<a href="edit,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.edit"/></a>
+												<a href="edit,${item.score.id?c}" class="button button-small button-primary"><@spring.message code="label.edit"/></a>
 												<#if associatedPlayer.owner.id == item.score.owner.id>
 													<#if (item.score.connectedPlayersInScore?size > 1)>
-														<a href="forward,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.forward"/></a>
+														<a href="forward,${item.score.id?c}" class="button button-small button-primary"><@spring.message code="label.forward"/></a>
 													</#if>
-													<a href="remove,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.remove"/></a>
+													<a href="remove,${item.score.id?c}" class="button button-small button-primary"><@spring.message code="label.remove"/></a>
 												<#else>
-													<a href="hide-permanently,${item.score.id}" class="button button-small button-primary"><@spring.message code="label.hide_permanently"/></a>
+													<a href="hide-permanently,${item.score.id?c}" class="button button-small button-primary"><@spring.message code="label.hide_permanently"/></a>
 												</#if>
 											</span>
 										</td>
