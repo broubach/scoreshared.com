@@ -9,6 +9,12 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.scoreshared.domain.entity.File;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.Profile;
+import com.scoreshared.domain.entity.SportEnum;
+import com.scoreshared.domain.entity.User;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-ctx.xml"})
 public class ProfileTest {

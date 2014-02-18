@@ -2,7 +2,7 @@ package com.scoreshared.webapp.dto;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 
 public class UserConverter extends BaseConverter implements Converter<User, Object[]> {
 

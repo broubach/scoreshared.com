@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.SportEnum;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.SportEnum;
+import com.scoreshared.domain.entity.User;
 
 public class ScoreConverter extends BaseConverter implements Converter<ScoreModel, Score> {
 

@@ -1,4 +1,4 @@
-package com.scoreshared.business.persistence;
+package com.scoreshared.domain.entity;
 
 import java.util.Date;
 import java.util.HashSet;

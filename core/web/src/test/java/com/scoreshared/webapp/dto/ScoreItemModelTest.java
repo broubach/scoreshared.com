@@ -16,9 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-ctx.xml"})

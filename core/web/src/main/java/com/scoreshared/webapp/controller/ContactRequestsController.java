@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.GraphBo;
-import com.scoreshared.business.persistence.Profile;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Profile;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.scaffold.NotificationStatsHelper;
 

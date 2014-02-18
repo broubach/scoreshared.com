@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.domain.entity.Player;
 
 @Component
 public class NotificationStatsHelper {

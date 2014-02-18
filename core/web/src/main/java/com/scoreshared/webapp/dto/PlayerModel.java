@@ -8,8 +8,8 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.User;
 
 public class PlayerModel {
 

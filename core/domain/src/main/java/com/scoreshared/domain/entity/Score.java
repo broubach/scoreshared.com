@@ -1,4 +1,4 @@
-package com.scoreshared.business.persistence;
+package com.scoreshared.domain.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
@@ -35,7 +35,7 @@ import org.hibernate.search.annotations.TokenizerDef;
 @Entity
 @Table(name = "score")
 @NamedQueries({
-        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.business.persistence.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :id) or (rp.approvalResponse = 0 and rp.player.association.id = :id)"),
+        @NamedQuery(name = "scoresForWinLossQuery", query = "select new com.scoreshared.domain.entity.Score(score.id, score.set1Left, score.set1Right, score.set2Left, score.set2Right, score.set3Left, score.set3Right, score.set4Left, score.set4Right, score.set5Left, score.set5Right) from Score score join score.leftPlayers lp join score.rightPlayers rp where (lp.approvalResponse = 0 and lp.player.association.id = :id) or (rp.approvalResponse = 0 and rp.player.association.id = :id)"),
         @NamedQuery(name = "scoreIdAndLeftPlayerQuery", query = "select score.id, leftPlayer from Score score join score.leftPlayers leftPlayer where score.id in (:ids)"),
         @NamedQuery(name = "pendingScoreApprovalsQuery", query = "select s from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0)) group by s.id"),
         @NamedQuery(name = "countPendingScoreApprovalsQuery", query = "select count(distinct s) from Score s join s.leftPlayers pl join s.rightPlayers pr where ((pl.approvalResponse is null and pl.player.association.id = :userId and pl.player.invitation.response = 0) or (pr.approvalResponse is null and pr.player.association.id = :userId and pr.player.invitation.response = 0))"),

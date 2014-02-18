@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.domain.entity.Player;
 import com.scoreshared.webapp.dto.ScoreModel;
 
 public class ScoreModelValidator implements Validator {

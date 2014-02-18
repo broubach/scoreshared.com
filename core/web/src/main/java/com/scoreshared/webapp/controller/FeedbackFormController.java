@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.scoreshared.business.bo.FeedbackBo;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 
 @Controller

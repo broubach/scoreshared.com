@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.Score;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.Score;
 
 public class ScoreModelConverter extends BaseConverter implements Converter<Score, ScoreModel> {
     

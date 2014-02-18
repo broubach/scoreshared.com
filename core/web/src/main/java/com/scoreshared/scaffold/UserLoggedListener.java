@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.User;
 
 @Component
 public class UserLoggedListener implements ApplicationListener<AuthenticationSuccessEvent> {

@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.scoreshared.business.persistence.Invitation;
-import com.scoreshared.business.persistence.InvitationResponseEnum;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Invitation;
+import com.scoreshared.domain.entity.InvitationResponseEnum;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
 @Component

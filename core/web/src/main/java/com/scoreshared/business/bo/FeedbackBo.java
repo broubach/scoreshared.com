@@ -3,7 +3,7 @@ package com.scoreshared.business.bo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 
 @Component
 public class FeedbackBo extends BaseBo {

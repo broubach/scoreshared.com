@@ -1,4 +1,4 @@
-package com.scoreshared.business.persistence;
+package com.scoreshared.domain.entity;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;

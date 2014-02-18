@@ -19,8 +19,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.File;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.File;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.dto.ProfileAvatarForm;
 
 @Component

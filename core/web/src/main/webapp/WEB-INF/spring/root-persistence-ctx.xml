@@ -16,7 +16,7 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="com.scoreshared.business.persistence"/>
+		<property name="packagesToScan" value="com.scoreshared.domain.entity"/>
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
@@ -38,7 +38,7 @@
 		</property>
 	</bean>
 	
-	<bean class="com.scoreshared.business.persistence.GenericOperationsDao">
+	<bean class="com.scoreshared.business.dao.GenericOperationsDao">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 </beans>

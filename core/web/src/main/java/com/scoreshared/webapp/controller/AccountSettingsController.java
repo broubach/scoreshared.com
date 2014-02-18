@@ -19,7 +19,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 
 @Controller

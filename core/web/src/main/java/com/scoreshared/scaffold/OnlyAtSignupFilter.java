@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Player;
+import com.scoreshared.domain.entity.Player;
 
 public class OnlyAtSignupFilter implements Filter {
 

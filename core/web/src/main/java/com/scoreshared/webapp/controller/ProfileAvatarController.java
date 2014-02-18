@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.AvatarHelper;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.ProfileAvatarForm;

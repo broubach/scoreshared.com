@@ -17,7 +17,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.WebRequest;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.AvatarHelper;
 import com.scoreshared.scaffold.ConnectionsHelper;
 import com.scoreshared.scaffold.LoggedUser;

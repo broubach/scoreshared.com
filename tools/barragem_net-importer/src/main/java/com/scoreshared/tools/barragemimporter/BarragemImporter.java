@@ -28,16 +28,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import com.scoreshared.business.persistence.File;
-import com.scoreshared.business.persistence.Invitation;
-import com.scoreshared.business.persistence.InvitationResponseEnum;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.PlayerInstanceComment;
-import com.scoreshared.business.persistence.Profile;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.SportEnum;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.File;
+import com.scoreshared.domain.entity.Invitation;
+import com.scoreshared.domain.entity.InvitationResponseEnum;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.PlayerInstanceComment;
+import com.scoreshared.domain.entity.Profile;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.SportEnum;
+import com.scoreshared.domain.entity.User;
 
 public class BarragemImporter {
     Logger logger = Logger.getLogger(BarragemImporter.class);

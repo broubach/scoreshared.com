@@ -1,6 +1,6 @@
 package com.scoreshared.webapp.dto;
 
-import com.scoreshared.business.persistence.Profile;
+import com.scoreshared.domain.entity.Profile;
 
 public class PersonalInformationForm {
 

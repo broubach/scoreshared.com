@@ -12,7 +12,7 @@ import javax.jms.Session;
 import org.springframework.context.MessageSource;
 import org.springframework.jms.core.MessageCreator;
 
-import com.scoreshared.business.persistence.GenericOperationsDao;
+import com.scoreshared.business.dao.GenericOperationsDao;
 import com.scoreshared.scaffold.CustomJmsTemplate;
 import com.scoreshared.scaffold.FreemarkerTemplateParser;
 

@@ -13,9 +13,9 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.scoreshared.business.persistence.PlayerInstanceComment;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.PlayerInstanceComment;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 import com.scoreshared.webapp.dto.ScoreModel;
 

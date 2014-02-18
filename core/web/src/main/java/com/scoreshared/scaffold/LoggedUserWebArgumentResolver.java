@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 
 public class LoggedUserWebArgumentResolver implements WebArgumentResolver {
 

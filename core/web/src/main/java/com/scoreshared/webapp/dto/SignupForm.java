@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import org.springframework.social.connect.UserProfile;
 
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 
 public class SignupForm {
     private String firstName;

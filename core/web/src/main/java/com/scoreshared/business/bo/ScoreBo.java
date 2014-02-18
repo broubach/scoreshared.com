@@ -15,12 +15,12 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.scoreshared.business.persistence.ApprovalResponseEnum;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.PlayerInstanceComment;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.ApprovalResponseEnum;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.PlayerInstanceComment;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
 @Component

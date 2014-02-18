@@ -33,8 +33,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.SecurityHelper;
 import com.scoreshared.webapp.dto.SignupForm;
 

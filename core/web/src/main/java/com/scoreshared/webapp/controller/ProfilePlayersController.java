@@ -23,8 +23,8 @@ import com.scoreshared.business.exception.LongPlayerNameException;
 import com.scoreshared.business.exception.PlayerLinkedException;
 import com.scoreshared.business.exception.PlayerNotLinkedException;
 import com.scoreshared.business.exception.PlayerWithRegisteredMatchException;
-import com.scoreshared.business.persistence.Player;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.SearchModel;
 

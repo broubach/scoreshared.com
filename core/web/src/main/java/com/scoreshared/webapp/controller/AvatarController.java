@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.File;
+import com.scoreshared.domain.entity.File;
 
 @Controller
 public class AvatarController extends BaseController {

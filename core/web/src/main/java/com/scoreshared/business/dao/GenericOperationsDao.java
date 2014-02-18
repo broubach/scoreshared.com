@@ -1,4 +1,4 @@
-package com.scoreshared.business.persistence;
+package com.scoreshared.business.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -26,6 +26,8 @@ import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.TermContext;
+
+import com.scoreshared.domain.entity.BaseEntity;
 
 public class GenericOperationsDao {
 

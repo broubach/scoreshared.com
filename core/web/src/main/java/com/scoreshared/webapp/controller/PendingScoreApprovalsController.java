@@ -23,8 +23,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.ScoreBo;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.scaffold.NotificationStatsHelper;
 import com.scoreshared.webapp.dto.ScoreConverter;

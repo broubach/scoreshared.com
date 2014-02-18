@@ -18,7 +18,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.Authentication;
 
 import com.scoreshared.business.bo.PlayerBo;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.User;
 
 public class EnablePlayersForLinkCreationFilter implements Filter {
     

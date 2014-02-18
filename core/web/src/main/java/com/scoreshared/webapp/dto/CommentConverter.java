@@ -2,7 +2,7 @@ package com.scoreshared.webapp.dto;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.business.persistence.PlayerInstanceComment;
+import com.scoreshared.domain.entity.PlayerInstanceComment;
 
 public class CommentConverter extends BaseConverter implements Converter<ScoreModel, PlayerInstanceComment> {
 

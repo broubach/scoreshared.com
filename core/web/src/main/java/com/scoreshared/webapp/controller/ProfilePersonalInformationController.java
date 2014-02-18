@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.business.persistence.Profile;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.Profile;
+import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.webapp.dto.PersonalInformationForm;
 import com.scoreshared.webapp.validation.PersonalInformationFormValidator;

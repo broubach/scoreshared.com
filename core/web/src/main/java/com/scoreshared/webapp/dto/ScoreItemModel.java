@@ -8,10 +8,10 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-import com.scoreshared.business.persistence.PlayerInstance;
-import com.scoreshared.business.persistence.PlayerInstanceComment;
-import com.scoreshared.business.persistence.Score;
-import com.scoreshared.business.persistence.User;
+import com.scoreshared.domain.entity.PlayerInstance;
+import com.scoreshared.domain.entity.PlayerInstanceComment;
+import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.User;
 
 public class ScoreItemModel {
 
