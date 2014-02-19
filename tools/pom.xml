@@ -14,5 +14,6 @@
 
     <modules>
         <module>barragem_net-importer</module>
+        <module>index-loader</module>
     </modules>
 </project>
