@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +57,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     public static final int DEFAULT_AVATAR_WIDTH = 104;
 
     @Inject
+    @Named("passwordEncoder")
     private Md5PasswordEncoder hashEncoder;
 
     public boolean checkEmailExists(String email) {

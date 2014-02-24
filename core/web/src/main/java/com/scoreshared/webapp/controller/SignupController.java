@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,6 +59,7 @@ public class SignupController extends BaseController {
     private LocaleResolver localeResolver;
 
     @Inject
+    @Named("passwordEncoder")
     private Md5PasswordEncoder passwordEncoder;
 
     @Inject

@@ -1,6 +1,7 @@
 package com.scoreshared.webapp.controller;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -28,6 +29,7 @@ public class ForgotPasswordController extends BaseController {
     private LocaleResolver localeResolver;
 
     @Inject
+    @Named("passwordEncoder")
     private Md5PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "/forgotPassword/sendInstructions", method = RequestMethod.GET)

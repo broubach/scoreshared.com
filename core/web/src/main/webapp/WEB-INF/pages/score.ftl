@@ -34,7 +34,7 @@
 		<div class="large-12 columns">
 			<div class="box-content">
 				<div class="row">
-			   		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>">
+			   		<form id="score-form" method="post" action="<@spring.url relativeUrl="/app/score"/>" accept-charset="utf-8">
 						<div class="small-12 large-12 columns">
 							<h2><@spring.message code="label.score_details"/></h2>
 						</div>

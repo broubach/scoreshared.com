@@ -34,7 +34,7 @@
 			<div class="box-content">
 				<h2><@spring.message code="label.latest_results"/></h2>
 				<#list scores as item>
-					<div class="item-resultado <#if item.confirmed??>confirmado</#if>">
+					<div class="item-resultado <#if item.confirmed!false>confirmado</#if>">
 						<#if (item.detailTextPart1?length > 0)>
 							<span class="placar">
 								${item.detailTextHighlightingWinnerWithLoggedUserAtLeft}

@@ -50,8 +50,12 @@
 				<salt-source user-property="username" />
 			</password-encoder>
 		</authentication-provider>
+		<authentication-provider user-service-ref="userBo">
+			<password-encoder ref="barragemPasswordEncoder" />
+		</authentication-provider>
 		<authentication-provider ref="socialAuthProvider" />
 	</authentication-manager>
 
 	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></beans:bean>
+	<beans:bean id="barragemPasswordEncoder" class="com.scoreshared.scaffold.BarragemMd5PasswordEncoder"></beans:bean>
 </beans:beans>

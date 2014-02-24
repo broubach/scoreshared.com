@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
@@ -31,6 +32,7 @@ public class GraphBo extends BaseBo<Player> {
     private String httpServerAddressPort;
 
     @Inject
+    @Named("passwordEncoder")
     private Md5PasswordEncoder hashEncoder;
 
 	public void inviteRegisteredUser(User owner, Integer associationId, Integer playerId, String message, Locale locale) {

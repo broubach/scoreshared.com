@@ -78,6 +78,7 @@ public class ExtractorAndTransformer {
         user.setFirstName(usuario.getNome());
         user.setLastName(usuario.getSobrenome());
         user.setEmail(usuario.getEmail());
+        user.setPassword(usuario.getSenha());
         user.setBirthday(usuario.getAniversario());
         user.setGender(SexoEnum.Homem.equals(usuario.getSexo()) ? 'M' : 'F');
         user.setLastAccess(usuario.getDataUltimoAcesso());
@@ -190,8 +191,12 @@ public class ExtractorAndTransformer {
         if (evento.getData() == null) {
             return null;
         }
+        if ((evento instanceof Jogo) && (Boolean.TRUE.equals(((Jogo) evento).getPlacar().getWo()) || ((Jogo) evento).getPlacar().getParciais().isEmpty())) {
+            return null;
+        }
         Score score = new Score();
         context.put("currentScore", score);
+        score.setOwner(userByUsuarioIdMap.get(evento.getUsuarioResponsavel().getId()));
         Set<PlayerInstance>[] playerInstances = null;
         if (evento instanceof Jogo) {
             playerInstances = transformPlayerInstancesFromJogo(evento.getJogadoresEventos());
@@ -202,7 +207,6 @@ public class ExtractorAndTransformer {
         score.setRightPlayers(playerInstances[1]);
         score.setDate(evento.getData());
         score.setTime(evento.getHora());
-        score.setOwner(userByUsuarioIdMap.get(evento.getUsuarioResponsavel().getId()));
         if (!hasOwnerListedAsPlayer(score)) {
             if (!forwardScoreToAssociatedPlayer(score)) {
                 commentsCreated.remove(context.get("lastCommentCreated"));
@@ -238,20 +242,27 @@ public class ExtractorAndTransformer {
                 }
             }
         }
-        // TODO: calculate a score is confirmed
+        score.setConfirmed(isPlayerInstanceConnected(score.getLeftPlayers())
+                && isPlayerInstanceConnected(score.getRightPlayers()));
         return score;
     }
 
-    private boolean forwardScoreToAssociatedPlayer(Score score) {
-        User newOwner = null;
-        for (PlayerInstance playerInstance : score.getAllPlayers()) {
-            if (playerInstance.getAssociation() != null && playerInstance.getOwner() != playerInstance.getAssociation()) {
-                newOwner = playerInstance.getAssociation();
-                break;
+    private boolean isPlayerInstanceConnected(Set<PlayerInstance> playerInstances) {
+        for (PlayerInstance playerInstance : playerInstances) {
+            if (playerInstance.isScoreConnected()) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private boolean forwardScoreToAssociatedPlayer(Score score) {
+        User newOwner = extractNewOwner(score.getLeftPlayers());
         if (newOwner == null) {
-            return false;
+            newOwner = extractNewOwner(score.getRightPlayers());
+            if (newOwner == null) {
+                return false;
+            }
         }
         for (PlayerInstance playerInstance : score.getAllPlayers()) {
             Player playerReplacement = null;
@@ -267,6 +278,15 @@ public class ExtractorAndTransformer {
         }
         score.setOwner(newOwner);
         return true;
+    }
+
+    private User extractNewOwner(Set<PlayerInstance> players) {
+        for (PlayerInstance playerInstance : players) {
+            if (playerInstance.getAssociation() != null && playerInstance.getOwner() != playerInstance.getAssociation()) {
+                return playerInstance.getAssociation();
+            }
+        }
+        return null;
     }
 
     private boolean hasOwnerListedAsPlayer(Score score) {
@@ -301,9 +321,7 @@ public class ExtractorAndTransformer {
     private Set<PlayerInstance>[] transformPlayerInstancesFromEvento(List<JogadorEvento> jogadoresEventos) {
         Set<PlayerInstance> leftPlayers = new HashSet<PlayerInstance>();
         Set<PlayerInstance> rightPlayers = new HashSet<PlayerInstance>();
-        JogadorEvento jogadorEvento = null;
-        for (int i = 0; i < jogadoresEventos.size(); i++) {
-            jogadorEvento = jogadoresEventos.get(i);
+        for (JogadorEvento jogadorEvento : jogadoresEventos) {
             Object[] playerInstanceAndComment = transformPlayerInstance(jogadorEvento);
             PlayerInstance playerInstance = (PlayerInstance) playerInstanceAndComment[0];
             if (playerInstanceAndComment[1] != null) {
@@ -311,7 +329,7 @@ public class ExtractorAndTransformer {
             }
 
             Score score = (Score) context.get("currentScore");
-            if ((i % 2) == 0) {
+            if (score.getOwner() == playerInstance.getAssociation()) {
                 playerInstance.setScoreLeft(score);
                 leftPlayers.add(playerInstance);
 
