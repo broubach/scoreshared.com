@@ -18,6 +18,7 @@ import net.barragem.persistence.entity.LadoForehandEnum;
 import net.barragem.persistence.entity.Parcial;
 import net.barragem.persistence.entity.Perfil;
 import net.barragem.persistence.entity.SexoEnum;
+import net.barragem.persistence.entity.TipoBackhandEnum;
 import net.barragem.persistence.entity.Usuario;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.scoreshared.domain.entity.ApprovalResponseEnum;
+import com.scoreshared.domain.entity.BackhandTypeEnum;
 import com.scoreshared.domain.entity.File;
 import com.scoreshared.domain.entity.Invitation;
 import com.scoreshared.domain.entity.InvitationResponseEnum;
@@ -92,16 +94,17 @@ public class ExtractorAndTransformer {
             profile = new Profile();
             profile.setAcademy(perfil.getClubeMaisFrequentadoNome());
             profile.setCity(perfil.getClubeMaisFrequentadoCidade());
-            // professorNome -> (new Player)
-            // dataInicioPratica -> ???
+            profile.setCoachName(perfil.getProfessorNome());
+            profile.setDateStartedPlaying(perfil.getDataInicioPratica());
             if (perfil.getLadoForehand() != null) {
                 profile.setLeftHanded(LadoForehandEnum.Esquerdo.equals(perfil.getLadoForehand()) ? Boolean.TRUE
                         : Boolean.FALSE);
             }
-            // tipoBackhand -> ???
-            // professor -> ???
-            // raquete -> ???
-            // usuarioTwitter -> ???
+            if (perfil.getLadoForehand() != null) {
+                profile.setBackhandType(TipoBackhandEnum.UmaMao.equals(perfil.getTipoBackhand()) ? BackhandTypeEnum.ONE_HANDED : BackhandTypeEnum.TWO_HANDED);
+            }
+            profile.setRacquet(perfil.getRaquete());
+            profile.setTwitterAccount(perfil.getUsuarioTwitter());
             profile.setSport(SportEnum.TENNIS);
             profile.setShowContactInfoToFriends(Boolean.FALSE);
             profile.setSignupProcessCompleted(Boolean.TRUE);

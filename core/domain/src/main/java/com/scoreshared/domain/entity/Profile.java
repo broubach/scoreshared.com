@@ -3,6 +3,7 @@ package com.scoreshared.domain.entity;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -57,6 +58,12 @@ public class Profile extends BaseEntity implements Cloneable {
 
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean signupProcessCompleted;
+
+    private String coachName;
+    private Date dateStartedPlaying;
+    private BackhandTypeEnum backhandType;
+    private String racquet;
+    private String twitterAccount;
 
     public String getCity() {
         return city;
@@ -179,6 +186,47 @@ public class Profile extends BaseEntity implements Cloneable {
 
     public void setSignupProcessCompleted(Boolean signupProcessCompleted) {
         this.signupProcessCompleted = signupProcessCompleted;
+    }
+
+
+    public String getCoachName() {
+        return coachName;
+    }
+
+    public void setCoachName(String coachName) {
+        this.coachName = coachName;
+    }
+
+    public Date getDateStartedPlaying() {
+        return dateStartedPlaying;
+    }
+
+    public void setDateStartedPlaying(Date dateStartedPlaying) {
+        this.dateStartedPlaying = dateStartedPlaying;
+    }
+
+    public BackhandTypeEnum getBackhandType() {
+        return backhandType;
+    }
+
+    public void setBackhandType(BackhandTypeEnum backhandTypeEnum) {
+        this.backhandType = backhandTypeEnum;
+    }
+
+    public String getRacquet() {
+        return racquet;
+    }
+
+    public void setRacquet(String racquet) {
+        this.racquet = racquet;
+    }
+
+    public String getTwitterAccount() {
+        return twitterAccount;
+    }
+
+    public void setTwitterAccount(String twitterAccount) {
+        this.twitterAccount = twitterAccount;
     }
 
     @Override
