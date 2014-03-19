@@ -14,7 +14,7 @@
 	<div class="content row">
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
-			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <@spring.message code="label.notifications"/>
+			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <a href="#" class="current"><@spring.message code="label.notifications"/></a>
 		</nav>	
 
 		<div class="box-content">
@@ -76,13 +76,15 @@ var ClickContext = {
 		tableLine: {}
 };
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	})
 
-	$("td a").click(function (e) {
+	$("td .actions a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
 
@@ -100,6 +102,5 @@ $(function() {
 		    }
 		});
 	});
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

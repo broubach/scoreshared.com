@@ -113,6 +113,8 @@
 
 <script type="text/javascript">
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	$('#connect').click(function(e) {
 		<#if player.id??>
 			$("#registeredInvitation-form input[name='playerId']").val(${player.id});
@@ -169,7 +171,5 @@ $(function() {
 	}
 	$("#estatistica-jogos").attr('width',$("#estatistica-jogos").parent().width());
 	var chart = new Chart(ctx).Pie(data,options);
-
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

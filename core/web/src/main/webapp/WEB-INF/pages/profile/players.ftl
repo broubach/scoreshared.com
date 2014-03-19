@@ -19,7 +19,7 @@
 	<div class="row content">
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
-			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <a href="#"><@spring.message code="label.profile"/></a>
+			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <a href="#" class="current"><@spring.message code="label.profile"/></a>
 		</nav>	
 		<div class="box-content">
 			<h2><@spring.message code="label.profile"/></h2>
@@ -138,6 +138,8 @@ var ClickContext = {
 	currentId: {},
 };
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	var newPlayerWizardOptions = {
 			contextPath: "<@spring.url relativeUrl="/"/>",
 			error_please_enter_some_text: "<@spring.message code="error.please_enter_some_text"/>",
@@ -180,7 +182,5 @@ $(function() {
 			context_path: '<@spring.url relativeUrl="/"/>'
 	};
 	PlayerCrud.init(playerCrudOptions);
-
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

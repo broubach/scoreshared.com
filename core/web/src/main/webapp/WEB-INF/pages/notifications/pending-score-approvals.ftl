@@ -88,13 +88,15 @@ var ClickContext = {
 		currentUrl: {}
 };
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	});
 
-	$("td a").click(function (e) {
+	$("td .actions a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
 
@@ -106,7 +108,5 @@ $(function() {
 			label_send_a_message_to_asking_for_revision_1_send_a_message_to: '<@spring.message code="label.send_a_message_to_asking_for_revision_1_send_a_message_to"/>',
 			label_send_a_message_to_asking_for_revision_2_asking_for_revision: '<@spring.message code="label.send_a_message_to_asking_for_revision_2_asking_for_revision"/>'});
 	});
-
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>

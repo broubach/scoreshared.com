@@ -77,7 +77,9 @@
 		</div>
 	</div>
 	<script>
-		//Get the context of the canvas element we want to select
+	    PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
+	    //Get the context of the canvas element we want to select
 		var ctx = $("#estatistica-jogos").get(0).getContext("2d");
 		var data = [
 			{
@@ -119,8 +121,6 @@
 		}
 		$("#estatistica-jogos").attr('width',$("#estatistica-jogos").parent().width());
 		var chart = new Chart(ctx).Pie(data,options);
-
-		PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 	</script>
 	<div class="row content">
 		<br/>

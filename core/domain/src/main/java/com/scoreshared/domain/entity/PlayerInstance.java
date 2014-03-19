@@ -47,7 +47,7 @@ public class PlayerInstance extends BaseEntity {
     private Score scoreRight;
 
     @IndexedEmbedded
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "playerInstance")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "playerInstance")
     private Set<PlayerInstanceComment> comments;
 
     private ApprovalResponseEnum approvalResponse;

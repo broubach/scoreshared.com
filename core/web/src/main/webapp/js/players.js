@@ -52,7 +52,7 @@ var PlayerCrud = {
 			});
 		});
 
-		$("td a").click(function (e) {
+		$("td .actions a").click(function (e) {
 			e.preventDefault();
 			ClickContext.tableLine = $(this).closest("li");
 		

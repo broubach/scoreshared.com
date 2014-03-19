@@ -85,13 +85,15 @@ var ClickContext = {
 		tableLine: {},
 };
 $(function() {
+	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');
 	}, function(){
 	$(this).find('span.actions').fadeOut();
 	})
 
-	$("td a").click(function (e) {
+	$("td .actions a").click(function (e) {
 		e.preventDefault();
 		ClickContext.tableLine = $(this).closest("li");
 
@@ -101,6 +103,5 @@ $(function() {
 
 		NotificationUtil.pendingScoreRevisionsHandleClick(scoreId, playerInstanceId, kind, '<@spring.url relativeUrl="/"/>');
 	});
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 });
 </script>
