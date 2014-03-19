@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
         @NamedQuery(name = "existentEmailQuery", query = "from User user where user.email = :email"),
         @NamedQuery(name = "existentForgotPasswordInstructionsHashQuery", query = "select 1 from User u where u.forgotPasswordInstructionsHash = :hash and :date < u.forgotPasswordInstructionsDate"),
         @NamedQuery(name = "updatePasswordQuery", query = "update User set password = :password, forgotPasswordInstructionsHash = null where forgotPasswordInstructionsHash = :hash and :date < forgotPasswordInstructionsDate"),
-        @NamedQuery(name = "emailByForgotPasswordHashQuery", query = "select u.email from User u where u.forgotPasswordInstructionsHash = :hash")})
+        @NamedQuery(name = "userIdByForgotPasswordHashQuery", query = "select u.id from User u where u.forgotPasswordInstructionsHash = :hash")})
 @Table(name = "user")
 @SQLDelete(sql="UPDATE user SET deleted = 1 WHERE id = ?")
 @Where(clause="deleted <> 1")

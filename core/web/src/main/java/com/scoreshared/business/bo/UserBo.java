@@ -369,8 +369,8 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return password != null && password.length() >= 6;
     }
 
-    public String findEmailByForgotPasswordHash(String hash) {
-        return (String) dao.findByNamedQuery("emailByForgotPasswordHashQuery", hash).get(0);
+    public String findUserIdByForgotPasswordHash(String hash) {
+        return (String) dao.findByNamedQuery("userIdByForgotPasswordHashQuery", hash).get(0);
     }
 
     public List<Player> listPlayersNameExceptLoggedUser(User loggedUser) {
@@ -411,5 +411,24 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
             return results.get(0).intValue();
         }
         return 0;
+    }
+
+    public boolean updatePassword(User loggedUser, String password) {
+        if (isPasswordValid(password)) {
+            password = hashEncoder.encodePassword(password, loggedUser.getId());
+            loggedUser.setPassword(password);
+            dao.saveOrUpdate(loggedUser);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateEmail(User loggedUser, String email) {
+        if (!checkEmailExists(email)) {
+            loggedUser.setEmail(email);
+            dao.saveOrUpdate(loggedUser);
+            return true;
+        }
+        return false;
     }
 }

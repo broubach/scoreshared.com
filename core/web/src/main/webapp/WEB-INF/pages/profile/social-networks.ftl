@@ -13,12 +13,17 @@
 	<div class="row content">
 		<nav class="breadcrumbs">
 			<span><@spring.message code="label.you_are_here"/>: </span>
-			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.profile"/></a>
+			<a href="<@spring.url relativeUrl="/app/home"/>"><@spring.message code="label.home"/></a> <a href="#"><@spring.message code="label.profile"/></a>
 		</nav>	
 		<div class="box-content">
 			<h2><@spring.message code="label.profile"/></h2>
 
 			<div class="section-container vertical-tabs" data-section="vertical-tabs">
+				<section>
+					<p class="title" data-section-title="">
+						<a href="<@spring.url relativeUrl="/app/profile/basic-information"/>"><@spring.message code="label.basic_information"/></a>
+					</p>
+				</section>
 				<section>
 					<p class="title" data-section-title="">
 						<a href="<@spring.url relativeUrl="/app/profile/personal-information"/>"><@spring.message code="label.personal_information"/></a>

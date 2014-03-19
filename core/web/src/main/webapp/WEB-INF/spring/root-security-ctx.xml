@@ -47,7 +47,7 @@
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="userBo">
 			<password-encoder ref="passwordEncoder" >
-				<salt-source user-property="username" />
+				<salt-source user-property="id" />
 			</password-encoder>
 		</authentication-provider>
 		<authentication-provider user-service-ref="userBo">

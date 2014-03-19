@@ -9,14 +9,12 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nl.captcha.Captcha;
 
 import org.springframework.context.MessageSource;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.web.ProviderSignInUtils;
@@ -57,10 +55,6 @@ public class SignupController extends BaseController {
 
     @Inject
     private LocaleResolver localeResolver;
-
-    @Inject
-    @Named("passwordEncoder")
-    private Md5PasswordEncoder passwordEncoder;
 
     @Inject
     private SecurityHelper securityHelper;
@@ -229,8 +223,8 @@ public class SignupController extends BaseController {
             request.setCharacterEncoding("UTF-8");
             if (captcha.isCorrect(captchaAnswer)) {
                 User user = form.toUser();
-                user.setPassword(passwordEncoder.encodePassword(form.getPassword(), form.getEmail()));
                 userBo.saveNewUser(user, form.getInvitationHash());
+                userBo.updatePassword(user, form.getPassword());
 
                 securityHelper.authenticateUserWithPassword(request, response, form.getEmail(), form.getPassword());
 
