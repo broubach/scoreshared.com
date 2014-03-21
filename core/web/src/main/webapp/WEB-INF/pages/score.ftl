@@ -8,7 +8,7 @@
 								"/css/vendor/pickadate/classic.time.css",
 								"/css/vendor/pickadate/classic.date.css",
 								"/css/app.css"]>
-	<#assign head_additional_js=["/js/vendor/select2.js",
+	<#assign head_additional_js=["/js/vendor/select2-3.4.5.min.js",
 								"/js/vendor/pickadate/legacy.js",
 								"/js/vendor/pickadate/picker.js",
 								"/js/vendor/pickadate/picker.date.js",
@@ -23,6 +23,8 @@
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
+
+    <!-- TODO: when there's no room available, select2 do not render the drop down well. -->
 	<#assign header_snippet="/helper-snippets/header-snippet.ftl">
 	<#include "/helper-snippets/basic-header.ftl">
 
@@ -139,15 +141,15 @@
 							</#assign>
 							<#assign dateAttributes>class="datepicker" ${isScoreUpdatableAttributes}</#assign>
 							<#assign timeAttributes>class="timepicker" ${isScoreUpdatableAttributes}</#assign>
-							<div class="input text"><label for="data"><@spring.message code="label.date"/> (<@spring.message code="label.required"/>)</label><@spring.formInput "score.date", dateAttributes, "text"/></div>
-							<div class="input text"><label for="hora"><@spring.message code="label.time"/> (<@spring.message code="label.optional"/>)</label><@spring.formInput "score.time", timeAttributes, "text"/></div>
+							<div class="input text"><label for="date"><@spring.message code="label.date"/> (<@spring.message code="label.required"/>)</label><@spring.formInput "score.date", dateAttributes, "text"/></div>
+							<div class="input text"><label for="time"><@spring.message code="label.time"/></label><@spring.formInput "score.time", timeAttributes, "text"/></div>
 							<#assign label_comment_sample>class='autosize' placeholder='<@spring.message code="label.comment_sample"/>' cols='30' rows='6'</#assign>			
-							<div class="input textarea"><label for="private_comment"><@spring.message code="label.private_comment"/></label><@spring.formTextarea "score.comment", label_comment_sample/></div>
+							<div class="input textarea"><label for="comment"><@spring.message code="label.private_comment"/></label><@spring.formTextarea "score.comment", label_comment_sample/></div>
 							<br/>
 							<div class="input text"><label for="coach"><@spring.message code="label.share_the_comment_with_your_coach"/></label><@spring.formInput "score.coach", isScoreUpdatableAttributes, "text" /></div>
 							<#assign with100Attribute>style='width:100%' ${isScoreUpdatableAttributes}</#assign>
 							<div class="input select">
-								<label for="score.sportId"><@spring.message code="label.what_sport_do_you_intend_to_score" /></label>
+								<label for="sportId"><@spring.message code="label.what_sport_do_you_intend_to_score" /></label>
 								<#assign label_sport_tennis><@spring.message code="label.sport_tennis"/></#assign>
 								<#assign label_sport_table_tennis><@spring.message code="label.sport_table_tennis"/></#assign>
 								<#assign label_sport_badminton><@spring.message code="label.sport_badminton"/></#assign>
@@ -215,7 +217,7 @@
 	$(function() {
 		// TODO: do the same for coach
 
-		$('#sportId').select2();
+		$('#sportId').select2({ minimumResultsForSearch: -1});
 		$('.autosize').autosize({
 			append : "\n"
 		});
@@ -254,7 +256,7 @@
 		</#if>
 	});
 </script>
-<#if (unusedPlayersList == '[]' || !score.updatable)>
+<#if ((unusedPlayersList?? && unusedPlayersList == '[]') || !score.updatable)>
 	<style>
 			.select2-drop { display: none !important };
 	</style>

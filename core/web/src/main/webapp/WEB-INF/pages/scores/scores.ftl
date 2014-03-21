@@ -7,7 +7,7 @@
 	<#assign head_additional_js=["/js/vendor/Chart.min.js", 
 								"/js/scores.js", 
 								"/js/scaffold/playerDecorationUtil.js",
-								"/js/vendor/select2.js"]>
+								"/js/vendor/select2-3.4.5.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
