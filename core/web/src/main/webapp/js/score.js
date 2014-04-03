@@ -28,6 +28,7 @@ var Sets = {
 			multiple : true,
 			tags: true,
 			tokenSeparators: [","],
+			selectOnBlur : true,
 			query : function(query) {
 				var data = { results : [] };
 

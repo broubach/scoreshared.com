@@ -8,7 +8,7 @@
 								"/css/vendor/pickadate/classic.time.css",
 								"/css/vendor/pickadate/classic.date.css",
 								"/css/app.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.5.min.js",
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js",
 								"/js/vendor/pickadate/legacy.js",
 								"/js/vendor/pickadate/picker.js",
 								"/js/vendor/pickadate/picker.date.js",

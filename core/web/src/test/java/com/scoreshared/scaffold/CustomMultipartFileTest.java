@@ -16,7 +16,7 @@ public class CustomMultipartFileTest {
     @Test
     public void testCreateCustomMultipartFile() {
         try {
-            CustomMultipartFile file = new CustomMultipartFile("http://graph.facebook.com/784446251/picture");
+            CustomMultipartFile file = new CustomMultipartFile("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash3/t5.0-1/41480_784446251_8143_q.jpg");
             Assert.assertTrue(file.getSize() > 0);
         } catch (MalformedURLException e) {
             Assert.fail(e.toString());
