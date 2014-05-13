@@ -1,0 +1,205 @@
+/* Foundation Joyride */
+/* line 46, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-list {
+  display: none;
+}
+
+/* Default styles for the container */
+/* line 49, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide {
+  display: none;
+  border-radius: 0.3125em;
+  border-style: solid;
+  border-color: rgba(0, 100, 0, 0.55);
+  border-width: 0.125em;
+  position: absolute;
+  background: white;
+  color: #646464;
+  z-index: 101;
+  top: 0;
+  left: 2.5%;
+  font-family: inherit;
+  font-weight: normal;
+  width: 95%;
+}
+
+/* line 66, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.lt-ie9 .joyride-tip-guide {
+  max-width: 800px;
+  left: 50%;
+  margin-left: -400px;
+}
+
+/* line 72, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-content-wrapper {
+  width: 100%;
+  padding: 1.125em 1.25em 1.5em;
+}
+/* line 77, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-content-wrapper .button {
+  margin-bottom: 0 !important;
+}
+
+/* Add a little css triangle pip, older browser just miss out on the fanciness of it */
+/* line 82, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide .joyride-nub {
+  display: block;
+  position: absolute;
+  left: 1.25em;
+  width: 0;
+  height: 0;
+  border: inset 0.3125em;
+}
+/* line 90, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide .joyride-nub.top {
+  border-top-style: solid;
+  border-color: white;
+  border-top-color: transparent !important;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  top: -0.625em;
+}
+/* line 98, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide .joyride-nub.bottom {
+  border-bottom-style: solid;
+  border-color: white !important;
+  border-bottom-color: transparent !important;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  bottom: -0.625em;
+}
+/* line 107, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide .joyride-nub.right {
+  right: -0.625em;
+}
+/* line 108, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide .joyride-nub.left {
+  left: -0.625em;
+}
+
+/* Typography */
+/* line 118, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide h1,
+.joyride-tip-guide h2,
+.joyride-tip-guide h3,
+.joyride-tip-guide h4,
+.joyride-tip-guide h5,
+.joyride-tip-guide h6 {
+  line-height: 1.25;
+  margin: 0;
+  font-weight: bold;
+  color: #646464;
+}
+
+/* line 124, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-tip-guide p {
+  margin: 0 0 1.125em 0;
+  font-size: 0.875em;
+  line-height: 1.3;
+}
+
+/* line 130, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-timer-indicator-wrap {
+  width: 50px;
+  height: 3px;
+  border: solid 1px #555555;
+  position: absolute;
+  right: 1.0625em;
+  bottom: 1em;
+}
+
+/* line 138, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-timer-indicator {
+  display: block;
+  width: 0;
+  height: inherit;
+  background: #666666;
+}
+
+/* line 145, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-close-tip {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  color: #777777 !important;
+  text-decoration: none;
+  font-size: 30px;
+  font-weight: normal;
+  line-height: .5 !important;
+}
+/* line 156, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-close-tip:hover, .joyride-close-tip:focus {
+  color: #eee !important;
+}
+
+/* line 159, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-modal-bg {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  background: rgba(11, 11, 11, 0.8);
+  z-index: 100;
+  display: none;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+/* line 172, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-expose-wrapper {
+  background-color: #ffffff;
+  position: absolute;
+  border-radius: 3px;
+  z-index: 102;
+  -moz-box-shadow: 0 0 30px #ffffff;
+  -webkit-box-shadow: 0 0 15px #ffffff;
+  box-shadow: 0 0 15px #ffffff;
+}
+
+/* line 184, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+.joyride-expose-cover {
+  background: transparent;
+  border-radius: 3px;
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+}
+
+/* Styles for screens that are atleast 768px; */
+@media only screen and (min-width: 768px) {
+  /* line 196, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+  .joyride-tip-guide {
+    width: 300px;
+    left: inherit;
+  }
+  /* line 198, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+  .joyride-tip-guide .joyride-nub.bottom {
+    border-color: white !important;
+    border-bottom-color: transparent !important;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+    bottom: -0.625em;
+  }
+  /* line 205, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+  .joyride-tip-guide .joyride-nub.right {
+    border-color: white !important;
+    border-top-color: transparent !important;
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+    top: 1.25em;
+    left: auto;
+    right: -0.625em;
+  }
+  /* line 213, ../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/zurb-foundation-4.3.2/scss/foundation/components/_joyride.scss */
+  .joyride-tip-guide .joyride-nub.left {
+    border-color: white !important;
+    border-top-color: transparent !important;
+    border-left-color: transparent !important;
+    border-bottom-color: transparent !important;
+    top: 1.25em;
+    left: -0.625em;
+    right: auto;
+  }
+}

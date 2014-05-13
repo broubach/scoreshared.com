@@ -7,7 +7,7 @@
 				<h2><@spring.message code="label.we_would_love_to_hear_from_you"/></h2>
 				<div id="feedback-panel" class="label radius" style="display: none"></div>
 				<div class="input textarea">
-					<label for="FeedbackMessage"><@spring.message code="label.send_your_message"/></label>
+					<label for="message"><@spring.message code="label.send_your_message"/></label>
 					<textarea name="message" class="autosize" cols="30" rows="6" id="message"></textarea>
 				</div>
 				<div class="row content no-padding-bottom">

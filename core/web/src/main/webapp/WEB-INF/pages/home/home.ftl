@@ -53,7 +53,7 @@
 			</div>
 		</div>
 		<div class="columns large-6">
-			<a href="<@spring.url relativeUrl="/app/score"/>" class="button button-primary js-new-score no-margin-top"><@spring.message code="label.share"/></a>
+			<a href="<@spring.url relativeUrl="/app/score"/>" class="button button-primary js-new-score no-margin-top"><@spring.message code="label.create"/></a>
 			<div class="box-content">
 				<h2><@spring.message code="label.statistics"/></h2>
 				<hr />

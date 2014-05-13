@@ -11,17 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.ScoreBo;
 import com.scoreshared.business.bo.UserBo;
-import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.Score;
 import com.scoreshared.domain.entity.User;
@@ -69,20 +66,10 @@ public class HomeController extends BaseController {
 
         } else {
             mav.addObject("search", new SearchModel());
-            mav.addObject("players", listPlayersNameAndIdFromPlayers(userBo
-                    .listPlayersNameExceptLoggedUser(loggedUser)));
 
             mav.setViewName("home/homeNewUser");
         }
         return mav;
-    }
-
-    private List<Object[]> listPlayersNameAndIdFromPlayers(List<Player> players) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (Player player : players) {
-            result.add(new Object[] { player.getId(), player.getName() });
-        }
-        return result;
     }
 
     private List<ScoreItemModel> getScores(User loggedUser, Locale locale) {
@@ -135,26 +122,6 @@ public class HomeController extends BaseController {
             }
         }
 
-        return result;
-    }
-
-    @RequestMapping(value= "/player", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> createPlayer(@ModelAttribute("playerName") String playerName, @LoggedUser User loggedUser, HttpServletRequest request) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        Integer id = userBo.createPlayer(loggedUser, playerName);
-        result.put("playerId", id);
-        result.put("playerName", playerName);
-        return result;
-    }
-
-    @RequestMapping(value= "/buildDataWithI18n", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> buildDataWithI18n(@ModelAttribute("playerName") String playerName, HttpServletRequest request) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("proceedWithConfirmation", "true");
-        result.put("title", messageResource.getMessage("label.invite_to_your_contacts",
-                new String[] { playerName }, localeResolver.resolveLocale(request)));
         return result;
     }
 }
