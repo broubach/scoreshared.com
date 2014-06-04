@@ -65,6 +65,7 @@ public class SignupController extends BaseController {
         Player player = graphBo.findPlayerByInvitationHash(invitationHash);
         if (player != null) {
             SignupForm form = (SignupForm) mav.getModel().get("signupForm");
+            mav.addObject(player);
             form.setInvitationHash(invitationHash);
         }
         return mav;

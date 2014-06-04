@@ -12,13 +12,17 @@
 	<#assign should_show_feedback=false/>
 	<#include "/helper-snippets/basic-header.ftl">
 
-	<div class="row content">
-		<div class="columns small-12">
-		    <#if signupForm.invitationHash??>
-		    	// TODO: Welcome!! It looks like Fulano invited you. How would you like to signup to scoreshared? 
-		    </#if>
+	<#if signupForm.invitationHash??>
+		<div class="row content">
+			<div class="columns small-12">
+				<div class="box-content">
+					<h5 class="centralizado">
+					    ${springMacroRequestContext.getMessage("label.welcome_invited", [player.name, player.owner.fullName])}
+					</h5>
+			    </div>
+			</div>
 		</div>
-	</div>
+	</#if>
 	<div class="row content">
 		<div class="columns large-6">
 			<div class="box-content">
