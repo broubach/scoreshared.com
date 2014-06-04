@@ -59,16 +59,6 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             }
             dest.setPlayersRight(rightPlayers);
             
-            if (src.getCoach() != null) {
-                dest.setCoach(src.getCoach().getName());
-                if (Boolean.TRUE.equals(src.getCoach().getShouldNotReinvite())) {
-                    newPlayersNotToBeRemembered.add(src.getCoach().getName());
-                }
-
-            } else if (src.getOwner().getProfile() != null && src.getOwner().getProfile().getCoach() != null) {
-                dest.setCoach(src.getOwner().getProfile().getCoach().getName());
-            }
-
             if (src.getSport() != null) {
                 dest.setSportId(src.getSport().ordinal());
 

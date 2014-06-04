@@ -5,7 +5,9 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.web.context.ServletContextAware;
 
@@ -18,6 +20,9 @@ public class CustomContextListener implements ServletContextAware {
 
     @Override
     public void setServletContext(ServletContext servletContext) {
+        ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance().getConvertUtils();
+        convertUtilsBean.register(false, true, -1);
+
         if (servletContext.getAttribute(UserBo.DEFAULT_AVATAR_KEY) == null) {
             servletContext.setAttribute(UserBo.DEFAULT_AVATAR_KEY, userBo.getDefaultAvatar());
         }

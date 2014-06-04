@@ -61,7 +61,7 @@ public class WelcomeController extends BaseController {
         if (result.hasErrors()) {
             return "welcome/step1";
         }
-        bo.saveProfile(loggedUser, form.getProfile(), form.getCoach());
+        bo.saveProfile(loggedUser, form.getProfile());
         status.setComplete();
         return getStep2(modelMap);
     }

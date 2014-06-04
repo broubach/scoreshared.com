@@ -44,9 +44,6 @@ public class ScoreBo extends BaseBo<Score> {
     private void updateProfileWithNewestPreferences(Score score) {
         if (score.getOwner().getProfile() != null) {
             score.getOwner().getProfile().setSport(score.getSport());
-            if (score.getCoach() != null) {
-                score.getOwner().getProfile().setCoach(score.getCoach());
-            }
         }
     }
 
@@ -63,22 +60,6 @@ public class ScoreBo extends BaseBo<Score> {
 
         score.getAssociatedPlayer(loggedUser.getId()).setApprovalResponse(ApprovalResponseEnum.ACCEPTED);
 
-        if (score.getCoach() != null) {
-            Player coach = null;
-            if (!score.getLeftPlayers().contains(score.getCoach()) && !score.getRightPlayers().contains(score.getCoach())) {
-                coach = findExistentPlayerAndKeepProperties(owner, score.getCoach());
-            } else {
-                for (PlayerInstance player : score.getAllPlayers()) {
-                    if (player.equals(score.getCoach())) {
-                        coach = player.getPlayer();
-                        break;
-                    }
-                }
-            }
-            if (coach != null) {
-                score.setCoach(coach);
-            }
-        }
         if (comment != null) {
             score.getAssociatedPlayer(loggedUser.getId()).setComments(new HashSet<PlayerInstanceComment>());
             score.getAssociatedPlayer(loggedUser.getId()).getComments().add(comment);

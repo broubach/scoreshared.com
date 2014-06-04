@@ -1,22 +1,10 @@
 <#import "/spring.ftl" as spring />
 
-<#if signupForm.invitationHash??>
-	invited player!
-</#if>
-
 <form id="signup-form" method="post" accept-charset="utf-8">
 	<div class="input text"><label for="firstName"><@spring.message code="label.first_name"/></label><@spring.formInput "signupForm.firstName", "maxlength='45'", "text"/></div>
 	<div class="input text"><label for="lastName"><@spring.message code="label.last_name"/></label><@spring.formInput "signupForm.lastName", "maxlength='45'", "text"/></div>
-	<div class="input text"><label for="email"><@spring.message code="label.email"/></label>
-			<#if !signupForm.invitationHash??>
-				<@spring.formInput "signupForm.email", "maxlength='45'", "text"/>
-			<#else>
-				<@spring.formInput "signupForm.email", "maxlength='45' readonly='readonly'", "text"/>
-			</#if>
-	</div>
-	<#if !signupForm.invitationHash??>
-		<div class="input text"><label for="emailConfirmation"><@spring.message code="label.email_confirmation"/></label><@spring.formInput "signupForm.emailConfirmation", "maxlength='45'", "text"/></div>
-	</#if>
+	<div class="input text"><label for="email"><@spring.message code="label.email"/></label><@spring.formInput "signupForm.email", "maxlength='45'", "text"/></div>
+	<div class="input text"><label for="emailConfirmation"><@spring.message code="label.email_confirmation"/></label><@spring.formInput "signupForm.emailConfirmation", "maxlength='45'", "text"/></div>
 	<div class="input password"><label for="password"><@spring.message code="label.password"/></label><@spring.formInput "signupForm.password", "", "password"/></div>
 	<div class="input text">
 		<#assign label_gender_hint><@spring.message code="label.gender"/></#assign>

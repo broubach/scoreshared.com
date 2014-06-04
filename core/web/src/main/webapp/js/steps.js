@@ -3,11 +3,6 @@ var ProvidePlayerListStep = {
 	execute: function(context) {
 		var players = ProvidePlayerListStep.createList($("#playersLeft").val() + ',' + $("#playersRight").val());
 
-		var coach = $("#coach").val();
-		if ($.trim(coach) != '') {
-			players.push({isCoach: true, playerName: coach});
-		}
-
 		context.players = players;
 	},
 
@@ -19,7 +14,7 @@ var ProvidePlayerListStep = {
 				choosenPlayersList.splice(i, 1);
 				i--;
 			} else {
-				choosenPlayersList[i] = {isCoach: false, playerName: choosenPlayersList[i]};
+				choosenPlayersList[i] = {playerName: choosenPlayersList[i]};
 			}
 		}
 		return choosenPlayersList;
@@ -133,7 +128,7 @@ var CheckIfPlayerShouldBeInvitedStep = {
 
 	isPlayerInList: function(newPlayersNotToBeRemembered, playerName) {
 		for (var i = 0; i<newPlayersNotToBeRemembered.length; i++) {
-			if (!newPlayersNotToBeRemembered[i].isCoach && newPlayersNotToBeRemembered[i].playerName == playerName) {
+			if (newPlayersNotToBeRemembered[i].playerName == playerName) {
 				return true;
 			}
 		}

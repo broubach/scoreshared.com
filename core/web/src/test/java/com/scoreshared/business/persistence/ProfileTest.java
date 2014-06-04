@@ -1,5 +1,7 @@
 package com.scoreshared.business.persistence;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.scoreshared.domain.entity.File;
-import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.Profile;
 import com.scoreshared.domain.entity.SportEnum;
-import com.scoreshared.domain.entity.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-ctx.xml"})
@@ -23,12 +23,14 @@ public class ProfileTest {
     
     @Before
     public void setup() {
+        ConvertUtilsBean convertUtilsBean = BeanUtilsBean.getInstance().getConvertUtils();
+        convertUtilsBean.register(false, true, -1);
+
         initialState = new Profile();
         initialState.setCity("");
         initialState.setCountry("");
         initialState.setAcademy("Lob Tenis");
         initialState.setLeftHanded(Boolean.FALSE);
-        initialState.setCoach(new Player("Beto", new User()));
         initialState.setShowContactInfoToFriends(Boolean.TRUE);
         initialState.setPhone("31 96862253");;
         initialState.setAvatarHash("some hash");

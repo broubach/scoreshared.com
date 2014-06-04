@@ -89,9 +89,6 @@ public class ScoreController extends BaseController {
             Player associatedPlayer = (Player) session.getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
             score.getPlayersLeft().add(associatedPlayer.getName());
             if (loggedUser.getProfile() != null) {
-                if (loggedUser.getProfile().getCoach() != null) {
-                    score.setCoach(loggedUser.getProfile().getCoach().getName());
-                }
                 if (loggedUser.getProfile().getSport() != null) {
                     score.setSportId(loggedUser.getProfile().getSport().ordinal());
                 }

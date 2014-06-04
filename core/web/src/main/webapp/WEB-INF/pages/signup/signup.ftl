@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.5.min.js", "/js/signup.js"]>
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js", "/js/signup.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -12,6 +12,13 @@
 	<#assign should_show_feedback=false/>
 	<#include "/helper-snippets/basic-header.ftl">
 
+	<div class="row content">
+		<div class="columns small-12">
+		    <#if signupForm.invitationHash??>
+		    	// TODO: Welcome!! It looks like Fulano invited you. How would you like to signup to scoreshared? 
+		    </#if>
+		</div>
+	</div>
 	<div class="row content">
 		<div class="columns large-6">
 			<div class="box-content">

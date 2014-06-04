@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.5.min.js",
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js",
   								"/js/jquery.maskedinput-1.3.1.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>

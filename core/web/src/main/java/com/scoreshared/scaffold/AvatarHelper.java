@@ -1,7 +1,9 @@
 package com.scoreshared.scaffold;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +54,7 @@ public class AvatarHelper {
         if (facebookConnection != null && loggedUser.getProfile() != null
                 && StringUtils.isEmpty(loggedUser.getProfile().getAvatarHash())) {
             try {
-                MultipartFile multipartFile = new CustomMultipartFile(facebookConnection.getImageUrl());
+                MultipartFile multipartFile = new CustomMultipartFile(fetchURL(facebookConnection.getImageUrl()));
                 step3Form.setFile(multipartFile);
                 step3Form.setAvatarUploaded(Boolean.TRUE);
                 postProfileAvatar(step3Form, loggedUser, session, status);
@@ -65,6 +67,21 @@ public class AvatarHelper {
         }
     }
 
+    /** extracted from: http://stackoverflow.com/questions/15110851/java-how-to-read-content-from-redirected-urls */
+    public URL fetchURL( String url ) throws IOException {
+        URL dest = new URL(url);
+        HttpURLConnection yc =  (HttpURLConnection) dest.openConnection();
+        yc.setInstanceFollowRedirects( false );
+        yc.setUseCaches(false);
+
+        int responseCode = yc.getResponseCode();
+        if ( responseCode >= 300 && responseCode < 400 ) { // brute force check, far too wide
+            return fetchURL( yc.getHeaderField( "Location") );
+        }
+
+        return yc.getURL();
+    }
+    
     public void postProfileAvatar(@ModelAttribute ProfileAvatarForm step3Form, @LoggedUser User loggedUser,
             HttpSession session, SessionStatus status) {
         try {

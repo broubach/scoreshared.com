@@ -15,13 +15,13 @@ public class CustomMultipartFile implements MultipartFile {
     private ByteArrayOutputStream imageAsArray = new ByteArrayOutputStream();
     private String imageUrl;
 
-    public CustomMultipartFile(String imageUrl) throws MalformedURLException, IOException {
-        this.imageUrl = imageUrl;
+    public CustomMultipartFile(URL imageUrl) throws MalformedURLException, IOException {
+        this.imageUrl = imageUrl.toString();
 
         BufferedOutputStream bos = new BufferedOutputStream(imageAsArray);
         InputStream is = null;
         try {
-            is = new URL(imageUrl).openStream();
+            is = imageUrl.openStream();
             BufferedInputStream bis = new BufferedInputStream(is);
 
             byte[] byteChunk = new byte[4096];

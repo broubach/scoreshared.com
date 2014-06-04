@@ -35,10 +35,6 @@ public class Profile extends BaseEntity implements Cloneable {
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean leftHanded;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @Cascade({ CascadeType.SAVE_UPDATE })
-    private Player coach;
-
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean showContactInfoToFriends;
     private String phone;
@@ -95,14 +91,6 @@ public class Profile extends BaseEntity implements Cloneable {
 
     public void setLeftHanded(Boolean leftHanded) {
         this.leftHanded = leftHanded;
-    }
-
-    public Player getCoach() {
-        return coach;
-    }
-
-    public void setCoach(Player coach) {
-        this.coach = coach;
     }
 
     public Boolean getShowContactInfoToFriends() {

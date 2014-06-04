@@ -66,8 +66,6 @@ public class SignupController extends BaseController {
         if (player != null) {
             SignupForm form = (SignupForm) mav.getModel().get("signupForm");
             form.setInvitationHash(invitationHash);
-            form.setEmail(player.getInvitation().getEmail());
-            form.setEmailConfirmation(player.getInvitation().getEmail());
         }
         return mav;
     }
@@ -82,20 +80,18 @@ public class SignupController extends BaseController {
     }
 
     @RequestMapping(value = "/connection", method = RequestMethod.GET)
-    public String signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request, HttpServletResponse response) {
+    public String signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request,
+            HttpServletResponse response, @ModelAttribute("signupForm") SignupForm form) {
         Connection<?> connection = ProviderSignInUtils.getConnection(webRequest);
         if (connection != null) {
-            SignupForm form = new SignupForm();
             UserProfile userProfile = connection.fetchUserProfile();
             form.setEmail(userProfile.getEmail());
             form.setFirstName(userProfile.getFirstName());
             form.setLastName(userProfile.getLastName());
-            userBo.saveNewUser(form.toUser(), null);
-
-            // TODO: fetch image from profile
+            userBo.saveNewUser(form.toUser(), form.getInvitationHash());
 
             ProviderSignInUtils.handlePostSignUp(userProfile.getEmail(), webRequest);
-            
+
             securityHelper.authenticateUserWithSocialId(request, response, userProfile.getEmail(), connection.getKey()
                     .getProviderId(), connection.getKey().getProviderUserId());
 

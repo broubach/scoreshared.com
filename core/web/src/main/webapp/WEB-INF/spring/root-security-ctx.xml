@@ -14,7 +14,6 @@
 	<http pattern="/app/captcha" security="none" />
 	<http pattern="/app/signin*/**" security="none"/>
 	<http pattern="/app/signup*/**" security="none"/>
-	<http pattern="/app/receiveInvitation*/**" security="none"/>
 	<http pattern="/app/forgotPassword*/**" security="none"/>
 
 	<http use-expressions="true">
@@ -24,8 +23,7 @@
 		<logout delete-cookies="JSESSIONID" />
 		<intercept-url pattern="/app/index" access="isAnonymous()" method="GET"/>
 		<intercept-url pattern="/app/login" access="isAnonymous()" />
-		<intercept-url pattern="/app/signup/captcha" access="isAnonymous()" />
-		<intercept-url pattern="/app/signup/data" access="isAnonymous()"/>
+		<intercept-url pattern="/app/signup*/**" access="isAnonymous()"/>
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
 

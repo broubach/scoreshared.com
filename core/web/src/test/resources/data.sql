@@ -2,7 +2,7 @@
 -- Dumping data for table profile
 --
 
-INSERT INTO profile (id, city, country, academy, leftHanded, coach_id, showContactInfoToFriends, phone, avatarHash, avatar_id, smallAvatar_id, style, site, sport, signupProcessCompleted, deleted) VALUES (35,'Belo Horizonte','Brasil','Lob Tênis',false,NULL,true,'31 96862253','0d6de8af31a2dda39baf2d648662c4e9',null,null,'','',0,true,false), (36,'Lake Sherwood, California','United States','private',false,NULL,false,'','1345bbb540ffec28beba458daa26f969',null,null,'','',0,true,false);
+INSERT INTO profile (id, city, country, academy, leftHanded, showContactInfoToFriends, phone, avatarHash, avatar_id, smallAvatar_id, style, site, sport, signupProcessCompleted, deleted) VALUES (35,'Belo Horizonte','Brasil','Lob Tênis',false,true,'31 96862253','0d6de8af31a2dda39baf2d648662c4e9',null,null,'','',0,true,false), (36,'Lake Sherwood, California','United States','private',false,false,'','1345bbb540ffec28beba458daa26f969',null,null,'','',0,true,false);
 
 --
 -- Dumping data for table user

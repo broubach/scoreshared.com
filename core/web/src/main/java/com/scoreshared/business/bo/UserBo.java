@@ -263,22 +263,9 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         dao.saveOrUpdate(player);
     }
 
-    public void saveProfile(User loggedUser, Profile profile, String coach) {
+    public void saveProfile(User loggedUser, Profile profile) {
         loggedUser.setProfile(profile);
-
-        if (!StringUtils.isEmpty(coach) && (profile.getCoach() == null || !coach.equalsIgnoreCase(profile.getCoach().getName()))) {
-            List<Player> players = dao.findByNamedQuery("playerByNameAndOwnerQuery", coach, loggedUser.getId());
-            Player player = null;
-            if (!players.isEmpty()) {
-                player = players.get(0);
-            } else {
-                player = new Player(coach, loggedUser);
-            }
-            profile.setCoach(player);
-            dao.saveOrUpdate(player);
-        } else {
-            dao.saveOrUpdate(loggedUser);
-        }
+        dao.saveOrUpdate(loggedUser);
     }
 
     public void updateUser(User user) {

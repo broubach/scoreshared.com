@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.5.min.js"]>
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
@@ -70,7 +70,7 @@
 						<span></span>
 					</div>
 				</div>
-				<div class="input text"><label for="coach"><@spring.message code="label.who_is_your_coach"/></label><@spring.formInput "personalInformationForm.coach", "maxlength='45'", "text"/></div>
+				<div class="input text"><label for="profile.coach"><@spring.message code="label.who_is_your_coach"/></label><@spring.formInput "personalInformationForm.profile.coachName", "maxlength='45'", "text"/></div>
 				<div class="input text"><label for="profile.site"><@spring.message code="label.what_is_your_website"/></label><@spring.formInput "personalInformationForm.profile.site", "maxlength='45'", "text"/></div>
 				<div class="input text"><label for="profile.style"><@spring.message code="label.define_your_style_of_game"/></label><@spring.formTextarea "personalInformationForm.profile.style", "" /></div>
 				<div class="input text">
@@ -79,7 +79,7 @@
 						<#assign label_yes><@spring.message code="label.yes"/></#assign>
 						<#assign label_no><@spring.message code="label.no"/></#assign>
 						<#assign yesNoHash = {"true":label_yes, "false":label_no} />
-						<@spring.formRadioButtons "personalInformationForm.profile.showContactInfoToFriends", yesNoHash, "", "" />
+						<@spring.formRadioButtons "personalInformationForm.showContactInfoToFriends", yesNoHash, "", "" />
 						<span></span>
 					</div>
 				</div>

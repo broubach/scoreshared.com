@@ -52,7 +52,7 @@ public class ProfilePersonalInformationController {
         if (!result.hasErrors() ) {
             Profile updatedProfile = loggedUser.getProfile().copyDirtyPropertiesFrom(form.getProfile());
             if (updatedProfile != null) {
-                bo.saveProfile(loggedUser, updatedProfile, form.getCoach());
+                bo.saveProfile(loggedUser, updatedProfile);
             }
         }
         return "/profile/personal-information";

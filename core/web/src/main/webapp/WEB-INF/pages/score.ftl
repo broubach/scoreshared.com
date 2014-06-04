@@ -24,7 +24,6 @@
 </head>
 <body>
 
-    <!-- TODO: when there's no room available, select2 do not render the drop down well. -->
 	<#assign header_snippet="/helper-snippets/header-snippet.ftl">
 	<#include "/helper-snippets/basic-header.ftl">
 
@@ -146,7 +145,6 @@
 							<#assign label_comment_sample>class='autosize' placeholder='<@spring.message code="label.comment_sample"/>' cols='30' rows='6'</#assign>			
 							<div class="input textarea"><label for="comment"><@spring.message code="label.private_comment"/></label><@spring.formTextarea "score.comment", label_comment_sample/></div>
 							<br/>
-							<div class="input text"><label for="coach"><@spring.message code="label.share_the_comment_with_your_coach"/></label><@spring.formInput "score.coach", isScoreUpdatableAttributes, "text" /></div>
 							<#assign with100Attribute>style='width:100%' ${isScoreUpdatableAttributes}</#assign>
 							<div class="input select">
 								<label for="sportId"><@spring.message code="label.what_sport_do_you_intend_to_score" /></label>
@@ -215,8 +213,6 @@
 
 <script type="text/javascript">
 	$(function() {
-		// TODO: do the same for coach
-
 		$('#sportId').select2({ minimumResultsForSearch: -1});
 		$('.autosize').autosize({
 			append : "\n"

@@ -84,10 +84,6 @@ public class Score extends BaseEntity implements Cloneable {
     @Column(columnDefinition = "BIT", length = 1)
     private boolean winnerDefined;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @Cascade({ CascadeType.SAVE_UPDATE })
-    private Player coach;
-
     private SportEnum sport;
 
     @Column(columnDefinition = "BIT", length = 1)
@@ -246,14 +242,6 @@ public class Score extends BaseEntity implements Cloneable {
         this.winnerDefined = winnerDefined;
     }
 
-    public Player getCoach() {
-        return coach;
-    }
-
-    public void setCoach(Player coach) {
-        this.coach = coach;
-    }
-    
     public SportEnum getSport() {
         return sport;
     }

@@ -26,7 +26,6 @@ public class ScoreModel {
     private String comment;
     private boolean postInTwitter;
     private boolean postInFacebook;
-    private String coach;
     private Integer sportId;
     private List<String> newPlayersNotToBeRemembered;
     private Boolean updatable;
@@ -190,14 +189,6 @@ public class ScoreModel {
     public void setPostInFacebook(boolean postInFacebook) {
         this.postInFacebook = postInFacebook;
     }
-
-    public String getCoach() {
-		return coach;
-	}
-
-	public void setCoach(String coach) {
-		this.coach = coach;
-	}
 
 	public Integer getSportId() {
 		return sportId;
