@@ -1133,3 +1133,15 @@ input[type=search]{
 .no-padding-top {
 	padding-top: 0;
 }
+.pagination li.current a{
+	background:#006400;
+	color:#fff;
+	font-weight:bold;
+	cursor:default
+}
+.pagination li.current a:hover{
+	background:#21A96B;
+	color:#fff;
+	font-weight:bold;
+	cursor:default
+}

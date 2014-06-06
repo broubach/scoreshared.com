@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -60,14 +61,14 @@ public class PlayerController extends BaseController {
         Player associatedPlayer = graphBo.findPlayerByAssociationAndOwner(user.getId(), loggedUser.getId());
         mav.addObject("player", new PlayerModel(user, associatedPlayer, messageResource, localeResolver.resolveLocale(request)));
 
-        List<Score> scores = scoreBo.findScores(0, null, ScoreOutcomeEnum.ALL, false, user.getId());
+        Pair<List<Score>, Integer> scoresAndCount = scoreBo.findScores(0, null, ScoreOutcomeEnum.ALL, false, user.getId());
         List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
-        for (Score score : scores) {
+        for (Score score : scoresAndCount.getLeft()) {
             items.add(new ScoreItemModel(score, score.getComment(), user, messageResource, localeResolver.resolveLocale(request)));
         }
         mav.addObject("scores", items);
 
-        Integer[] winLoss = scoreBo.calculateWinLoss(scores, userId);
+        Integer[] winLoss = scoreBo.calculateWinLoss(scoresAndCount.getLeft(), userId);
         mav.addObject("win", winLoss[0]);
         mav.addObject("loss", winLoss[1]);
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,27 +100,27 @@ public class ScoreBoTest {
     @Test
     public void testSearchScore() {
         // 'uau' is a word present in my comments, so it will be found
-        List<Score> scores = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
-        Assert.assertTrue("found 'uau', all outcomes, asceding order", scores.size() == 1);
+        Pair<List<Score>, Integer> scoresAndCount = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
+        Assert.assertTrue("found 'uau', all outcomes, asceding order", scoresAndCount.getLeft().size() == 1);
 
         // pete's comments wont be found
-        scores = scoreBo.findScores(null, "final", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
-        Assert.assertTrue("wont find 'final', all outcomes, asceding order", scores.isEmpty());
+        scoresAndCount = scoreBo.findScores(null, "final", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
+        Assert.assertTrue("wont find 'final', all outcomes, asceding order", scoresAndCount.getLeft().isEmpty());
 
         // pete is a player who played with me, so a score in which he participated should be found
-        scores = scoreBo.findScores(null, "pete", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
-        Assert.assertTrue("found 'pete', all outcomes, asceding order", scores.size() == 1);
+        scoresAndCount = scoreBo.findScores(null, "pete", ScoreOutcomeEnum.ALL, true, loggedUser1.getId());
+        Assert.assertTrue("found 'pete', all outcomes, asceding order", scoresAndCount.getLeft().size() == 1);
 
         // 'uau' is a word present in my comments in a match which I lost, so it will be found
-        scores = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.LOSS, true, loggedUser1.getId());
-        Assert.assertTrue("found 'uau', loss outcomes, asceding order", scores.size() == 1);
+        scoresAndCount = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.LOSS, true, loggedUser1.getId());
+        Assert.assertTrue("found 'uau', loss outcomes, asceding order", scoresAndCount.getLeft().size() == 1);
 
         // 'uau' is a word present in my comments, but in a match that I didn't win, so it wont be found
-        scores = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.WIN, true, loggedUser1.getId());
-        Assert.assertTrue("wont find 'uau', win outcomes, asceding order", scores.isEmpty());
+        scoresAndCount = scoreBo.findScores(null, "uau", ScoreOutcomeEnum.WIN, true, loggedUser1.getId());
+        Assert.assertTrue("wont find 'uau', win outcomes, asceding order", scoresAndCount.getLeft().isEmpty());
 
         // pete is a player who played with me, but in a match that I didnt win, so it wont be found
-        scores = scoreBo.findScores(null, "pete", ScoreOutcomeEnum.WIN, true, loggedUser1.getId());
-        Assert.assertTrue("found 'pete', win outcomes, asceding order", scores.isEmpty());
+        scoresAndCount = scoreBo.findScores(null, "pete", ScoreOutcomeEnum.WIN, true, loggedUser1.getId());
+        Assert.assertTrue("found 'pete', win outcomes, asceding order", scoresAndCount.getLeft().isEmpty());
     }
 }

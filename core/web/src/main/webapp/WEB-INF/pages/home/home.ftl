@@ -3,21 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<#assign head_additional_css=[	"/css/vendor/select2.css",
-									"/css/vendor/pickadate/classic.css",
-									"/css/vendor/pickadate/classic.time.css",
-									"/css/vendor/pickadate/classic.date.css"
-									]>
-	<#assign head_additional_js=[	"/js/vendor/select2-3.4.6.min.js",
-									"/js/vendor/pickadate/legacy.js",
-									"/js/vendor/pickadate/picker.js",
-									"/js/vendor/pickadate/picker.date.js",
-									"/js/vendor/pickadate/picker.time.js",
-									"/js/scaffold/playerDecorationUtil.js",
-									"/js/scaffold/messageUtil.js",
+	<#assign head_additional_js=[	"/js/scaffold/playerDecorationUtil.js",
 									"/js/vendor/Chart.min.js"
 									]>
-
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>

@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -59,21 +60,58 @@ public class ScoresController extends BaseController {
             ScoreOutcomeEnum outcome, final Boolean ascending) {
         ModelAndView result = new ModelAndView("scores/scores");
 
-    	List<Score> scores = bo.findScores(pageNumber, term, outcome, ascending, loggedUser.getId());
+    	Pair<List<Score>, Integer> scoresAndTotalCount = bo.findScores(pageNumber, term, outcome, ascending, loggedUser.getId());
 
     	List<ScoreItemModel> items = new ArrayList<ScoreItemModel>();
-    	for (Score score : scores) {
+    	for (Score score : scoresAndTotalCount.getLeft()) {
     	    items.add(new ScoreItemModel(score, score.getComment(), loggedUser, messageResource, localeResolver.resolveLocale(request)));
     	}
     	result.addObject("scores", items);
-
-    	Integer[] winLoss = bo.calculateWinLoss(scores, loggedUser.getId());
+    	
+    	calculatePaginationWindowAndAddToModel(result, pageNumber, scoresAndTotalCount.getRight());
+    	
+    	Integer[] winLoss = bo.calculateWinLoss(scoresAndTotalCount.getLeft(), loggedUser.getId());
     	result.addObject("win", winLoss[0]);
         result.addObject("loss", winLoss[1]);
         result.addObject("outcome", outcome.toString());
         result.addObject("searchTerm", term);
         result.addObject("ascending", ascending);
 		return result;
+    }
+
+    private void calculatePaginationWindowAndAddToModel(ModelAndView mav, Integer pageNumber, Integer pageCount) {
+        int windowSize = 5;
+    	int windowLeft = pageNumber - windowSize/2;
+    	int windowRight = pageNumber + windowSize/2;
+
+    	int spareWeigthLeft = 0;
+    	if (windowLeft < 0) {
+    	    spareWeigthLeft = Math.abs(windowLeft);
+    	    windowLeft = 0;
+    	}
+
+    	int spareWeigthRight = 0;
+    	if (windowRight >= pageCount) {
+    	    spareWeigthRight = windowRight - (pageCount-1);
+    	    windowRight = pageCount-1;
+    	}
+
+    	if (pageCount > windowSize) {
+    	    windowLeft -= spareWeigthRight;
+    	    windowRight += spareWeigthLeft;
+            if (pageNumber == 0) {
+                mav.addObject("disableFirstArrow", true);
+            } else if (pageNumber == (pageCount-1)) {
+                mav.addObject("disableLastArrow", true);
+            }
+        } else {
+            mav.addObject("disableFirstArrow", true);
+            mav.addObject("disableLastArrow", true);
+        }
+        mav.addObject("windowLeft", windowLeft);
+        mav.addObject("windowRight", windowRight);
+        mav.addObject("pageCount", pageCount);
+        mav.addObject("pageNumber", pageNumber);
     }
 
     @RequestMapping(value="/remove/{scoreId}", method = RequestMethod.DELETE)

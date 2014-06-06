@@ -55,6 +55,8 @@
 				</div>
 			</div>
 
+			<#include "/helper-snippets/pagination-snippet.ftl">
+
 			<div class="row">
 				<div class="columns small-12">
 					<#if (scores?size <= 0)><p><@spring.message code="label.no_scores_matching_your_criteria_were_found"/></p></#if>
@@ -102,7 +104,8 @@
 					</ul>
 				</div>
 			</div>
-			
+
+			<#include "/helper-snippets/pagination-snippet.ftl">
 		</div>
 	</div>
 

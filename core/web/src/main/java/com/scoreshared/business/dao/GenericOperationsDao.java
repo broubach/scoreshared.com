@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
@@ -308,10 +310,10 @@ public class GenericOperationsDao {
         }
     }
 
-    public <T> List<T> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
+    public <T> Pair<List<T>, Integer> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
         Session session = null;
         Transaction tx = null;
-        List<T> result = null;
+        MutablePair<List<T>, Integer> result = new MutablePair<List<T>, Integer>(); 
         try {
             session = sessionFactory.openSession();
             FullTextSession fullTextSession = Search.getFullTextSession(session);
@@ -349,9 +351,11 @@ public class GenericOperationsDao {
                 hibQuery.setMaxResults(pageSize);
             }
 
-            result = hibQuery.list();
+            result.setLeft(hibQuery.list());
+            result.setRight(hibQuery.getResultSize());
 
             tx.commit();
+            
         } catch (Exception e) {
             tx.rollback();
 

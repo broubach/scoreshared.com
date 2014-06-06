@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -315,10 +317,11 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
     }
 
-    public List<Score> findScores(Integer pageNumber, String term, ScoreOutcomeEnum outcome, boolean asc, Integer ownerId) {
+    public MutablePair<List<Score>,Integer> findScores(Integer pageNumber, String term, ScoreOutcomeEnum outcome, boolean asc, Integer ownerId) {
         List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, outcome);
 
-        List<Score> result = new ArrayList<Score>();
+        MutablePair<List<Score>, Integer> result = new MutablePair<List<Score>, Integer>();
+        result.setLeft(new ArrayList<Score>());
         if (playerInstanceIds.isEmpty()) {
             return result;
         }
@@ -333,12 +336,17 @@ public class ScoreBo extends BaseBo<Score> {
                             term });
         }
 
-        List<PlayerInstance> playerInstances = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, null, fieldAndValuePairs);
+        Pair<List<PlayerInstance>, Integer> searchData = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, null, fieldAndValuePairs);
 
-        result.addAll(extractScores(playerInstances));
-        sortScores(result, asc);
+        result.getLeft().addAll(extractScores(searchData.getLeft()));
+        sortScores(result.getLeft(), asc);
+        if (searchData.getRight() % PAGE_SIZE > 0) {
+            result.setRight((searchData.getRight() / PAGE_SIZE) + 1);
+        } else {
+            result.setRight(searchData.getRight());
+        }
 
-        fillComments(ownerId, result);
+        fillComments(ownerId, result.getLeft());
 
         return result;
     }

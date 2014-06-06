@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,10 +74,10 @@ public class HomeController extends BaseController {
     }
 
     private List<ScoreItemModel> getScores(User loggedUser, Locale locale) {
-        List<Score> scores = scoreBo.findScores(0, null, ScoreOutcomeEnum.ALL, false, loggedUser.getId());
+        Pair<List<Score>, Integer> scoresAndCount = scoreBo.findScores(0, null, ScoreOutcomeEnum.ALL, false, loggedUser.getId());
 
         List<ScoreItemModel> result = new ArrayList<ScoreItemModel>();
-        for (Score score : scores) {
+        for (Score score : scoresAndCount.getLeft()) {
             result.add(new ScoreItemModel(score, score.getComment(), loggedUser, messageResource, locale));
         }
 
