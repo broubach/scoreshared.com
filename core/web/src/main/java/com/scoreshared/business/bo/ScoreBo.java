@@ -320,6 +320,7 @@ public class ScoreBo extends BaseBo<Score> {
 
         MutablePair<List<Score>, Integer> result = new MutablePair<List<Score>, Integer>();
         result.setLeft(new ArrayList<Score>());
+        result.setRight(1);
         if (playerInstanceIds.isEmpty()) {
             return result;
         }

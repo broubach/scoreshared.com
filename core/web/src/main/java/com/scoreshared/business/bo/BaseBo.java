@@ -18,7 +18,7 @@ import com.scoreshared.scaffold.FreemarkerTemplateParser;
 
 public class BaseBo<T> {
 
-    protected static final int PAGE_SIZE = 25;
+    protected static final int PAGE_SIZE = 10;
 
     @Inject
     protected GenericOperationsDao dao;

@@ -82,13 +82,17 @@ public class GenericOperationsDao {
             populateQueryAndLimits(firstResult, maxResults, query, paramValues);
             result.setLeft(query.list());
             try {
-                Query countQuery = session.getNamedQuery(namedQuery + ".count");
-                populateQuery(countQuery, paramValues);
-                Number count = (Number) countQuery.uniqueResult();
-                if (count.intValue() % maxResults > 0) {
-                    result.setRight((count.intValue() / maxResults) + 1);
-                } else {
-                    result.setRight(count.intValue() / maxResults);
+                if (firstResult != null && maxResults != null) {
+                    Query countQuery = session.getNamedQuery(namedQuery + ".count");
+                    populateQuery(countQuery, paramValues);
+                    Number count = (Number) countQuery.uniqueResult();
+                    if (count != null) {
+                        if (count.intValue() % maxResults > 0) {
+                            result.setRight((count.intValue() / maxResults) + 1);
+                        } else {
+                            result.setRight(count.intValue() / maxResults);
+                        }
+                    }
                 }
             } catch (MappingException ex) {
                 // do nothing, there's no count query mapped.
