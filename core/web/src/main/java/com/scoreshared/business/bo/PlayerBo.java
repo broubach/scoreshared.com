@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.exception.EmptyPlayerNameException;
@@ -18,16 +19,16 @@ import com.scoreshared.domain.entity.User;
 @Component
 public class PlayerBo extends GraphBo {
     
-    public List<Player> getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(Integer ownerId, Boolean ascending) {
-        List<Player> result = null;
+    public Pair<List, Integer> getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(Integer ownerId, Boolean ascending, Integer pageNumber) {
+        Pair<List, Integer> result = null;
         if (ascending) {
-            result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQuery", ownerId);
+            result = dao.findByNamedQueryWithLimits("playerNameByOwnerExceptLoggedUserQuery", pageNumber * PAGE_SIZE, PAGE_SIZE, ownerId);
         } else {
-            result = dao.findByNamedQuery("playerNameByOwnerExceptLoggedUserQueryDesc", ownerId);
+            result = dao.findByNamedQueryWithLimits("playerNameByOwnerExceptLoggedUserQueryDesc", pageNumber * PAGE_SIZE, PAGE_SIZE, ownerId);
         }
 
-        if (!result.isEmpty()) {
-            flagPlayersWithScore(result);
+        if (!result.getLeft().isEmpty()) {
+            flagPlayersWithScore(result.getLeft());
         }
 
         return result;

@@ -60,9 +60,9 @@
 							<div class="columns small-4 direita">
 								<#if (players?size > 0)>
 									<#if (request.requestUri?ends_with("false"))>
-										<a href="<@spring.url relativeUrl="/app/profile/players/ascending/true"/>"><@spring.message code="label.ascending"/></a>
+										<a href="<@spring.url relativeUrl="/app/profile/players/page/${pageNumber}/ascending/true"/>"><@spring.message code="label.ascending"/></a>
 									<#else>
-										<a href="<@spring.url relativeUrl="/app/profile/players/ascending/false"/>"><@spring.message code="label.descending"/></a>
+										<a href="<@spring.url relativeUrl="/app/profile/players/page/${pageNumber}/ascending/false"/>"><@spring.message code="label.descending"/></a>
 									</#if>
 								<#else>
 									&nbsp;
@@ -71,6 +71,7 @@
 							<div class="columns small-1">
 							</div>
 						</div>
+						<#include "/profile/players-pagination-snippet.ftl">
 						<#if (players?size <= 0)><p id="empty-players-message"><@spring.message code="label.you_have_no_players_to_manage_at_the_moment"/></p></#if>
 						<ul class="lista-resultados lista-aprovacoes">
 							<#list players as player>
@@ -103,6 +104,7 @@
 								</li>
 							</#list>
 						</ul>
+						<#include "/profile/players-pagination-snippet.ftl">
 					</div>
 				</section>
 			</div>

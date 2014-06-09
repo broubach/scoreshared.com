@@ -27,6 +27,7 @@ import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.Score;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.PaginationHelper;
 import com.scoreshared.webapp.dto.ScoreItemModel;
 
 @Controller
@@ -41,6 +42,9 @@ public class ScoresController extends BaseController {
 
     @Inject
     private LocaleResolver localeResolver;
+    
+    @Inject
+    private PaginationHelper paginationHelper;
 
     @RequestMapping(value = "{pageNumber}/{outcome}/{ascending}", method = RequestMethod.GET)
     public ModelAndView listWithoutTerm(@LoggedUser final User loggedUser, HttpServletRequest request,
@@ -68,7 +72,7 @@ public class ScoresController extends BaseController {
     	}
     	result.addObject("scores", items);
     	
-    	calculatePaginationWindowAndAddToModel(result, pageNumber, scoresAndTotalCount.getRight());
+    	paginationHelper.calculatePaginationWindowAndAddToModel(result, pageNumber, scoresAndTotalCount.getRight());
     	
     	Integer[] winLoss = bo.calculateWinLoss(scoresAndTotalCount.getLeft(), loggedUser.getId());
     	result.addObject("win", winLoss[0]);
@@ -77,41 +81,6 @@ public class ScoresController extends BaseController {
         result.addObject("searchTerm", term);
         result.addObject("ascending", ascending);
 		return result;
-    }
-
-    private void calculatePaginationWindowAndAddToModel(ModelAndView mav, Integer pageNumber, Integer pageCount) {
-        int windowSize = 5;
-    	int windowLeft = pageNumber - windowSize/2;
-    	int windowRight = pageNumber + windowSize/2;
-
-    	int spareWeigthLeft = 0;
-    	if (windowLeft < 0) {
-    	    spareWeigthLeft = Math.abs(windowLeft);
-    	    windowLeft = 0;
-    	}
-
-    	int spareWeigthRight = 0;
-    	if (windowRight >= pageCount) {
-    	    spareWeigthRight = windowRight - (pageCount-1);
-    	    windowRight = pageCount-1;
-    	}
-
-    	if (pageCount > windowSize) {
-    	    windowLeft -= spareWeigthRight;
-    	    windowRight += spareWeigthLeft;
-            if (pageNumber == 0) {
-                mav.addObject("disableFirstArrow", true);
-            } else if (pageNumber == (pageCount-1)) {
-                mav.addObject("disableLastArrow", true);
-            }
-        } else {
-            mav.addObject("disableFirstArrow", true);
-            mav.addObject("disableLastArrow", true);
-        }
-        mav.addObject("windowLeft", windowLeft);
-        mav.addObject("windowRight", windowRight);
-        mav.addObject("pageCount", pageCount);
-        mav.addObject("pageNumber", pageNumber);
     }
 
     @RequestMapping(value="/remove/{scoreId}", method = RequestMethod.DELETE)

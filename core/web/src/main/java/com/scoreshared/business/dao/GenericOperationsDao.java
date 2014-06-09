@@ -17,6 +17,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
+import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -69,16 +70,30 @@ public class GenericOperationsDao {
     }
 
     public List findByNamedQuery(String namedQuery, Object... paramValues) {
-        return findByNamedQueryWithLimits(namedQuery, null, null, paramValues);
+        return findByNamedQueryWithLimits(namedQuery, null, null, paramValues).getLeft();
     }
 
-    public List findByNamedQueryWithLimits(String namedQuery, Integer firstResult, Integer maxResults, Object... paramValues) {
+    public Pair<List, Integer> findByNamedQueryWithLimits(String namedQuery, Integer firstResult, Integer maxResults, Object... paramValues) {
         Session session = null;
+        MutablePair<List, Integer> result = new MutablePair<List, Integer>();
         try {
             session = sessionFactory.openSession();
             Query query = session.getNamedQuery(namedQuery);
-            populateQuery(firstResult, maxResults, query, paramValues);
-            return query.list();
+            populateQueryAndLimits(firstResult, maxResults, query, paramValues);
+            result.setLeft(query.list());
+            try {
+                Query countQuery = session.getNamedQuery(namedQuery + ".count");
+                populateQuery(countQuery, paramValues);
+                Number count = (Number) countQuery.uniqueResult();
+                if (count.intValue() % maxResults > 0) {
+                    result.setRight((count.intValue() / maxResults) + 1);
+                } else {
+                    result.setRight(count.intValue() / maxResults);
+                }
+            } catch (MappingException ex) {
+                // do nothing, there's no count query mapped.
+            }
+            return result;
         } finally {
             if (session != null) {
                 session.close();
@@ -86,13 +101,17 @@ public class GenericOperationsDao {
         }
     }
 
-    private void populateQuery(Integer firstResult, Integer maxResults, Query query, Object... paramValues) {
+    private void populateQueryAndLimits(Integer firstResult, Integer maxResults, Query query, Object... paramValues) {
         if (firstResult != null) {
             query.setFirstResult(firstResult);
         }
         if (maxResults != null) {
             query.setMaxResults(maxResults);
         }
+        populateQuery(query, paramValues);
+    }
+
+    private void populateQuery(Query query, Object... paramValues) {
         if (paramValues != null) {
             if (paramValues.length > 0 && paramValues[0] instanceof Map) {
                 query.setProperties((Map) paramValues[0]);
@@ -107,7 +126,7 @@ public class GenericOperationsDao {
             }
         }
     }
-
+    
     public List findByNamedQueryAndNamedParam(String queryName, Map<String, ?> params) {
         String[] paramNames = new String[params.size()];
         Object[] values = new Object[params.size()];
@@ -266,7 +285,7 @@ public class GenericOperationsDao {
             session = sessionFactory.openSession();
             t = session.beginTransaction();
             Query query = session.getNamedQuery(namedQuery);
-            populateQuery(null, null, query, paramValues);
+            populateQueryAndLimits(null, null, query, paramValues);
             int result = query.executeUpdate();
             t.commit();
             return result;
@@ -286,7 +305,7 @@ public class GenericOperationsDao {
         try {
             session = sessionFactory.openSession();
             Query query = session.createQuery(queryStr);
-            populateQuery(firstResult, maxResults, query, paramValues);
+            populateQueryAndLimits(firstResult, maxResults, query, paramValues);
             return query.list();
         } finally {
             if (session != null) {

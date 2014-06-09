@@ -12,10 +12,11 @@ var Scores = {
 			var searchTerm = $('#search-term').val();
 			var outcome = $('input[name=scoreOutcomeFilter]:checked').val();
 			var ascending = Scores.options.ascending;
+			var pageNumber = Scores.options.pageNumber;
 			if (searchTerm) {
-				document.location.href = Scores.options.context + '/app/scores/0/' + searchTerm + "/" + outcome + "/" + ascending;
+				document.location.href = Scores.options.context + '/app/scores/'+ pageNumber + '/' + searchTerm + "/" + outcome + "/" + ascending;
 			} else {
-				document.location.href = Scores.options.context + '/app/scores/0/' + outcome + "/" + ascending;
+				document.location.href = Scores.options.context + '/app/scores/'+ pageNumber + '/' + outcome + "/" + ascending;
 			}
 		});
 	},

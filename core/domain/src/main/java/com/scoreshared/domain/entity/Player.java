@@ -32,8 +32,10 @@ import org.hibernate.search.annotations.Field;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "playerByNameAndOwnerQuery", query = "from Player player where lower(player.name) = lower(:playerName) and player.owner.id = :ownerId"),
-        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery", query = "from Player player where player.owner.id = :ownerId and (player.association.id <> :ownerId or player.association.id is null) order by player.name"),
-        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQueryDesc", query = "from Player player where player.owner.id = :ownerId and (player.association.id <> :ownerId or player.association.id is null) order by player.name desc"),
+        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery", query = AppQueries.PLAYER_NAME_BY_OWNER_EXCEPT_LOGGED_USER),
+        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQuery.count", query = AppQueries.PLAYER_NAME_BY_OWNER_EXCEPT_LOGGED_USER_COUNT),
+        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQueryDesc", query = AppQueries.PLAYER_NAME_BY_OWNER_EXCEPT_LOGGED_USER_DESC),
+        @NamedQuery(name = "playerNameByOwnerExceptLoggedUserQueryDesc.count", query = AppQueries.PLAYER_NAME_BY_OWNER_EXCEPT_LOGGED_USER_DESC_COUNT),
         @NamedQuery(name = "playerByAssociationAndOwnerQuery", query = "select player from Player player join player.association association where association.id = :associationId and player.owner.id = :ownerId"),
         @NamedQuery(name = "playerIdWithMatchesByPlayerIdsQuery", query = "select player.id from PlayerInstance playerInstance join playerInstance.player player where player.id in (:playerIds)"),
         @NamedQuery(name = "invitationPlayerByHashQuery", query = "from Player player where player.invitation.hash = :invitationHash"),

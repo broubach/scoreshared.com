@@ -31,8 +31,6 @@ public class ScoreBo extends BaseBo<Score> {
     @Inject
     private GraphBo graphBo;
 
-    private static final int PAGE_SIZE = 25;
-
     public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
         consist(owner, loggedUser, score, comment);
 
@@ -343,7 +341,7 @@ public class ScoreBo extends BaseBo<Score> {
         if (searchData.getRight() % PAGE_SIZE > 0) {
             result.setRight((searchData.getRight() / PAGE_SIZE) + 1);
         } else {
-            result.setRight(searchData.getRight());
+            result.setRight(searchData.getRight() / PAGE_SIZE);
         }
 
         fillComments(ownerId, result.getLeft());

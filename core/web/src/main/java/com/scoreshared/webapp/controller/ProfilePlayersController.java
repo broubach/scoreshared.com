@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +27,7 @@ import com.scoreshared.business.exception.PlayerWithRegisteredMatchException;
 import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.PaginationHelper;
 import com.scoreshared.webapp.dto.SearchModel;
 
 @Controller
@@ -40,10 +42,16 @@ public class ProfilePlayersController {
     @Inject
     private LocaleResolver localeResolver;
 
-    @RequestMapping(value = "/profile/players/ascending/{ascending}", method = RequestMethod.GET)
-    public String getPlayers(@LoggedUser User loggedUser, @PathVariable Boolean ascending, ModelMap modelMap) {
-        List<Player> players = bo.getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(loggedUser.getId(), ascending);
-        modelMap.addAttribute("players", players);
+    @Inject
+    private PaginationHelper paginationHelper;
+
+    @RequestMapping(value = "/profile/players/page/{pageNumber}/ascending/{ascending}", method = RequestMethod.GET)
+    public String getPlayers(@LoggedUser User loggedUser, @PathVariable Integer pageNumber, @PathVariable Boolean ascending, ModelMap modelMap) {
+        Pair<List, Integer> playersAndCount = bo.getPlayersByOwnerExceptOwnerFlaggingPlayersWithScore(loggedUser.getId(), ascending, pageNumber);
+
+        paginationHelper.calculatePaginationWindowAndAddToModel(modelMap, pageNumber, playersAndCount.getRight());
+        
+        modelMap.addAttribute("players", playersAndCount.getLeft());
         modelMap.addAttribute("search", new SearchModel());
         return "/profile/players";
     }

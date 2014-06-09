@@ -55,7 +55,7 @@
 				</div>
 			</div>
 
-			<#include "/helper-snippets/pagination-snippet.ftl">
+			<#include "/scores/pagination-snippet.ftl">
 
 			<div class="row">
 				<div class="columns small-12">
@@ -105,7 +105,7 @@
 				</div>
 			</div>
 
-			<#include "/helper-snippets/pagination-snippet.ftl">
+			<#include "/scores/pagination-snippet.ftl">
 		</div>
 	</div>
 
@@ -175,6 +175,7 @@ $(function() {
 		label_confirm_to_hide_score_permanently: "<@spring.message code="label.confirm_to_hide_score_permanently"/>",
 		label_refresh_page_to_see_new_actions_available: "<@spring.message code="label.refresh_page_to_see_new_actions_available"/>",
 		ascending: ${(!ascending)?c},
+		pageNumber: ${pageNumber},
 		win: ${win},
 		loss: ${loss}
 	}
