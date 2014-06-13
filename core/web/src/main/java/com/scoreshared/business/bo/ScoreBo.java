@@ -198,43 +198,6 @@ public class ScoreBo extends BaseBo<Score> {
         }
     }
 
-    public Integer[] calculateWinLoss(Integer ownerId) {
-        List<Score> scores = dao.findByNamedQuery("scoresForWinLossQuery", ownerId);
-        populateLeftPlayers(scores);
-
-        return calculateWinLoss(scores, ownerId);
-    }
-    
-    public Integer[] calculateWinLoss(List<Score> scores, Integer ownerId) {
-        Integer win = 0;
-        Integer loss = 0;
-        for (Score score : scores) {
-            if (score.hasWinner(ownerId)) {
-                win++;
-            } else {
-                loss++;
-            }
-        }
-
-        return new Integer[] { win, loss };
-    }
-
-    private void populateLeftPlayers(List<Score> scores) {
-        if (scores.size() <= 0) {
-            return;
-        }
-        Map<Integer, Score> scoresById = new HashMap<Integer, Score>();
-        for (Score score : scores) {
-            scoresById.put(score.getId(), score);
-            score.setLeftPlayers(new HashSet<PlayerInstance>());
-        }
-        Object[] scoreIdAndPlayer = null;
-        for (Object obj : dao.findByNamedQuery("scoreIdAndLeftPlayerQuery", new Object[] {scoresById.keySet()})) {
-            scoreIdAndPlayer = (Object[]) obj;
-            scoresById.get(scoreIdAndPlayer[0]).getLeftPlayers().add((PlayerInstance) scoreIdAndPlayer[1]);
-        }
-    }
-
     public void acceptScore(Integer userId, Integer scoreId) {
         Score score = findById(scoreId);
         PlayerInstance player = score.getAssociatedPlayer(userId);
@@ -315,7 +278,7 @@ public class ScoreBo extends BaseBo<Score> {
         return dao.findByNamedQuery("pendingScoreRevisionsQuery", ownerId);
     }
 
-    public MutablePair<List<Score>,Integer> findScores(Integer pageNumber, String term, ScoreOutcomeEnum outcome, boolean asc, Integer ownerId) {
+    public Pair<List<Score>,Integer> findScores(Integer pageNumber, String term, ScoreOutcomeEnum outcome, boolean asc, Integer ownerId) {
         List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, outcome);
 
         MutablePair<List<Score>, Integer> result = new MutablePair<List<Score>, Integer>();
@@ -325,15 +288,7 @@ public class ScoreBo extends BaseBo<Score> {
             return result;
         }
 
-        List<Object[]> fieldAndValuePairs = new ArrayList<Object[]>();
-        fieldAndValuePairs.add(new Object[] { "id",
-                StringUtils.collectionToDelimitedString(playerInstanceIds, " ") });
-        if (term != null && !term.isEmpty()) {
-            fieldAndValuePairs
-                    .add(new Object[] {
-                            "comments.comment score.playerInstances.player.name",
-                            term });
-        }
+        List<Object[]> fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
 
         Pair<List<PlayerInstance>, Integer> searchData = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, null, fieldAndValuePairs);
 
@@ -350,6 +305,33 @@ public class ScoreBo extends BaseBo<Score> {
         return result;
     }
 
+    private List<Object[]> toFieldAndValuePairs(String term, List<Integer> playerInstanceIds) {
+        List<Object[]> fieldAndValuePairs = new ArrayList<Object[]>();
+        fieldAndValuePairs.add(new Object[] { "id",
+                StringUtils.collectionToDelimitedString(playerInstanceIds, " ") });
+        if (term != null && !term.isEmpty()) {
+            fieldAndValuePairs
+                    .add(new Object[] {
+                            "comments.comment score.playerInstances.player.name",
+                            term });
+        }
+        return fieldAndValuePairs;
+    }
+
+    public Pair<Integer, Integer> countWinLoss(String term, Integer ownerId) {
+        MutablePair<Integer, Integer> result = new MutablePair<Integer, Integer>();
+        
+        List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.WIN);
+        List<Object[]> fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
+        result.setLeft(dao.countInLucene(PlayerInstance.class, fieldAndValuePairs));
+
+        playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.LOSS);
+        fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
+        result.setRight(dao.countInLucene(PlayerInstance.class, fieldAndValuePairs));
+
+        return result;
+    }
+    
     private void fillComments(Integer ownerId, List<Score> result) {
         List<Integer> ids = new ArrayList<Integer>();
         Map<Integer, Score> scoresByIdMap = new HashMap<Integer, Score>();

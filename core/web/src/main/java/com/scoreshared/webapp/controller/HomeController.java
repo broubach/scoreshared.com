@@ -59,9 +59,9 @@ public class HomeController extends BaseController {
         request.getSession().setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.FALSE);
 
         if (!scores.isEmpty()) {
-            Integer[] winLoss = scoreBo.calculateWinLoss(loggedUser.getId());
-            mav.addObject("win", winLoss[0]);
-            mav.addObject("loss", winLoss[1]);
+            Pair<Integer, Integer> winLoss = scoreBo.countWinLoss(null, loggedUser.getId());
+            mav.addObject("win", winLoss.getLeft());
+            mav.addObject("loss", winLoss.getRight());
 
             mav.setViewName("home/home");
 

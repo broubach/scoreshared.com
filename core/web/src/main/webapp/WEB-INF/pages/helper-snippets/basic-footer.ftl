@@ -8,13 +8,14 @@
 		</div>
 		<div class="row nivel2">
 			<div class="large-6 columns">
-			<ul class="inline-list">
-				<li><a href="http://wiki.scoreshared.com/doku.php?id=about"><@spring.message code="label.about"/></a></li>
-				<li><a href="http://wiki.scoreshared.com/doku.php?id=terms_and_conditions"><@spring.message code="label.terms_and_conditions"/></a></li>
-			</ul>
-		</div>
-		<div class="large-6 columns">
-			<img src="<@spring.url relativeUrl="/img/any-device.png"/>" class="right" alt="" />	</div>
+				<ul class="inline-list">
+					<li><a href="http://wiki.scoreshared.com/doku.php?id=about"><@spring.message code="label.about"/></a></li>
+					<li><a href="http://wiki.scoreshared.com/doku.php?id=terms_and_conditions"><@spring.message code="label.terms_and_conditions"/></a></li>
+				</ul>
+		    </div>
+		    <div class="large-6 columns">
+				<!-- img src="<@spring.url relativeUrl="/img/any-device.png"/>" class="right" alt="" /-->
+			</div>
 		</div>
 		<div class="row nivel3">
 			<div class="columns twelve">

@@ -334,53 +334,40 @@ public class GenericOperationsDao {
     }
 
     public <T> Pair<List<T>, Integer> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs) {
+        return searchInLucene(pageNumber, pageSize, clazz, sortField, fieldAndValuePairs, false);
+    }
+
+    public <T> Integer countInLucene(Class<T> clazz, List<Object[]> fieldAndValuePairs) {
+        return searchInLucene(null, null, clazz, null, fieldAndValuePairs, true).getRight();
+    }
+
+    private <T> Pair<List<T>, Integer> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs, boolean justCount) {
         Session session = null;
-        Transaction tx = null;
         MutablePair<List<T>, Integer> result = new MutablePair<List<T>, Integer>(); 
         try {
             session = sessionFactory.openSession();
             FullTextSession fullTextSession = Search.getFullTextSession(session);
-            tx = fullTextSession.beginTransaction();
 
-            QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(clazz).get();
-            TermContext termContext = qb.keyword();
-
-            List<org.apache.lucene.search.Query> queries = new ArrayList<org.apache.lucene.search.Query>();
-            for (Object[] fieldAndValuePair : fieldAndValuePairs) {
-                queries.add(termContext.onFields(((String)fieldAndValuePair[0]).split(" ")).matching(fieldAndValuePair[1])
-                        .createQuery());
-            }
-
-            org.apache.lucene.search.Query finalQuery = null;
-            if (queries.size() > 0) {
-                BooleanJunction junction = qb.bool();
-                for (org.apache.lucene.search.Query query : queries) {
-                    junction = junction.must(query);
-                }
-                finalQuery = junction.createQuery();
-
-            } else if (queries.size() == 1) {
-                finalQuery = queries.get(0);
-            }
+            org.apache.lucene.search.Query finalQuery = toJoinedLuceneQuery(clazz, fullTextSession, fieldAndValuePairs);
 
             FullTextQuery hibQuery = fullTextSession.createFullTextQuery(finalQuery, clazz);
             if (sortField != null) {
                 Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1]));
                 hibQuery.setSort(sort);
             }
-            
+
             if (pageNumber != null && pageSize != null) {
                 hibQuery.setFirstResult(pageNumber * pageSize);
                 hibQuery.setMaxResults(pageSize);
             }
 
-            result.setLeft(hibQuery.list());
+            if (!justCount) {
+                result.setLeft(hibQuery.list());
+            }
             result.setRight(hibQuery.getResultSize());
 
-            tx.commit();
-            
         } catch (Exception e) {
-            tx.rollback();
+            throw new RuntimeException(e);
 
         } finally {
             if (session != null) {
@@ -388,6 +375,29 @@ public class GenericOperationsDao {
             }
         }
         return result;
+    }
+
+    private org.apache.lucene.search.Query toJoinedLuceneQuery(Class clazz, FullTextSession fullTextSession, List<Object[]> fieldAndValuePairs) {
+        QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(clazz).get();
+
+        TermContext termContext = qb.keyword();
+        List<org.apache.lucene.search.Query> queries = new ArrayList<org.apache.lucene.search.Query>();
+        for (Object[] fieldAndValuePair : fieldAndValuePairs) {
+            queries.add(termContext.onFields(((String)fieldAndValuePair[0]).split(" ")).matching(fieldAndValuePair[1])
+                    .createQuery());
+        }
+        org.apache.lucene.search.Query finalQuery = null;
+        if (queries.size() > 0) {
+            BooleanJunction junction = qb.bool();
+            for (org.apache.lucene.search.Query query : queries) {
+                junction = junction.must(query);
+            }
+            finalQuery = junction.createQuery();
+        
+        } else if (queries.size() == 1) {
+            finalQuery = queries.get(0);
+        }
+        return finalQuery;
     }
 
     public BaseEntity mergeAndInitialize(BaseEntity entity, String collectionName) {
