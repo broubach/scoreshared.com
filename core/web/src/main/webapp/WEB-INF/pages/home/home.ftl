@@ -47,7 +47,7 @@
 				<hr />
 				<div class="row collapse">
 					<div class="columns large-7">
-						<canvas id="estatistica-jogos"></canvas>
+						<canvas id="estatistica-jogos" title="<@spring.message code="label.win_loss_record"/>"></canvas>
 					</div>
 					<div class="columns large-5">
 						<ul class="legenda">
@@ -58,7 +58,7 @@
 				</div>
 				<div class="row">
 					<div class="columns large-7 last">
-						<p class="centralizado">${win}/${loss} (${win/(win + loss)} %)</p>
+						<p class="centralizado">${win} - ${loss} (${(win/(win + loss)) * 100} %)</p>
 					</div>
 				</div>
 			</div>

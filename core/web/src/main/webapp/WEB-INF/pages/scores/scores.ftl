@@ -49,8 +49,8 @@
 				</div>
 				<div class="columns small-2">
 					<#if (win + loss > 0)>
-						<canvas id="estatistica-jogos"></canvas><br/>
-						<p class="centralizado">${win}/${loss} (${win/(win + loss)} %)</p>
+						<canvas id="estatistica-jogos" title="<@spring.message code="label.win_loss_record"/>"></canvas><br/>
+						<p class="centralizado">${win} - ${loss} (${(win/(win + loss)) * 100} %)</p>
 					</#if>
 				</div>
 			</div>
