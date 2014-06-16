@@ -307,8 +307,10 @@ public class ScoreBo extends BaseBo<Score> {
 
     private List<Object[]> toFieldAndValuePairs(String term, List<Integer> playerInstanceIds) {
         List<Object[]> fieldAndValuePairs = new ArrayList<Object[]>();
-        fieldAndValuePairs.add(new Object[] { "id",
-                StringUtils.collectionToDelimitedString(playerInstanceIds, " ") });
+        if (playerInstanceIds != null && !playerInstanceIds.isEmpty()) {
+            fieldAndValuePairs.add(new Object[] { "id",
+                    StringUtils.collectionToDelimitedString(playerInstanceIds, " ") });
+        }
         if (term != null && !term.isEmpty()) {
             fieldAndValuePairs
                     .add(new Object[] {

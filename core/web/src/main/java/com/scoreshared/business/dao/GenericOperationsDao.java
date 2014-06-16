@@ -342,8 +342,13 @@ public class GenericOperationsDao {
     }
 
     private <T> Pair<List<T>, Integer> searchInLucene(Integer pageNumber, Integer pageSize, Class<T> clazz, Object[] sortField, List<Object[]> fieldAndValuePairs, boolean justCount) {
-        Session session = null;
         MutablePair<List<T>, Integer> result = new MutablePair<List<T>, Integer>(); 
+        if (fieldAndValuePairs == null || fieldAndValuePairs.isEmpty()) {
+            result.setRight(0);
+            return result;
+        }
+
+        Session session = null;
         try {
             session = sessionFactory.openSession();
             FullTextSession fullTextSession = Search.getFullTextSession(session);
@@ -379,7 +384,7 @@ public class GenericOperationsDao {
 
     private org.apache.lucene.search.Query toJoinedLuceneQuery(Class clazz, FullTextSession fullTextSession, List<Object[]> fieldAndValuePairs) {
         QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(clazz).get();
-
+        
         TermContext termContext = qb.keyword();
         List<org.apache.lucene.search.Query> queries = new ArrayList<org.apache.lucene.search.Query>();
         for (Object[] fieldAndValuePair : fieldAndValuePairs) {

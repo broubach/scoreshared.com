@@ -37,14 +37,22 @@
 			<div class="row">
 				<div class="small-6 columns centralizado">
 					<#if facebookConnected>
-						<span class="button secondary disabled"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.connected"/>: ${facebookAccount}</span>
+					    <#if canDisconnect> 
+						    <form action="<@spring.url relativeUrl="/app/connect/facebook"/>" method="DELETE"><button type="submit" class="button"/><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.disconnect"/></button>: ${facebookAccount}</span>
+						<#else>
+							<span class="button secondary disabled"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.connected"/>: ${facebookAccount}</span>
+						</#if>
 					<#else>
 						<form action="<@spring.url relativeUrl="/app/connect/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.connect"/></button></form>
 					</#if>
 				</div>
 				<div class="small-6 columns centralizado">
 					<#if twitterConnected>
-						<img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connected"/>: ${twitterAccount}
+					    <#if canDisconnect>
+						    <form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="DELETE"><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.disconnect"/></button>: ${twitterAccount}
+						<#else>
+							<img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connected"/>: ${twitterAccount}
+						</#if>
 					<#else>
 						<form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="POST"><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connect"/></button></form>
 					</#if>

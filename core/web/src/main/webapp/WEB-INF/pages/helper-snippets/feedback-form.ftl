@@ -12,7 +12,7 @@
 				</div>
 				<div class="row content no-padding-bottom">
 					<div class="columns small-12 direita">
-						<div class="submit"><input class="button" id="send-feedback" value="<@spring.message code="label.send"/>" type="button"></div>
+						<div class="submit"><input class="button button-primary" id="send-feedback" value="<@spring.message code="label.send"/>" type="button"></div>
 					</div>
 				</div>
 			</form>

@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -63,12 +64,12 @@ public class WelcomeController extends BaseController {
         }
         bo.saveProfile(loggedUser, form.getProfile());
         status.setComplete();
-        return getStep2(modelMap);
+        return getStep2(loggedUser, modelMap);
     }
 
     @RequestMapping(value = "/step2", method = RequestMethod.GET)
-    public String getStep2(ModelMap modelMap) {
-        connectionsHelper.populateModelMapWithConnections(modelMap);
+    public String getStep2(@LoggedUser User loggedUser, ModelMap modelMap) {
+        connectionsHelper.populateModelMapWithConnections(modelMap, StringUtils.isEmpty(loggedUser.getPassword()));
         return "welcome/step2";
     }
 

@@ -8,8 +8,8 @@
 				</#if>
 				<div class="row">
 					<div class="columns small-12 direita">
-						<button class="button mfp-prevent-close" id="dialog-confirm-yes"><@spring.message code="label.yes"/></button>
-						<a class="button button-primary mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
+						<button class="button button-primary mfp-prevent-close" id="dialog-confirm-yes"><@spring.message code="label.yes"/></button>
+						<a class="button mfp-prevent-close" id="dialog-confirm-save_without_invitation"><@spring.message code="label.save_without_invitation"/></a>
 					</div>
 				</div>
 			</div>

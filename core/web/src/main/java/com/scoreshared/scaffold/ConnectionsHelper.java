@@ -17,7 +17,7 @@ public class ConnectionsHelper {
     @Inject
     private ConnectionRepository connectionRepository;
 
-    public void populateModelMapWithConnections(ModelMap modelMap) {
+    public void populateModelMapWithConnections(ModelMap modelMap, boolean isPasswordEmpty) {
         Connection<Twitter> twitterConnection = connectionRepository.findPrimaryConnection(Twitter.class);
         if (twitterConnection != null) {
             modelMap.addAttribute("twitterAccount", twitterConnection.fetchUserProfile().getUsername());
@@ -32,6 +32,16 @@ public class ConnectionsHelper {
             modelMap.addAttribute("facebookConnected", true);
         } else {
             modelMap.addAttribute("facebookConnected", false);
+        }
+
+        if (isPasswordEmpty) {
+            if (twitterConnection != null && facebookConnection != null) {
+                modelMap.addAttribute("canDisconnect", true);
+            } else if (twitterConnection != null || facebookConnection != null) {
+                modelMap.addAttribute("canDisconnect", false);
+            }
+        } else {
+            modelMap.addAttribute("canDisconnect", true);
         }
     }
 }

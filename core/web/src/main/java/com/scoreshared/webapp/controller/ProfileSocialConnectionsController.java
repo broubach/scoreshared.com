@@ -3,6 +3,7 @@ package com.scoreshared.webapp.controller;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class ProfileSocialConnectionsController {
 
     @RequestMapping(value = "/profile/social-networks", method = RequestMethod.GET)
     public String getProfileAvatar(ModelMap modelMap, @LoggedUser User loggedUser, HttpSession session, SessionStatus status) {
-        connectionsHelper.populateModelMapWithConnections(modelMap);
+        connectionsHelper.populateModelMapWithConnections(modelMap, StringUtils.isEmpty(loggedUser.getPassword()));
 
         return "/profile/social-networks";
     }

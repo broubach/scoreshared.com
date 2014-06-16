@@ -11,7 +11,7 @@
 				</div>
 				<div class="row content no-padding-bottom">
 					<div class="columns small-12 direita">
-						<div class="submit"><input class="button" id="dialog-rename-player-rename" value="<@spring.message code="label.rename"/>" type="button"></input></div>
+						<div class="submit"><input class="button button-primary" id="dialog-rename-player-rename" value="<@spring.message code="label.rename"/>" type="button"></input></div>
 					</div>
 				</div>
 			</form>

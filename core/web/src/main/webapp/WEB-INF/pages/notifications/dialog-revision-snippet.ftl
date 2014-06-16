@@ -29,8 +29,8 @@
 			</div>
 			<div class="row content no-padding-top no-padding-bottom">
 				<div class="columns small-12 direita">
-					<a class="button mfp-prevent-close" id="dialog-revision-cancel"><@spring.message code="label.cancel"/></a>
 					<a class="button button-primary mfp-prevent-close" id="dialog-revision-send_request"><@spring.message code="label.send_request"/></a>
+					<a class="button mfp-prevent-close" id="dialog-revision-cancel"><@spring.message code="label.cancel"/></a>
 				</div>
 			</div>
 		</form>

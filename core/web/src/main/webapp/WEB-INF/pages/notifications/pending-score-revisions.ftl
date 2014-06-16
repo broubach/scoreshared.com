@@ -48,15 +48,15 @@
 													<td><@spring.message code="label.reviewed_by"/>: <img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/> ${item.playerInstance.player.name}</td>
 													<td width="30%" rowspan="6">
 														<span class="actions hide">
-															<a href="approve,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small button-warning"><@spring.message code="label.approve"/></a>
+															<a href="approve,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small button-primary"><@spring.message code="label.approve"/></a>
 															<a href="ignore,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small"><@spring.message code="label.ignore"/></a>
 														</span>
 													</td>
 												</tr>
 												<tr><td><@spring.message code="label.original_date"/>: ${item.dateTime}</td></tr>
 												<tr><td><@spring.message code="label.reviewed_date"/>: ${item.revisionDateTime}</td></tr>
-												<tr><td><@spring.message code="label.original_score"/>: ${item.opponentsNames} ${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.you"/></td></tr>
-												<tr><td><@spring.message code="label.reviewed_score"/>: ${item.opponentsNames} ${item.revisionScore} <@spring.message code="label.you"/></td></tr>
+												<tr><td><@spring.message code="label.original_score"/>: ${item.opponentsNames} ${item.detailTextHighlightingWinnerWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
+												<tr><td><@spring.message code="label.reviewed_score"/>: ${item.opponentsNames} ${item.revisionScoreWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
 												<tr><td><@spring.message code="label.revision_message"/>: ${item.playerInstance.revisionMessage!""}</td></tr>
 											</tbody>
 										</table>

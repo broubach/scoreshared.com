@@ -38,7 +38,16 @@ public class ScoreItemWithPlayerInstanceModel extends ScoreItemModel {
         return result.toString().trim();
     }
 
-    public String getRevisionScore() {
+    public String getRevisionScoreWithLoggedUserAtRight() {
+        if (score.hasWinner(loggedUser.getId())) {
+            return Score.getFinalScore(false, "<span class='winner'>", "</span>", new Integer[][] {
+                    new Integer[] { playerInstance.getRevisionSet1Left(), playerInstance.getRevisionSet1Right() },
+                    new Integer[] { playerInstance.getRevisionSet2Left(), playerInstance.getRevisionSet2Right() },
+                    new Integer[] { playerInstance.getRevisionSet3Left(), playerInstance.getRevisionSet3Right() },
+                    new Integer[] { playerInstance.getRevisionSet4Left(), playerInstance.getRevisionSet4Right() },
+                    new Integer[] { playerInstance.getRevisionSet5Left(), playerInstance.getRevisionSet5Right() } });
+
+        }
         return Score.getFinalScore(true, "<span class='winner'>", "</span>", new Integer[][] {
                 new Integer[] { playerInstance.getRevisionSet1Left(), playerInstance.getRevisionSet1Right() },
                 new Integer[] { playerInstance.getRevisionSet2Left(), playerInstance.getRevisionSet2Right() },
