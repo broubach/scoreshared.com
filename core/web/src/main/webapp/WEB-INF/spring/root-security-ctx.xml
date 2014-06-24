@@ -34,8 +34,7 @@
 			<beans:list>
 				<beans:value>/app/index</beans:value>
 				<beans:value>/app/login</beans:value>
-				<beans:value>/app/signup/captcha</beans:value>
-				<beans:value>/app/signup/data</beans:value>
+				<beans:value>/app/signup*/**</beans:value>
 			</beans:list>
 		</beans:constructor-arg>
 		<beans:constructor-arg name="onDeniedToNonAnonymousDestinationUrl" value="/app/home" />

@@ -62,6 +62,7 @@
 	<bean class="com.scoreshared.scaffold.CustomConnectController">
 		<constructor-arg ref="connectionRepository"/>
 		<constructor-arg ref="connectionFactoryLocator"/>
+		<property name="applicationUrl" value="${application.url}"/>
 	</bean>
 
 </beans>

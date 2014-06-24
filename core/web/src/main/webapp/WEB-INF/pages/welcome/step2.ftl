@@ -38,7 +38,7 @@
 				<div class="small-6 columns centralizado">
 					<#if facebookConnected>
 					    <#if canDisconnect> 
-						    <form action="<@spring.url relativeUrl="/app/connect/facebook"/>" method="DELETE"><button type="submit" class="button"/><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.disconnect"/></button>: ${facebookAccount}</span>
+						    <form action="<@spring.url relativeUrl="/app/connect/facebook"/>" method="POST"><input type="hidden" name="_method" value="delete" /><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.disconnect"/>: ${facebookAccount}</button></form>
 						<#else>
 							<span class="button secondary disabled"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.connected"/>: ${facebookAccount}</span>
 						</#if>
@@ -49,9 +49,9 @@
 				<div class="small-6 columns centralizado">
 					<#if twitterConnected>
 					    <#if canDisconnect>
-						    <form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="DELETE"><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.disconnect"/></button>: ${twitterAccount}
+						    <form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="POST"><input type="hidden" name="_method" value="delete" /><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.disconnect"/>: ${twitterAccount}</button></form>
 						<#else>
-							<img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connected"/>: ${twitterAccount}
+							<span class="button secondary disabled"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connected"/>: ${twitterAccount}</span>
 						</#if>
 					<#else>
 						<form action="<@spring.url relativeUrl="/app/connect/twitter"/>" method="POST"><button type="submit" class="button"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.connect"/></button></form>
