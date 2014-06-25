@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd" >
+<log4j:configuration>
+
+	<appender name="SCORESHARED_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="/var/log/tomcat/scoreshared.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd/MM/yyyy HH:mm:ss} %-5p %C{0} %m" />
+		</layout>
+	</appender>
+
+	<category name="scoreshared_default_category">
+		<appender-ref ref="SCORESHARED_FILE" />
+	</category>
+
+	<logger name="com.scoreshared">
+	    <level value="WARN"/>
+	    <appender-ref ref="SCORESHARED_FILE"/>
+	</logger>
+
+</log4j:configuration>

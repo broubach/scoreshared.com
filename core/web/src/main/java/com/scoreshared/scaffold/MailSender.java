@@ -6,10 +6,14 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 public class MailSender extends JavaMailSenderImpl {
+    
+    private Log log = LogFactory.getLog(MailSender.class);
 
 	public void send(String from, String to, String subject, String body) {
 		send(from, null, to, subject, body);
@@ -31,9 +35,10 @@ public class MailSender extends JavaMailSenderImpl {
 
 			send(message);
 		} catch (MessagingException e) {
-			e.printStackTrace();
+		    log.warn(e);
+
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+            log.warn(e);
 		}
 	}
 }

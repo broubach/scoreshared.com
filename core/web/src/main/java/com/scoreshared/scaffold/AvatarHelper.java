@@ -100,7 +100,7 @@ public class AvatarHelper {
 
             cleanSavedAvatar(session);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
-import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.Score;
 import com.scoreshared.domain.entity.SportEnum;

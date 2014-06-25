@@ -1,7 +1,6 @@
 package com.scoreshared.webapp.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +23,6 @@ import com.scoreshared.scaffold.LoggedUser;
 
 @Controller
 public class AccountSettingsController extends BaseController {
-
-    protected Logger logger = Logger.getLogger(AccountSettingsController.class.getName());
 
     @Inject
     private UserBo userBo;
@@ -65,7 +62,6 @@ public class AccountSettingsController extends BaseController {
                 return result;
             }
         } catch (UnsupportedEncodingException e) {
-            logger.severe(e.toString());
             throw new RuntimeException(e);
         }
     }

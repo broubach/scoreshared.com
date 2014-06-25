@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +40,6 @@ import com.scoreshared.webapp.dto.SignupForm;
 @RequestMapping(value = "/signup")
 @SessionAttributes({ "signupForm" })
 public class SignupController extends BaseController {
-
-    protected Logger logger = Logger.getLogger(SignupController.class.getName());
 
     @Inject
     private UserBo userBo;
@@ -234,10 +231,9 @@ public class SignupController extends BaseController {
             }
 
             return result;
+
         } catch (UnsupportedEncodingException e) {
-            logger.severe(e.toString());
-            result.put("severe", messageResource.getMessage("severe", null, localeResolver.resolveLocale(request)));
-            return result;
+            throw new RuntimeException(e);
         }
     }
 }

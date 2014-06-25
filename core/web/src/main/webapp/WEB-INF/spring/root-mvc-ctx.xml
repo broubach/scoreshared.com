@@ -52,4 +52,14 @@
 	<beans:bean id="onlyAtSignupFilter" class="com.scoreshared.scaffold.OnlyAtSignupFilter"/>
 	<beans:bean id="notificationStatsFilter" class="com.scoreshared.scaffold.NotificationStatsFilter"/>
 	<beans:bean id="enablePlayersForLinkCreationFilter" class="com.scoreshared.scaffold.EnablePlayersForLinkCreationFilter"/>
+
+	<beans:bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+	    <beans:property name="exceptionMappings">
+	        <beans:props>
+	            <beans:prop key="java.lang.Exception">error</beans:prop>
+	        </beans:props>
+	    </beans:property>
+	    <beans:property name="defaultErrorView" value="error" />
+	    <beans:property name="warnLogCategory" value="scoreshared_default_category" />
+	</beans:bean>
 </beans:beans>
