@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import nl.captcha.Captcha;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.scoreshared.business.bo.GraphBo;
 import com.scoreshared.business.bo.UserBo;
+import com.scoreshared.business.exception.EmailExistsException;
 import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.SecurityHelper;
@@ -70,23 +72,42 @@ public class SignupController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signup(HttpServletRequest request) {
+        return signup(request, new SignupForm(), null);
+    }
+
+    private ModelAndView signup(HttpServletRequest request, SignupForm form, String errorMessage) {
         ModelAndView mav = getSignupSnippet(request);
-        mav.addObject(new SignupForm());
+        mav.addObject(form);
+        if (!StringUtils.isEmpty(errorMessage)) {
+            mav.addObject("errorMessage", errorMessage);
+        }
         mav.setViewName("signup/signup");
 
         return mav;
     }
 
     @RequestMapping(value = "/connection", method = RequestMethod.GET)
-    public String signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request,
+    public ModelAndView signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request,
             HttpServletResponse response, @ModelAttribute("signupForm") SignupForm form) {
+        ModelAndView result = new ModelAndView();
         Connection<?> connection = ProviderSignInUtils.getConnection(webRequest);
         if (connection != null) {
             UserProfile userProfile = connection.fetchUserProfile();
             form.setEmail(userProfile.getEmail());
             form.setFirstName(userProfile.getFirstName());
             form.setLastName(userProfile.getLastName());
-            userBo.saveNewUser(form.toUser(), form.getInvitationHash());
+
+            try {
+                userBo.saveNewUser(form.toUser(), form.getInvitationHash());
+            } catch (EmailExistsException e) {
+                form.setFirstName(null);
+                form.setLastName(null);
+                return signup(
+                        request,
+                        form,
+                        messageResource.getMessage("error.the_specified_email_already_exists", null,
+                                localeResolver.resolveLocale(request)));
+            }
 
             ProviderSignInUtils.handlePostSignUp(userProfile.getEmail(), webRequest);
 
@@ -94,7 +115,9 @@ public class SignupController extends BaseController {
                     .getProviderId(), connection.getKey().getProviderUserId());
 
         }
-        return "redirect:/app/welcome/step1";
+
+        result.setViewName("redirect:/app/welcome/step1");
+        return result;
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET)
@@ -233,6 +256,11 @@ public class SignupController extends BaseController {
             return result;
 
         } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+
+        } catch (EmailExistsException e) {
+            // the user probably hacked the front end, so let's give him a dead
+            // end page.
             throw new RuntimeException(e);
         }
     }

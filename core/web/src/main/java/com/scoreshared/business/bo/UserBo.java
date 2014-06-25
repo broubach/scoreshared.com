@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.scoreshared.business.exception.EmailExistsException;
 import com.scoreshared.domain.entity.File;
 import com.scoreshared.domain.entity.Invitation;
 import com.scoreshared.domain.entity.InvitationResponseEnum;
@@ -251,7 +252,10 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return dao.findByPk(User.class, userId);
     }
 
-    public void saveNewUser(User newUser, String invitationHash) {
+    public void saveNewUser(User newUser, String invitationHash) throws EmailExistsException {
+        if (checkEmailExists(newUser.getEmail())) {
+            throw new EmailExistsException();
+        }
         dao.saveOrUpdate(newUser);
         if (!StringUtils.isEmpty(invitationHash)) {
             graphBo.acceptUnregisteredUserInvitation(newUser, invitationHash);
