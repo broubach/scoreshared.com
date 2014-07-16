@@ -15,6 +15,7 @@
 	<http pattern="/app/signin*/**" security="none"/>
 	<http pattern="/app/signup*/**" security="none"/>
 	<http pattern="/app/forgotPassword*/**" security="none"/>
+	<http pattern="/app/facebook*/**" security="none"/>
 
 	<http use-expressions="true">
 		<!-- Authentication policy -->

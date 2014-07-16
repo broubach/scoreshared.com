@@ -65,6 +65,7 @@
 		</div>
 	</div>
 	<script>
+	$(function(){
 	    PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	    //Get the context of the canvas element we want to select
@@ -109,6 +110,13 @@
 		}
 		$("#estatistica-jogos").attr('width',$("#estatistica-jogos").parent().width());
 		var chart = new Chart(ctx).Pie(data,options);
+
+		// creates picture in the server so it won't take long for FB to load image. It fails in dev environment.
+		$.ajax({
+	        url: 'http://www.scoreshared.com/chart?win=${win}&loss=${loss}',
+	        async: true
+	   }); 
+	});
 	</script>
 	<div class="row content">
 		<br/>
