@@ -8,7 +8,7 @@
 								"/css/vendor/pickadate/classic.time.css",
 								"/css/vendor/pickadate/classic.date.css",
 								"/css/app.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js",
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6-custom.min.js",
 								"/js/vendor/pickadate/legacy.js",
 								"/js/vendor/pickadate/picker.js",
 								"/js/vendor/pickadate/picker.date.js",
@@ -164,23 +164,33 @@
 								<#assign label_on><@spring.message code="label.on"/></#assign>
 								<#assign label_off><@spring.message code="label.off"/></#assign>
 								<#assign onOffHash = {"true":label_on, "false":label_off} />
-								<div class="small-6 large-6 columns">
-									<div class="columns large-4">
-										<a href="#a" class="js-toggle-switch"><img src="<@spring.url relativeUrl="/img/icons/twitter.png"/>" alt="" /></a>
-										<div class="small-2 switch tiny">
-											<@spring.formRadioButtons "score.postInTwitter", onOffHash, "", "" />
-							          		<span></span>
-							        	</div>
-									</div>
-									<div class="columns large-4">
-										<a href="#a" class="js-toggle-switch"><img src="<@spring.url relativeUrl="/img/icons/facebook.png"/>" alt="" /></a>
-										<div class="small-2 switch tiny">
-											<@spring.formRadioButtons "score.postInFacebook", onOffHash, "", "" />
-											<span></span>
-								        </div>
-							     	</div>
+								<div class="small-2 large-2 columns">
+									<a href="#" class="js-toggle-switch disabled"><img src="<@spring.url relativeUrl="/img/icons/facebook.png"/>" alt="" /></a>
+									<div class="small-2 switch tiny disabled">
+										<@spring.formRadioButtons "score.postInFacebook", onOffHash, "", "" />
+										<span class="disabled"></span>
+							        </div>
 						     	</div>
-						     	<div class="columns large-6">
+						     	<#if facebookConnected>
+							     	<div class="small-9 columns" id="facebook_panel_loading" style="display: none">
+							     		<label><img src="<@spring.url relativeUrl="/img/loading.gif"/>" /><@spring.message code="label.loading_preview"/>...</label>
+							     	</div>
+							     	<div class="small-9 columns" id="facebook_panel_enabled" style="display: none">
+							     	    <label><@spring.message code="label.facebook_this_is_the_preview_of_the_information_you_will_share_in_your_post"/>:</label>
+							     	    <div id="facebook_post" style="border: 1px solid #DCDCDC; line-height: 26px; border-radius: 5px">
+								     		<img src="#" id="graph"/>
+								     		<h5 id="facebook_panel_title">-</h5>
+								     		<h6 id="facebook_panel_subtitle">-</h6>
+							     	    </div>
+							     	</div>
+						     	<#else>
+							     	<div class="small-9 columns" id="facebook_panel_disabled">
+							     		<label>Go to Profile/Social networks to connect yourself before sharing your stats in Facebook.</label>
+							     	</div>
+						     	</#if>
+							</div>
+							<div class="row collapse">
+						     	<div class="columns large-12">
 						     		<br/>
 									<a id="save" class="no-margin-top button button-primary right"><@spring.message code="label.save"/></a>
 								</div>
@@ -213,6 +223,17 @@
 
 <script type="text/javascript">
 	$(function() {
+		FacebookPreview.init("<@spring.url relativeUrl="/"/>", "http://www.barragem.net:8558");
+		<#if !facebookConnected>
+		    $(':radio').attr('disabled', 'disabled');
+		    $(':radio').attr('readonly', 'readonly');
+		</#if>
+		$('#postInFacebook0').click(function() {
+			FacebookPreview.render();
+		});
+		$('#postInFacebook1').click(function() {
+			$('#facebook_panel_enabled').hide(1000);
+		});
 		$('#sportId').select2({ minimumResultsForSearch: -1});
 		$('.autosize').autosize({
 			append : "\n"

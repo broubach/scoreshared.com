@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -42,7 +44,9 @@ import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.PlayerInstanceComment;
 import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.SportEnum;
 import com.scoreshared.domain.entity.User;
+import com.scoreshared.scaffold.ConnectionsHelper;
 import com.scoreshared.scaffold.LoggedUser;
 import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.ScoreModel;
@@ -72,6 +76,9 @@ public class ScoreController extends BaseController {
     @Inject
     private LocaleResolver localeResolver;
     
+    @Inject
+    private ConnectionsHelper connectionsHelper;
+
     @InitBinder
     protected void initBinder(WebDataBinder binder, WebRequest request) {
         if (binder.getTarget() instanceof ScoreModel) {
@@ -104,6 +111,9 @@ public class ScoreController extends BaseController {
             mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
             mav.addObject("playersList", playersList.toString());
             mav.addObject("unusedPlayersList", playersList.toString());
+            
+            connectionsHelper.populateModelMapWithConnections(mav.getModelMap(), StringUtils.isEmpty(loggedUser.getPassword()));
+
             return mav;
         } catch (JsonGenerationException e) {
             throw new RuntimeException(e);
@@ -279,5 +289,41 @@ public class ScoreController extends BaseController {
             @ModelAttribute("playerName") String playerName, @ModelAttribute("email") String invitationMail,
             @ModelAttribute("message") String invitationMessage) {
         graphBo.inviteUnregisteredUser(user, playerName, invitationMail, invitationMessage, localeResolver.resolveLocale(request));
+    }
+
+    @RequestMapping(value = "/playerStats", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, String> getPlayerStats(@LoggedUser User loggedUser, @ModelAttribute("sportId") String sportId, @ModelAttribute("date") String date, @ModelAttribute("loggedUserIsWinner") Boolean loggedUserIsWinner, HttpServletRequest request) {
+        Map<String, String> result = new HashMap<String, String>();
+        Pair<Integer, Integer> winLoss = scoreBo.countWinLoss(null, loggedUser.getId());
+        
+        int win = -1;
+        int loss = -1;
+        if (loggedUserIsWinner) {
+            win = winLoss.getLeft() + 1;
+            loss = winLoss.getRight();
+        } else {
+            win = winLoss.getLeft();
+            loss = winLoss.getRight() + 1;
+        }
+
+        String title = messageResource.getMessage(
+                "label.facebook_preview_title",
+                new Object[] {
+                        loggedUser.getFirstName(),
+                        WordUtils.capitalizeFully(SportEnum.values()[Integer.valueOf(sportId)].toString()).replace("_",
+                                " ") }, localeResolver.resolveLocale(request));
+        result.put("title", title);
+
+        String subtitle = messageResource.getMessage(
+                "label.facebook_preview_subtitle",
+                new Object[] { date, String.valueOf(win), String.valueOf(loss),
+                        String.valueOf(Double.valueOf(((win * 1f) / (win + loss)) * 100).intValue()) },
+                localeResolver.resolveLocale(request));
+        result.put("subtitle", subtitle);
+        result.put("win", String.valueOf(win));
+        result.put("loss", String.valueOf(loss));
+
+        return result;
     }
 }

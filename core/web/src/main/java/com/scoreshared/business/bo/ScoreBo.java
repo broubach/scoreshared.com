@@ -14,6 +14,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +25,7 @@ import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.PlayerInstanceComment;
 import com.scoreshared.domain.entity.Score;
+import com.scoreshared.domain.entity.ScoreShared;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
@@ -31,14 +35,23 @@ public class ScoreBo extends BaseBo<Score> {
     @Inject
     private GraphBo graphBo;
 
+    @Inject
+    private ConnectionRepository connectionRepository;
+
     public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
         consist(owner, loggedUser, score, comment);
 
         updateProfileWithNewestPreferences(score);
 
         saveScoreAndComment(loggedUser.getId(), score, comment);
-
-        // TODO: post in twitter or facebook, if saving for the first time
+        
+        if (score.getPostInFacebook()) {
+            Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
+            // TODO: post custom story in facebook
+            if (facebookConnection != null) {
+                facebookConnection.getApi().publish("me", "feed", null);
+            }
+        }
     }
 
     private void updateProfileWithNewestPreferences(Score score) {
@@ -394,5 +407,13 @@ public class ScoreBo extends BaseBo<Score> {
             score.setOwner(playerInstanceToBeNewOwner.getAssociation());
             save(score.getOwner(), loggedUser, score, null);
         }
+    }
+
+    public ScoreShared findScoreSharedByHash(String hash) {
+        List<ScoreShared> result = dao.findByNamedQuery("scoreSharedByHashQuery", hash);
+        if (result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
     }
 }

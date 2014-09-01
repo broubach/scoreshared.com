@@ -37,7 +37,6 @@ public class ScoreModelConverter extends BaseConverter implements Converter<Scor
             dest.setSet5Right(src.getSet5Right());
             dest.setCommentId(src.getComment() != null ? src.getComment().getId() : null);
             dest.setComment(src.getComment() != null ? src.getComment().getComment() : null);
-            dest.setPostInTwitter(false);
             dest.setPostInFacebook(false);
 
             List<String> newPlayersNotToBeRemembered = new ArrayList<String>();

@@ -24,7 +24,6 @@ public class ScoreModel {
     private Integer set5Right;
     private Integer commentId;
     private String comment;
-    private boolean postInTwitter;
     private boolean postInFacebook;
     private Integer sportId;
     private List<String> newPlayersNotToBeRemembered;
@@ -172,14 +171,6 @@ public class ScoreModel {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public boolean getPostInTwitter() {
-        return postInTwitter;
-    }
-
-    public void setPostInTwitter(boolean postInTwitter) {
-        this.postInTwitter = postInTwitter;
     }
 
     public boolean getPostInFacebook() {

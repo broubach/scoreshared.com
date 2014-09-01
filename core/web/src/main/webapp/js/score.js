@@ -28,7 +28,9 @@ var Sets = {
 			multiple : true,
 			tags: true,
 			tokenSeparators: [","],
-			selectOnBlur : true,
+			selectOnBlur: function() {
+				return $('.select2-input.select2-focused').val().length > 0;
+			},
 			query : function(query) {
 				var data = { results : [] };
 
@@ -325,4 +327,56 @@ $.fn.values = function(data) {
         });
         return $(this);
     }
+};
+
+FacebookPreview = {
+	imageServer: '',
+	contextPath: '',
+	render: function() {
+		if ($('#facebook_panel_loading').length <= 0) {
+			return;
+		}
+		$('#facebook_panel_loading').show();
+
+		var loggedUserIsWinner = false;
+		var winner = Sets.calculateWinner();
+		if (winner < 0) {
+			var playersArray = document.getElementById("score-form").elements["playersLeft"].value.split(",");
+			for (var i=0; i<playersArray.length; i++) {
+				if (Sets.loggedUserPlayerName.toUpperCase() == playersArray[i].toUpperCase().trim()) {
+					loggedUserIsWinner = true;
+				}
+			}
+		}
+
+		$.ajax({
+			url: FacebookPreview.contextPath+"/app/score/playerStats",
+			data: {
+				'sportId': document.getElementById('score-form').elements["sportId"].value,
+				'date': document.getElementById('score-form').elements["date"].value,
+				'loggedUserIsWinner': loggedUserIsWinner
+			},
+			dataType: 'json',
+			cache: false,
+			success: FacebookPreview.processStats
+		});
+	},
+
+	processStats: function(data) {
+		document.getElementById("facebook_panel_title").innerHTML = data.title;
+		document.getElementById("facebook_panel_subtitle").innerHTML = data.subtitle;
+		
+		var graph = document.getElementById('graph');
+		graph.onload = function () {
+			$('#facebook_panel_loading').hide();
+			$('#facebook_panel_enabled').show(1000);
+		};
+
+		graph.src = FacebookPreview.imageServer + '?win=' + data.win + '&loss=' + data.loss;         
+	},
+
+	init: function(contextPath, imageServer) {
+		FacebookPreview.imageServer = imageServer;
+		FacebookPreview.contextPath = contextPath;
+	}
 };

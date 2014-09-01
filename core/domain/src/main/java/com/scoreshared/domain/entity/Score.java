@@ -88,9 +88,13 @@ public class Score extends BaseEntity implements Cloneable {
     @Field
     private Boolean confirmed;
 
+    //@Column(columnDefinition = "BIT", length = 1)
+    @Transient
+    private boolean postInFacebook;
+    
     @Transient
     private PlayerInstanceComment comment;
-    
+
     public Score() {
     }
 
@@ -262,6 +266,14 @@ public class Score extends BaseEntity implements Cloneable {
 
     public void setConfirmed(Boolean confirmed) {
         this.confirmed = confirmed;
+    }
+
+    public void setPostInFacebook(boolean postInFacebook) {
+        this.postInFacebook = postInFacebook;
+    }
+    
+    public boolean getPostInFacebook() {
+        return postInFacebook;
     }
 
     /**
