@@ -44,6 +44,9 @@ public class ScoreConverter extends BaseConverter implements Converter<ScoreMode
             dest.setSet5Left(src.getSet5Left());
             dest.setSet5Right(src.getSet5Right());
             dest.setPostInFacebook(src.getPostInFacebook());
+            if (!StringUtils.isEmpty(src.getSocialMessage())) {
+                dest.setSocialMessage(src.getSocialMessage());
+            }
 
             Set<PlayerInstance> leftPlayers = new HashSet<PlayerInstance>();
             PlayerInstance playerInstance = null;

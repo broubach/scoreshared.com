@@ -1,5 +1,7 @@
 package com.scoreshared.domain.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -11,18 +13,19 @@ import javax.persistence.Table;
 @NamedQuery(name = "scoreSharedByHashQuery", query = "from ScoreShared where hash = :hash")
 public class ScoreShared extends BaseEntity {
     
-    private String hash;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    private User owner;
+    private User loggedUser;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Score score;
-    
+
+    private String hash;
     private Integer win;
     private Integer loss;
-
-    private String message;
+    private Date date;
+    private String playerFirstName;
+    private SportEnum sport;
+    private String socialMessage;
 
     public ScoreShared() {
     }
@@ -35,12 +38,12 @@ public class ScoreShared extends BaseEntity {
         this.hash = hash;
     }
 
-    public User getOwner() {
-        return owner;
+    public User getLoggedUser() {
+        return loggedUser;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setLoggedUser(User owner) {
+        this.loggedUser = owner;
     }
 
     public Score getScore() {
@@ -67,11 +70,35 @@ public class ScoreShared extends BaseEntity {
         this.loss = loss;
     }
 
-    public String getMessage() {
-        return message;
+    public Date getDate() {
+        return date;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getPlayerFirstName() {
+        return playerFirstName;
+    }
+
+    public void setPlayerFirstName(String playerFirstName) {
+        this.playerFirstName = playerFirstName;
+    }
+
+    public SportEnum getSport() {
+        return sport;
+    }
+
+    public void setSport(SportEnum sport) {
+        this.sport = sport;
+    }
+
+    public void setSocialMessage(String socialMessage) {
+        this.socialMessage = socialMessage;
+    }
+
+    public String getSocialMessage() {
+        return socialMessage;
     }
 }

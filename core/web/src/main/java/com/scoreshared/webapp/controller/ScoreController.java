@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -112,7 +111,7 @@ public class ScoreController extends BaseController {
             mav.addObject("playersList", playersList.toString());
             mav.addObject("unusedPlayersList", playersList.toString());
             
-            connectionsHelper.populateModelMapWithConnections(mav.getModelMap(), StringUtils.isEmpty(loggedUser.getPassword()));
+            connectionsHelper.populateModelMapWithConnections(mav.getModelMap(), StringUtils.isEmpty(loggedUser.getPassword()), false);
 
             return mav;
         } catch (JsonGenerationException e) {
@@ -307,16 +306,13 @@ public class ScoreController extends BaseController {
             loss = winLoss.getRight() + 1;
         }
 
-        String title = messageResource.getMessage(
-                "label.facebook_preview_title",
-                new Object[] {
-                        loggedUser.getFirstName(),
-                        WordUtils.capitalizeFully(SportEnum.values()[Integer.valueOf(sportId)].toString()).replace("_",
-                                " ") }, localeResolver.resolveLocale(request));
+        String title = messageResource.getMessage("label.score_shared_title",
+                new Object[] { loggedUser.getFirstName(), SportEnum.values()[Integer.valueOf(sportId)].capitalize() },
+                localeResolver.resolveLocale(request));
         result.put("title", title);
 
         String subtitle = messageResource.getMessage(
-                "label.facebook_preview_subtitle",
+                "label.score_shared_subtitle",
                 new Object[] { date, String.valueOf(win), String.valueOf(loss),
                         String.valueOf(Double.valueOf(((win * 1f) / (win + loss)) * 100).intValue()) },
                 localeResolver.resolveLocale(request));

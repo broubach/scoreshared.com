@@ -18,9 +18,15 @@ public class ConnectionsHelper {
     private ConnectionRepository connectionRepository;
 
     public void populateModelMapWithConnections(ModelMap modelMap, boolean isPasswordEmpty) {
+        populateModelMapWithConnections(modelMap, isPasswordEmpty, true);
+    }
+
+    public void populateModelMapWithConnections(ModelMap modelMap, boolean isPasswordEmpty, boolean needAccount) {
         Connection<Twitter> twitterConnection = connectionRepository.findPrimaryConnection(Twitter.class);
         if (twitterConnection != null) {
-            modelMap.addAttribute("twitterAccount", twitterConnection.fetchUserProfile().getUsername());
+            if (needAccount) {
+                modelMap.addAttribute("twitterAccount", twitterConnection.fetchUserProfile().getUsername());
+            }
             modelMap.addAttribute("twitterConnected", true);
         } else {
             modelMap.addAttribute("twitterConnected", false);
@@ -28,7 +34,9 @@ public class ConnectionsHelper {
 
         Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
         if (facebookConnection != null) {
-            modelMap.addAttribute("facebookAccount", facebookConnection.fetchUserProfile().getUsername());
+            if (needAccount) {
+                modelMap.addAttribute("facebookAccount", facebookConnection.fetchUserProfile().getUsername());
+            }
             modelMap.addAttribute("facebookConnected", true);
         } else {
             modelMap.addAttribute("facebookConnected", false);

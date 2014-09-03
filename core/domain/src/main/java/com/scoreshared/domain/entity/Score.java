@@ -95,6 +95,9 @@ public class Score extends BaseEntity implements Cloneable {
     @Transient
     private PlayerInstanceComment comment;
 
+    @Transient
+    private String socialMessage;
+
     public Score() {
     }
 
@@ -274,6 +277,14 @@ public class Score extends BaseEntity implements Cloneable {
     
     public boolean getPostInFacebook() {
         return postInFacebook;
+    }
+
+    public String getSocialMessage() {
+        return socialMessage;
+    }
+
+    public void setSocialMessage(String socialMessage) {
+        this.socialMessage = socialMessage;
     }
 
     /**

@@ -11,13 +11,17 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import com.scoreshared.domain.entity.ApprovalResponseEnum;
@@ -26,6 +30,7 @@ import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.PlayerInstanceComment;
 import com.scoreshared.domain.entity.Score;
 import com.scoreshared.domain.entity.ScoreShared;
+import com.scoreshared.domain.entity.SportEnum;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
@@ -38,18 +43,37 @@ public class ScoreBo extends BaseBo<Score> {
     @Inject
     private ConnectionRepository connectionRepository;
 
+    @Inject
+    @Named("passwordEncoder")
+    private Md5PasswordEncoder hashEncoder;
+
     public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
         consist(owner, loggedUser, score, comment);
 
         updateProfileWithNewestPreferences(score);
 
         saveScoreAndComment(loggedUser.getId(), score, comment);
-        
-        if (score.getPostInFacebook()) {
+
+        if (score.getPostInFacebook() && !SportEnum.OTHER.equals(score.getSport())) {
+            Pair<Integer, Integer> winLoss = countWinLoss(null, owner.getId());
+
+            ScoreShared scoreShared = new ScoreShared();
+            scoreShared.setScore(score);
+            scoreShared.setLoggedUser(loggedUser);
+            scoreShared.setDate(score.getDate());
+            scoreShared.setWin(winLoss.getLeft());
+            scoreShared.setLoss(winLoss.getRight());
+            scoreShared.setPlayerFirstName(loggedUser.getFirstName());
+            scoreShared.setSport(score.getSport());
+            scoreShared.setHash(hashEncoder.encodePassword(score.getId().toString(), score.getDate()));
+            scoreShared.setSocialMessage(score.getSocialMessage());
+            dao.saveOrUpdate(scoreShared);
+
             Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
-            // TODO: post custom story in facebook
             if (facebookConnection != null) {
-                facebookConnection.getApi().publish("me", "feed", null);
+                MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+                map.set(scoreShared.getSport().name().toLowerCase() + "_record", "http://www.barragem.net/html/scoreshared.htm");
+                facebookConnection.getApi().publish("me", "scoreshared:update", map);
             }
         }
     }

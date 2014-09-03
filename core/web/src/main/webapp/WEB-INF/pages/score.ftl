@@ -179,8 +179,10 @@
 							     	    <label><@spring.message code="label.facebook_this_is_the_preview_of_the_information_you_will_share_in_your_post"/>:</label>
 							     	    <div id="facebook_post" style="border: 1px solid #DCDCDC; line-height: 26px; border-radius: 5px">
 								     		<img src="#" id="graph"/>
-								     		<h5 id="facebook_panel_title">-</h5>
+								     		<h6 id="facebook_panel_title">-</h6>
 								     		<h6 id="facebook_panel_subtitle">-</h6>
+								     		<#assign socialMessageOpts>maxlength=45 placeholder="<@spring.message code="label.add_your_spice_to_the_post_here"/>"</#assign>
+								     		<@spring.formInput "score.socialMessage", socialMessageOpts, "text"/>
 							     	    </div>
 							     	</div>
 						     	<#else>

@@ -28,6 +28,7 @@ public class ScoreModel {
     private Integer sportId;
     private List<String> newPlayersNotToBeRemembered;
     private Boolean updatable;
+    private String socialMessage;
 
     public Integer getId() {
         return id;
@@ -189,21 +190,6 @@ public class ScoreModel {
 		this.sportId = sportId;
 	}
 
-    public Map<String, String> getSets() {
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("set1Left", set1Left != null ? String.valueOf(set1Left) : null);
-        result.put("set1Right", set1Right != null ? String.valueOf(set1Right) : null);
-        result.put("set2Left", set2Left != null ? String.valueOf(set2Left) : null);
-        result.put("set2Right", set2Right != null ? String.valueOf(set2Right) : null);
-        result.put("set3Left", set3Left != null ? String.valueOf(set3Left) : null);
-        result.put("set3Right", set3Right != null ? String.valueOf(set3Right) : null);
-        result.put("set4Left", set4Left != null ? String.valueOf(set4Left) : null);
-        result.put("set4Right", set4Right != null ? String.valueOf(set4Right) : null);
-        result.put("set5Left", set5Left != null ? String.valueOf(set5Left) : null);
-        result.put("set5Right", set5Right != null ? String.valueOf(set5Right) : null);
-        return result;
-    }
-
     public List<String> getNewPlayersNotToBeRemembered() {
         return newPlayersNotToBeRemembered;
     }
@@ -218,5 +204,28 @@ public class ScoreModel {
     
     public Boolean getUpdatable() {
         return updatable;
+    }
+
+    public String getSocialMessage() {
+        return socialMessage;
+    }
+
+    public void setSocialMessage(String socialMessage) {
+        this.socialMessage = socialMessage;
+    }
+
+    public Map<String, String> getSets() {
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("set1Left", set1Left != null ? String.valueOf(set1Left) : null);
+        result.put("set1Right", set1Right != null ? String.valueOf(set1Right) : null);
+        result.put("set2Left", set2Left != null ? String.valueOf(set2Left) : null);
+        result.put("set2Right", set2Right != null ? String.valueOf(set2Right) : null);
+        result.put("set3Left", set3Left != null ? String.valueOf(set3Left) : null);
+        result.put("set3Right", set3Right != null ? String.valueOf(set3Right) : null);
+        result.put("set4Left", set4Left != null ? String.valueOf(set4Left) : null);
+        result.put("set4Right", set4Right != null ? String.valueOf(set4Right) : null);
+        result.put("set5Left", set5Left != null ? String.valueOf(set5Left) : null);
+        result.put("set5Right", set5Right != null ? String.valueOf(set5Right) : null);
+        return result;
     }
 }
