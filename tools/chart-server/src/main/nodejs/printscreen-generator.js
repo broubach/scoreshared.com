@@ -16,12 +16,41 @@ function getPrintscreenName(winLoss) {
 
 phantom.create('', {}, function (ph) {
     ph.createPage(function (page) {
-        page.set('viewportSize', { width: 400, height : 400 });
-        page.set('content', '<page><body><canvas id="estatistica"></canvas></body></page>');
+        page.viewportSize={ width: 600, height: 315 };
+        page.set('content', '<html><body>' +
+                            '<style>' +
+                                '.legenda {' +
+                                '	list-style:none;' +
+                                '	color:#b3b3b3;' +
+                                '   font-size: 3em;' +
+                                '   line-height: 1.6;' +
+                                '   font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif' +
+                                '}' +
+                                '.legenda li:before {' +
+                                "	content:'.';" +
+                                '	margin-right:5px;' +
+                                '	padding:0 6px;' +
+                                '	border-radius: 4px;' +
+                                '}' +
+                                '.vitorias:before {' +
+                                '	color: #d35400;' +
+                                '	background-color: #d35400;' +
+                                '}' +
+                                '.derrotas:before {' +
+                                '	color: #e67e22;' +
+                                '	background-color: #e67e22;' +
+                                '}' +
+                            '</style>' +
+                            '<div style="display:table; clear: both; width: 600; margin: 0; padding: 0"><div style="margin: 0; padding: 0; position: relative; width: 315px; float: left"><canvas id="estatistica" width="315" height="315" style="margin: 0; padding: 0; width: 315px; height: 315px;"></div>' + 
+                            '<div style="margin: 0; padding: 0; position: relative; width: 200px; float: right"><br/><br/><br/><ul class="legenda">' +
+                                '<li class="vitorias">win</li>' + 
+                                '<li class="derrotas">loss</li>' +
+                            '</ul></div></div></body></html>');
         page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
             page.injectJs('Chart.min.js');
             page.evaluate(function(winLoss) {
-                $("#estatistica").attr('width',400);
+                $("#estatistica").attr('width', 315);
+                $("#estatistica").attr('height', 315);
                 var ctx = $('#estatistica').get(0).getContext('2d');
                 var data = [{
 		                  value: parseInt(winLoss[0],10),
@@ -45,7 +74,9 @@ phantom.create('', {}, function (ph) {
 				animation : false,
 
 				//Function - Will fire on animation completion.
-				onAnimationComplete : null
+				onAnimationComplete : null,
+
+                                responsive : false
                 };
                 new Chart(ctx).Pie(data, options);
                 return ctx;

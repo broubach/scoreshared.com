@@ -21,7 +21,7 @@
 	</div>
 	<div class="row content no-padding-bottom">
 		<div class="small-6 small-centered columns">
-			<form action="<@spring.url relativeUrl="/j_spring_security_check"/>" method="POST">
+			<form action="<@spring.url relativeUrl="/app/j_spring_security_check"/>" method="POST">
 				<div class="input text"><label for="username"><@spring.message code="label.email"/></label><input id="username" name="j_username" type="text"></input></div>
 				<div class="input password"><label for="password"><@spring.message code="label.password"/></label><input id="password" name="j_password" type="password"></input></div>
 				<div class="submit">
