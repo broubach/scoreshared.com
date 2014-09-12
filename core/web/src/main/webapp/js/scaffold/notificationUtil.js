@@ -39,7 +39,7 @@ var NotificationUtil = {
 	},
 
 	pendingScoreApprovalsHandleClick: function(id, kind, userName, contextPath, labels) {
-		var url = contextPath + '/app/' + kind + '/score/';
+		var url = contextPath + 'app/' + kind + '/score/';
 		if (kind != 'review') {
 	    	$.ajax({
 			    url: url,
@@ -87,7 +87,7 @@ var NotificationUtil = {
 	},
 
 	pendingScoreRevisionsHandleClick: function(scoreId, playerInstanceId, kind, contextPath) {
-		var url = contextPath + '/app/' + kind + '/revision/';
+		var url = contextPath + 'app/' + kind + '/revision/';
 
     	$.ajax({
 		    url: url,

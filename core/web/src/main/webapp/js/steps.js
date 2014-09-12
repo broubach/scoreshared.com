@@ -74,7 +74,7 @@ var BuildDataWithI18nStep = {
 	buildDataPath: undefined,
 	execute: function(context) {
 		if (BuildDataWithI18nStep.buildDataPath == undefined) {
-			BuildDataWithI18nStep.buildDataPath = "/app/home/buildDataWithI18n";
+			BuildDataWithI18nStep.buildDataPath = "app/home/buildDataWithI18n";
 		}
 		$.ajax({
 			url: context.options.contextPath+BuildDataWithI18nStep.buildDataPath,
@@ -117,7 +117,7 @@ var CheckIfPlayerShouldBeInvitedStep = {
 			return;
 		}
 		$.ajax({
-			url: context.options.contextPath+"/app/score/shouldPlayerBeInvited",
+			url: context.options.contextPath+"app/score/shouldPlayerBeInvited",
 			data: {'playerName': context.players[context.currentPlayer].playerName},
 			type: 'POST',
 			dataType: 'json',
@@ -253,7 +253,7 @@ var OpenSearchDialogStep = {
 			NewPlayerWizard.storeFormDataInBreadCrumbs('#search-form');
 			$('#playerNameInScore').val(context.players[context.currentPlayer].playerName);
 			$.ajax({
-				url: context.options.contextPath+"/app/score/searchUser",
+				url: context.options.contextPath+"app/score/searchUser",
 				data: $('#search-form').serialize(),
 				type: 'POST',
 				dataType: 'json',
@@ -316,7 +316,7 @@ var ChoosePlayerFromListStep = {
 		$("#dialog-choosePlayerFromList table tbody").html('');
 		for ( var i = 0; i < data.playerList.length; i++) {
             var row = "<tr><td><a class='mfp-prevent-close' href='"+i+"'>";
-            row += "<img class='avatar' src='" + context.options.contextPath + "/app/avatar?hash="
+            row += "<img class='avatar' src='" + context.options.contextPath + "app/avatar?hash="
                     + data.playerList[i][1] + "&small'/>";
             row += "</a></td><td><a class='mfp-prevent-close' href='"+i+"'>";
             row += data.playerList[i][2];
@@ -418,7 +418,7 @@ var InviteRegisteredUserStep = {
 			}
 			$("#registeredInvitation-form input[name='playerId']").val(context.currentPlayerId);
 			$.ajax({
-				url: context.options.contextPath+"/app/score/newFriendRequest",
+				url: context.options.contextPath+"app/score/newFriendRequest",
 				data: $('#registeredInvitation-form').serialize(),
 				type: 'POST',
 				dataType: 'json',
@@ -481,7 +481,7 @@ var InviteUnregisteredUserStep = {
 				return;
 			}
 			$.ajax({
-				url: context.options.contextPath+"/app/score/newInvitation",
+				url: context.options.contextPath+"app/score/newInvitation",
 				data: $('#unregisteredInvitation-form').serialize(),
 				type: 'POST',
 				dataType: 'json',

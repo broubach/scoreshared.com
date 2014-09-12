@@ -21,7 +21,7 @@ import com.scoreshared.domain.entity.ScoreShared;
 
 @Controller
 public class FacebookController extends BaseController {
-    
+
     @Inject
     private ScoreBo bo;
 
@@ -33,14 +33,11 @@ public class FacebookController extends BaseController {
 
     @Value("${http_server_address_port}")
     private String httpServerAddressPort;
-    
-    @Value("${facebook_image_server_port}")
-    private String facebookImageServerPort;
 
     @RequestMapping(value = "/facebook/{hash}", method = RequestMethod.GET)
     public ModelAndView getPage(@PathVariable String hash, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("facebook/facebook");
-        
+
         ScoreShared scoreShared = bo.findScoreSharedByHash(hash);
 
         Locale locale = localeResolver.resolveLocale(request);
@@ -65,9 +62,7 @@ public class FacebookController extends BaseController {
         mav.addObject("personalMessage", scoreShared.getSocialMessage());
         mav.addObject("hash", hash);
         mav.addObject("type", scoreShared.getSport().name().toLowerCase() + "_record");
-        mav.addObject("http_server_address_port",
-                new StringBuilder().append(httpServerAddressPort).append(":").append(facebookImageServerPort)
-                        .toString());
+        mav.addObject("http_server_address_port", httpServerAddressPort);
 
         return mav;
     }

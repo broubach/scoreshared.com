@@ -207,7 +207,7 @@ var NewPlayerWizard = {
 	breadCrumb: [],
 
 	applyDefaults: function(options){
-		options['contextPath'] = (options['contextPath'] == undefined ? '/webapp' : options['contextPath']);
+		options['contextPath'] = (options['contextPath'] == undefined ? '/webapp/' : options['contextPath']);
 		options['error_please_enter_some_text'] = (options['error_please_enter_some_text'] == undefined ? 'please enter some text' : options['error_please_enter_some_text']);
 		options['error_please_fill_at_least_one_field_for_search'] = (options['error_please_fill_at_least_one_field_for_search'] == undefined ? 'please fill at least one field for search' : options['error_please_fill_at_least_one_field_for_search']);
 		options['error_please_fill_out_all_fields'] = (options['error_please_fill_out_all_fields'] == undefined ? 'please fill out all fields' : options['error_please_fill_out_all_fields']);
@@ -350,7 +350,7 @@ FacebookPreview = {
 		}
 
 		$.ajax({
-			url: FacebookPreview.contextPath+"/app/score/playerStats",
+			url: FacebookPreview.contextPath+"app/score/playerStats",
 			data: {
 				'sportId': document.getElementById('score-form').elements["sportId"].value,
 				'date': document.getElementById('score-form').elements["date"].value,

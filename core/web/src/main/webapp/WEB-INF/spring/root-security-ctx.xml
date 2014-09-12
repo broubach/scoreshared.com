@@ -21,7 +21,8 @@
 		<!-- Authentication policy -->
 		<form-login login-page="/app/index" login-processing-url="/app/j_spring_security_check" authentication-failure-url="/app/login" default-target-url="/app/home" always-use-default-target="true" authentication-details-source-ref="authenticationDetailsSource"/>
 		<access-denied-handler ref="accessDeniedHandler" />
-		<logout delete-cookies="JSESSIONID" />
+		<logout delete-cookies="JSESSIONID" logout-url="/app/j_spring_security_logout"/>
+		<intercept-url pattern="/app/j_spring_security_logout" access="isAnonymous()"/>
 		<intercept-url pattern="/app/j_spring_security_check" access="isAnonymous()"/>
 		<intercept-url pattern="/app/index" access="isAnonymous()" method="GET"/>
 		<intercept-url pattern="/app/login" access="isAnonymous()" />

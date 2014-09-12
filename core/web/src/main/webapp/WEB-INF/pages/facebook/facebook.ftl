@@ -10,7 +10,7 @@
 	<meta property="og:url" content="${http_server_address_port}/app/facebook/${hash}" />
 	<meta property="og:description" content="${subtitle}" />
 	<meta property="fb:app_id" content="166057316847038" />
-	<meta property="og:image" content="${http_server_address_port}?win=${win}&loss=${loss}" />
+	<meta property="og:image" content="${http_server_address_port}/chart?win=${win}&loss=${loss}" />
     <meta property="og:type" content="scoreshared:${type}">
 	<meta property="personal_message" content="${personalMessage}" />
 </head>

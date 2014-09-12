@@ -225,7 +225,7 @@
 
 <script type="text/javascript">
 	$(function() {
-		FacebookPreview.init("<@spring.url relativeUrl="/"/>", "http://www.barragem.net:8558");
+		FacebookPreview.init("<@spring.url relativeUrl="/"/>", "<@spring.url relativeUrl="/"/>chart");
 		<#if !facebookConnected>
 		    $(':radio').attr('disabled', 'disabled');
 		    $(':radio').attr('readonly', 'readonly');

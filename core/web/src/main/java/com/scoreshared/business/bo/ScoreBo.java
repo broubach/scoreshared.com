@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -47,6 +48,9 @@ public class ScoreBo extends BaseBo<Score> {
     @Named("passwordEncoder")
     private Md5PasswordEncoder hashEncoder;
 
+    @Value("${http_server_address_port}")
+    private String httpServerAddressPort;
+
     public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
         consist(owner, loggedUser, score, comment);
 
@@ -72,7 +76,9 @@ public class ScoreBo extends BaseBo<Score> {
             Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
             if (facebookConnection != null) {
                 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-                map.set(scoreShared.getSport().name().toLowerCase() + "_record", "http://www.barragem.net/html/scoreshared.htm");
+                map.set(scoreShared.getSport().name().toLowerCase() + "_record",
+                        new StringBuilder().append(httpServerAddressPort).append("/app/facebook/")
+                                .append(scoreShared.getHash()).toString());
                 facebookConnection.getApi().publish("me", "scoreshared:update", map);
             }
         }
