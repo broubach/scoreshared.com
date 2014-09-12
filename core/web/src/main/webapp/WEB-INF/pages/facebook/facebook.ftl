@@ -12,7 +12,7 @@
 	<meta property="fb:app_id" content="166057316847038" />
 	<meta property="og:image" content="${http_server_address_port}/chart?win=${win}&loss=${loss}" />
     <meta property="og:type" content="scoreshared:${type}">
-	<meta property="personal_message" content="${personalMessage}" />
+	<meta property="scoreshared:personal_message" content="${personalMessage!""}" />
 </head>
 <body>
 	<#assign header_snippet="/index/header-snippet.ftl">
@@ -29,7 +29,7 @@
 			<h3>${subtitle}</h3>
 
 			<h4><@spring.message code="label.score_shared_personal_message_from"/> ${subject}</h4>
-			<textarea readonly="readonly" style="resize: none;">${personalMessage}</textarea>
+			<textarea readonly="readonly" style="resize: none;">${personalMessage!""}</textarea>
 		</div>
 	</div>
 
