@@ -135,6 +135,8 @@ public class ScoreController extends BaseController {
     public ModelAndView edit(@LoggedUser User loggedUser, @PathVariable Integer scoreId, HttpServletRequest request, HttpSession session) {
         try {
             ModelAndView mav = new ModelAndView("score");
+            connectionsHelper.populateModelMapWithConnections(mav.getModelMap(), StringUtils.isEmpty(loggedUser.getPassword()), false);
+            
             Score score = scoreBo.findById(scoreId);
             if (score == null) {
                 return create(loggedUser, session);
@@ -166,6 +168,7 @@ public class ScoreController extends BaseController {
             stringWriter = new StringWriter();
             mapper.writeValue(stringWriter, unusedPlayerList);
             mav.addObject("unusedPlayersList", stringWriter.toString());
+            
             return mav;
         } catch (JsonGenerationException e) {
             throw new RuntimeException(e);

@@ -1,3 +1,4 @@
+delete from scoreshared;
 delete from playerinstancecomment;
 delete from playerinstance;
 delete from score;

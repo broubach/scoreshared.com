@@ -14,25 +14,24 @@
 	<div class="row banner">
 		<div class="columns large-12 last">
 			<hgroup class="frases-destaque">
-				<h2><@spring.message code="label.index.share_scores"/></h2>
-				<h2><@spring.message code="label.index.track_stats"/></h2>
-				<h2><@spring.message code="label.index.improve_your_game"/></h2>
+				<h2>Track your scores</h2>
+				<h2>Share your stats</h2>
+				<h2>Improve your game!</h2>
 			</hgroup>
 			<div class="foto-banner">
-				<div>Available for:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span> and others...</div>
+				<div>Available for:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
 				<img src="<@spring.url relativeUrl="/img/foto-esporte-1.png"/>" alt="" />
 			</div>
 		</div>
 	</div>
 
 	<div class="row content">
-		<h3 class="pergunta pergunta-jogador">I'm a player! How do I use It?</h3>
+		<h3 class="pergunta pergunta-jogador">Keep track of your records to improve your game!</h3>
 		<div class="large-6 columns">
 			<ul class="player-steps">
-				<li class="step step1" data-step="1">Register yourself</li>
-				<li class="step step2" data-step="2">Start sharing your scores...</li>
-				<li class="step step3" data-step="3">Checkout how your friends are doing...</li>
-				<li class="step step4" data-step="4">Take a look at your coache's advices!</li>
+				<li class="step step1" data-step="1">What did I do last time I played this guy?</li>
+				<li class="step step2" data-step="2">What forehand grip I was using last match?</li>
+				<li class="step step3" data-step="3">How many times have we played already?</li>
 			</ul>
 		</div>
 		<div class="large-6 columns">
@@ -41,16 +40,16 @@
 	</div>
 
 	<div class="row content">
-		<h3 class="pergunta">I'm a coach! Can I give advices to my students?</h3>
+		<h3 class="pergunta">Great! How do I use it?</h3>
 		<div class="large-6 columns">
 			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" class="screenshot-coach" alt="" />
 		</div>
 		<div class="large-6 columns">
 			<ul class="coach-steps">
 				<li class="step step1" data-step="1">Register yourself</li>
-				<li class="step step2" data-step="2">Wait for an invite from some student...</li>
-				<li class="step step3" data-step="3">Read de comments on the shared score...</li>
-				<li class="step step4" data-step="4">Reply with valuable info!</li>
+				<li class="step step2" data-step="2">Start saving your scores after each match</li>
+				<li class="step step3" data-step="3">Keep track of your history</li>
+				<li class="step step4" data-step="4">Feel free to share it with your community!</li>
 			</ul>
 		</div>
 	</div>

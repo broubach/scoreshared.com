@@ -4,7 +4,7 @@
 <html>
 <head>
 	<#assign head_additional_css=["/css/vendor/select2.css"]>
-	<#assign head_additional_js=["/js/vendor/select2-3.4.6.min.js", "/js/signup.js"]>
+	<#assign head_additional_js=["/js/vendor/select2-3.4.6-custom.min.js", "/js/signup.js"]>
 	<#include "/helper-snippets/basic-head.ftl">
 </head>
 <body>
