@@ -20,7 +20,7 @@
 			</hgroup>
 			<div class="foto-banner">
 				<div>Available for:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
-				<img src="<@spring.url relativeUrl="/img/foto-esporte-1.png"/>" alt="" />
+				<img src="<@spring.url relativeUrl="/img/foto-esporte-1.png"/>" alt="" width="466" height="325"/>
 			</div>
 		</div>
 	</div>
@@ -30,19 +30,19 @@
 		<div class="large-6 columns">
 			<ul class="player-steps">
 				<li class="step step1" data-step="1">What did I do last time I played this guy?</li>
-				<li class="step step2" data-step="2">What forehand grip I was using last match?</li>
-				<li class="step step3" data-step="3">How many times have we played already?</li>
+				<li class="step step2" data-step="2">What forehand grip was I using last match?</li>
+				<li class="step step3" data-step="3">How many times have we played?</li>
 			</ul>
 		</div>
 		<div class="large-6 columns">
-			<img src="<@spring.url relativeUrl="/img/screen-player-1.png"/>" class="screenshot-player" alt="" />
+			<img src="<@spring.url relativeUrl="/img/screen-player-1.png"/>" width="347" height="305" class="screenshot-player" alt="" />
 		</div>
 	</div>
 
 	<div class="row content">
 		<h3 class="pergunta">Great! How do I use it?</h3>
 		<div class="large-6 columns">
-			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" class="screenshot-coach" alt="" />
+			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" width="348" height="304" class="screenshot-coach" alt="" />
 		</div>
 		<div class="large-6 columns">
 			<ul class="coach-steps">
@@ -83,6 +83,9 @@
 		});
 		$('#login_button').click(function() {
 			$('#login-form').submit();
+		});
+		$('#fb_button').click(function(){
+			$('#fb_form').submit();
 		});
 	});
 </script>

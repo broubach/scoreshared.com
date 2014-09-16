@@ -19,6 +19,7 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,10 +89,15 @@ public class SignupController extends BaseController {
 
     @RequestMapping(value = "/connection", method = RequestMethod.GET)
     public ModelAndView signupWithProviderConnection(WebRequest webRequest, HttpServletRequest request,
-            HttpServletResponse response, @ModelAttribute("signupForm") SignupForm form) {
+            HttpServletResponse response, ModelMap model) {
         ModelAndView result = new ModelAndView();
         Connection<?> connection = ProviderSignInUtils.getConnection(webRequest);
         if (connection != null) {
+            SignupForm form = (SignupForm) model.get("signupForm");
+            if (form == null) {
+                form = new SignupForm();
+            }
+
             UserProfile userProfile = connection.fetchUserProfile();
             form.setEmail(userProfile.getEmail());
             form.setFirstName(userProfile.getFirstName());

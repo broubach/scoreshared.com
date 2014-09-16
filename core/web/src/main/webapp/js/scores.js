@@ -169,7 +169,7 @@ var Scores = {
 			{
 				value : Scores.options.loss,
 				color : "#e67e22"
-			},
+			}
 		];
 		var options = {
 			//Boolean - Whether we should show a stroke on each segment

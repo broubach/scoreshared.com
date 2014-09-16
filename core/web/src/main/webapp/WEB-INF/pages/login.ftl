@@ -36,9 +36,6 @@
 				<div class="small-2 columns">
 					<span class="label secondary"><@spring.message code="label.login_with"/></span>
 				</div>
-				<div class="small-5 columns direita">
-					<form action="<@spring.url relativeUrl="/app/signin/twitter"/>" method="POST"><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/twitter.png"/>"/> <@spring.message code="label.twitter"/></button></form>
-				</div>
 				<div class="small-5 columns">
 					<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
 				</div>

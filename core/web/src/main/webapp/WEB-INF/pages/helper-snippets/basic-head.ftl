@@ -20,7 +20,7 @@
 		</#list>
 	</#if>
 
-	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.10.2.min.js"/>"></script>
+	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery-1.11.1.min.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/vendor/custom.modernizr.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/foundation.min.js"/>"></script>
 	<script type="text/javascript" src="<@spring.url relativeUrl="/js/jquery.magnific-popup-0.9.7.min.js"/>"></script>

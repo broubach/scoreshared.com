@@ -326,4 +326,61 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.samaxes.maven</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>1.7.4</version>
+				<executions>
+					<execution>
+						<id>default-minify</id>
+						<phase>prepare-package</phase><!-- When omitted defaults to 'process-resources' -->
+						<configuration>
+							<charset>UTF-8</charset>
+							<nosuffix>true</nosuffix>
+							<skipMerge>true</skipMerge>
+							<webappTargetDir>${project.build.directory}/minify</webappTargetDir>
+							<cssSourceIncludes>
+								<cssSourceFileInclude>**/*.css</cssSourceFileInclude>
+							</cssSourceIncludes>
+							<cssSourceExcludes>
+								<cssSourceExclude>**/*.min.css</cssSourceExclude>
+								<cssSourceExclude>**/pickadate/**</cssSourceExclude>
+							</cssSourceExcludes>
+							<jsSourceIncludes>
+								<jsSourceInclude>**/*.js</jsSourceInclude>
+							</jsSourceIncludes>
+							<jsSourceExcludes>
+								<jsSourceExclude>**/zepto.js</jsSourceExclude>
+								<jsSourceExclude>**/*.min.js</jsSourceExclude>
+								<jsSourceExclude>**/pickadate/**</jsSourceExclude>
+								<jsSourceExclude>**/select2-3.4.6-custom.js</jsSourceExclude>
+								<jsSourceExclude>**/foundation/**</jsSourceExclude>
+							</jsSourceExcludes>
+							<jsEngine>CLOSURE</jsEngine>
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<!-- directory>${project.build.directory}</directory -->
+							<directory>${project.build.directory}/minify</directory>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

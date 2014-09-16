@@ -6,7 +6,8 @@
 			<div id="login" class="f-dropdown content medium" data-dropdown-content>
 				<div class="row">
 					<div class="large-5 columns divisor-lateral">
-						<a href="#"><img src="<@spring.url relativeUrl="/img/buttons/button-login-fb.png"/>" alt="" /></a>
+						<a href="#" id="fb_button"><img src="<@spring.url relativeUrl="/img/buttons/button-login-fb.png"/>" width="182" height="32"/></a>
+						<form id="fb_form" action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /></form>
 					</div>
 					<div class="large-7 columns">
 						<form action="<@spring.url relativeUrl="/app/j_spring_security_check"/>" id="login-form" method="POST" accept-charset="utf-8">
