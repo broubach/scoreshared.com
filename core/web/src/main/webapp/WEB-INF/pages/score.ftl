@@ -126,8 +126,6 @@
 									<hr/>
 									<p>
 										<span class="label round"><@spring.message code="label.use_ctrl_space_to_get_a_list_of_existing_players"/></span>
-										<br/>
-										<span class="label round"><@spring.message code="label.is_it_doubles_use_comma_to_list_more_than_one_player_per_side"/></span>
 									</p>
 								</#if>
 							</div>
@@ -268,10 +266,10 @@
 		};
 		NewPlayerWizard.init(newPlayerWizardOptions);
 
-		<#if (score.updatable)>
-			$("#playersRight").select2("open");
-		<#else>
+		<#if (score.id??)>
 			$("#comment").focus();
+		<#else>
+			$("#playersRight").select2("open");
 		</#if>
 	});
 </script>

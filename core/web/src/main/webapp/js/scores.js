@@ -14,9 +14,9 @@ var Scores = {
 			var ascending = Scores.options.ascending;
 			var pageNumber = Scores.options.pageNumber;
 			if (searchTerm) {
-				document.location.href = Scores.options.context + '/app/scores/'+ pageNumber + '/' + searchTerm + "/" + outcome + "/" + ascending;
+				document.location.href = Scores.options.context + 'app/scores/'+ pageNumber + '/' + searchTerm + "/" + outcome + "/" + ascending;
 			} else {
-				document.location.href = Scores.options.context + '/app/scores/'+ pageNumber + '/' + outcome + "/" + ascending;
+				document.location.href = Scores.options.context + 'app/scores/'+ pageNumber + '/' + outcome + "/" + ascending;
 			}
 		});
 	},
@@ -33,7 +33,7 @@ var Scores = {
 		$('#dialog-general-confirm-yes').click(function(e) {
 			if (ClickContext.kind == 'remove') {
 				$.ajax({
-					url: Scores.options.context + '/app/scores/remove/' + ClickContext.id,
+					url: Scores.options.context + 'app/scores/remove/' + ClickContext.id,
 					type: 'DELETE',
 					dataType: 'json',
 					cache: false,
@@ -45,7 +45,7 @@ var Scores = {
 		
 			} else if (ClickContext.kind == 'hide-permanently') {
 				$.ajax({
-					url: Scores.options.context + '/app/scores/hidePermanently',
+					url: Scores.options.context + 'app/scores/hidePermanently',
 					data: {'scoreId': ClickContext.id},
 					type: 'POST',
 					dataType: 'json',
@@ -63,7 +63,7 @@ var Scores = {
 		$('#dialog-forward-multiple-players_cancel,#dialog-forward-one-player_no').click(function() { $.magnificPopup.close(); });
 		$('#dialog-forward-one-player_yes').click(function() {
 			$.ajax({
-				url: Scores.options.context + '/app/scores/forward',
+				url: Scores.options.context + 'app/scores/forward',
 				data: {'scoreId': ClickContext.id, 'newUserId': $('#forward-one-player_playerId').val()},
 				type: 'POST',
 				dataType: 'json',
@@ -78,7 +78,7 @@ var Scores = {
 
 		$('#dialog-forward-multiple-players_forward').click(function() {
 			$.ajax({
-				url: Scores.options.context + '/app/scores/forward',
+				url: Scores.options.context + 'app/scores/forward',
 				data: {'scoreId': ClickContext.id, 'newUserId': $('#dialog-forward-multiple-players_selection option:selected').val()},
 				type: 'POST',
 				dataType: 'json',
@@ -100,13 +100,13 @@ var Scores = {
 			ClickContext.id = $(this).attr('href').split(',')[1];
 		
 			if (ClickContext.kind == 'edit') {
-				document.location.href = Scores.options.context + '/app/score/' + 
+				document.location.href = Scores.options.context + 'app/score/' + 
 											ClickContext.id + '?postSaveUrl=' + 
-											decodeURIComponent(document.location.href).substring(decodeURIComponent(document.location.href).lastIndexOf('/app/'));
+											decodeURIComponent(document.location.href).substring(decodeURIComponent(document.location.href).lastIndexOf('app/'));
 		
 			} else if (ClickContext.kind == 'forward') {
 				$.ajax({
-					url: Scores.options.context + '/app/scores/playerInstancesForScore/' + ClickContext.id,
+					url: Scores.options.context + 'app/scores/playerInstancesForScore/' + ClickContext.id,
 					type: 'GET',
 					dataType: 'json',
 					cache: false,

@@ -34,15 +34,15 @@
 				<li class="step step3" data-step="3">How many times have we played?</li>
 			</ul>
 		</div>
-		<div class="large-6 columns">
-			<img src="<@spring.url relativeUrl="/img/screen-player-1.png"/>" width="347" height="305" class="screenshot-player" alt="" />
+		<div class="large-6 columns" style="min-height: 305px">
+			<img src="<@spring.url relativeUrl="/img/screen-player-1.png"/>" class="screenshot-player" alt="" />
 		</div>
 	</div>
 
 	<div class="row content">
 		<h3 class="pergunta">Great! How do I use it?</h3>
-		<div class="large-6 columns">
-			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" width="348" height="304" class="screenshot-coach" alt="" />
+		<div class="large-6 columns" style="min-height: 305px">
+			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" class="screenshot-coach" alt="" />
 		</div>
 		<div class="large-6 columns">
 			<ul class="coach-steps">
@@ -87,5 +87,28 @@
 		$('#fb_button').click(function(){
 			$('#fb_form').submit();
 		});
+
+		preload(
+			"<@spring.url relativeUrl="/img/foto-esporte-1.png"/>",
+			"<@spring.url relativeUrl="/img/foto-esporte-2.png"/>",
+			"<@spring.url relativeUrl="/img/foto-esporte-3.png"/>",
+			"<@spring.url relativeUrl="/img/foto-esporte-4.png"/>",
+			"<@spring.url relativeUrl="/img/foto-esporte-5.png"/>",
+			"<@spring.url relativeUrl="/img/screen-player-1.png"/>",
+			"<@spring.url relativeUrl="/img/screen-player-2.png"/>",
+			"<@spring.url relativeUrl="/img/screen-player-3.png"/>",
+			"<@spring.url relativeUrl="/img/screen-coach-1.png"/>",
+			"<@spring.url relativeUrl="/img/screen-coach-2.png"/>",
+			"<@spring.url relativeUrl="/img/screen-coach-3.png"/>",
+			"<@spring.url relativeUrl="/img/screen-coach-4.png"/>"
+		);
 	});
+
+	function preload() {
+		var images = new Array()
+		for (i = 0; i < preload.arguments.length; i++) {
+			images[i] = new Image();
+			images[i].src = preload.arguments[i];
+		}
+	}
 </script>

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.exception.EmptyPlayerNameException;
@@ -65,6 +68,12 @@ public class PlayerBo extends GraphBo {
         }
         player.setName(newName);
         dao.saveOrUpdate(player);
+
+        // FIXME: reindex every time? don't know what to do
+        Session session = dao.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        fullTextSession.createIndexer().start();
+        session.close();
     }
 
     public void removePlayer(Integer playerId, Integer ownerId) throws PlayerWithRegisteredMatchException, PlayerLinkedException {

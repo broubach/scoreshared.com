@@ -433,4 +433,8 @@ public class GenericOperationsDao {
             }
         }
     }
+
+    public Session openSession() {
+        return sessionFactory.openSession();
+    }
 }

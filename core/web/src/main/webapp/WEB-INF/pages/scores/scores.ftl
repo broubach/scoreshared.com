@@ -74,7 +74,7 @@
 										<td>${item.opponentsNames}</td>
 										<td>
 											<#if item.comment??>
-												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" title="${item.comment.comment}"/>
+												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" height="16" width="16" title="${item.comment.comment}"/>
 											</#if>
 										</td>
 										<td>

@@ -50,7 +50,7 @@ public class AccountSettingsController extends BaseController {
                 userBo.closeAccount(loggedUser, reasonsNotToUseScoreshared);
                 session.invalidate();
                 // FIXME: send email
-                return new ModelAndView("redirect:/app");
+                return new ModelAndView("index/index");
 
             } else {
                 ModelAndView result = new ModelAndView("account-settings/close-account");
