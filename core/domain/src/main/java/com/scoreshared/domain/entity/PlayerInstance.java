@@ -37,12 +37,12 @@ public class PlayerInstance extends BaseEntity {
 	private Player player;
 
     @ContainedIn
-    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
+    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name", "date"})
     @ManyToOne(fetch = FetchType.EAGER)
     private Score scoreLeft;
 
     @ContainedIn
-    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name"})
+    @IndexedEmbedded(prefix = "score.", includePaths = {"playerInstances.player.name", "date"})
     @ManyToOne(fetch = FetchType.EAGER)
     private Score scoreRight;
 

@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.lucene.search.SortField;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.social.connect.Connection;
@@ -223,7 +224,9 @@ public class ScoreBo extends BaseBo<Score> {
                     commentIdsToBeRemoved.add(comment.getId());
                 }
             }
-            dao.execute("removeCommentsByIdsQuery", commentIdsToBeRemoved);
+            if (!commentIdsToBeRemoved.isEmpty()) {
+                dao.execute("removeCommentsByIdsQuery", commentIdsToBeRemoved);
+            }
             dao.remove(score);
         }
     }
@@ -333,7 +336,7 @@ public class ScoreBo extends BaseBo<Score> {
 
         List<Object[]> fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
 
-        Pair<List<PlayerInstance>, Integer> searchData = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, null, fieldAndValuePairs);
+        Pair<List<PlayerInstance>, Integer> searchData = dao.searchInLucene(pageNumber, PAGE_SIZE, PlayerInstance.class, new Object[] { "score.date", SortField.STRING, asc }, fieldAndValuePairs);
 
         result.getLeft().addAll(extractScores(searchData.getLeft()));
         sortScores(result.getLeft(), asc);

@@ -23,12 +23,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.CharFilterDef;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 
@@ -50,6 +52,7 @@ import org.hibernate.search.annotations.TokenizerDef;
 public class Score extends BaseEntity implements Cloneable {
     private static final String DOUBLES_SEPARATOR = " / ";
 
+    @Field(store = Store.YES, analyze=Analyze.NO)
     private Date date;
     private Date time;
 
@@ -85,10 +88,8 @@ public class Score extends BaseEntity implements Cloneable {
     private SportEnum sport;
 
     @Column(columnDefinition = "BIT", length = 1)
-    @Field
     private Boolean confirmed;
 
-    //@Column(columnDefinition = "BIT", length = 1)
     @Transient
     private boolean postInFacebook;
     

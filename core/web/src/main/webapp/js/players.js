@@ -41,7 +41,7 @@ var PlayerCrud = {
 			PlayerCrud.playerAdded = $('#add-new-player-input').val();
 			$('#add-new-player-button').attr('disabled', '');
 			$.ajax({
-				url: PlayerCrud.options.context_path + '/app/profile/players/addPlayer',
+				url: PlayerCrud.options.context_path + 'app/profile/players/addPlayer',
 				data: {
 						'playerName': PlayerCrud.playerAdded
 					  },
@@ -85,7 +85,7 @@ var DialogRemoveLink = {
 	removeLink: function() {
 		$('#dialog-general-confirm-yes,#dialog-general-confirm-no').attr('disabled', '');
 		$.ajax({
-			url: DialogRemoveLink.options.context_path + '/app/profile/players/removeLink/' + DialogRemoveLink.playerId,
+			url: DialogRemoveLink.options.context_path + 'app/profile/players/removeLink/' + DialogRemoveLink.playerId,
 			type: 'DELETE',
 			dataType: 'json',
 			cache: false,
@@ -134,7 +134,7 @@ var DialogRemove = {
 	remove: function() {
 		$('#dialog-general-confirm-yes,#dialog-general-confirm-no').attr('disabled', '');
 		$.ajax({
-			url: DialogRemove.options.context_path + '/app/profile/players/remove/' + DialogRemove.playerId,
+			url: DialogRemove.options.context_path + 'app/profile/players/remove/' + DialogRemove.playerId,
 			type: 'DELETE',
 			dataType: 'json',
 			cache: false,
@@ -185,7 +185,7 @@ var InvitationWizard = {
 	init: function(newPlayerWizardOptions, invitationWizardOptions) {
 		NewPlayerWizard.init(newPlayerWizardOptions);
 		NewPlayerWizard.steps['first'] = ProvidePlayerListWithSinglePlayerStep.init(newPlayerWizardOptions);
-		NewPlayerWizard.steps[BuildDataWithI18nStep.name] = BuildDataWithI18nStep.init("/app/profile/players/buildDataWithI18n");
+		NewPlayerWizard.steps[BuildDataWithI18nStep.name] = BuildDataWithI18nStep.init("app/profile/players/buildDataWithI18n");
 
 		$('#dialog-confirm-save_without_invitation').html(invitationWizardOptions.label_no);
 		$('#dialog-confirm-save_without_invitation').removeClass('button-primary');

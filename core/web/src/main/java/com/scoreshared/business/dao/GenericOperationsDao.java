@@ -357,7 +357,7 @@ public class GenericOperationsDao {
 
             FullTextQuery hibQuery = fullTextSession.createFullTextQuery(finalQuery, clazz);
             if (sortField != null) {
-                Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1]));
+                Sort sort = new Sort(new SortField((String) sortField[0], (Integer) sortField[1], !(Boolean) sortField[2]));
                 hibQuery.setSort(sort);
             }
 

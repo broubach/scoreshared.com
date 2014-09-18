@@ -7,8 +7,12 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.TermContext;
 import org.springframework.stereotype.Component;
 
 import com.scoreshared.business.exception.EmptyPlayerNameException;
@@ -17,6 +21,7 @@ import com.scoreshared.business.exception.PlayerLinkedException;
 import com.scoreshared.business.exception.PlayerNotLinkedException;
 import com.scoreshared.business.exception.PlayerWithRegisteredMatchException;
 import com.scoreshared.domain.entity.Player;
+import com.scoreshared.domain.entity.PlayerInstance;
 import com.scoreshared.domain.entity.User;
 
 @Component
@@ -62,18 +67,43 @@ public class PlayerBo extends GraphBo {
         if (newName.length() > 45) {
             throw new LongPlayerNameException();
         }
-        Player player = dao.findByPk(Player.class, playerId);
+
+        Session session = dao.openSession();
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
+        Transaction transaction = fullTextSession.beginTransaction();
+
+        Player player = (Player) fullTextSession.load(Player.class, playerId);
         if (player.isConnected()) {
             throw new PlayerLinkedException();
         }
-        player.setName(newName);
-        dao.saveOrUpdate(player);
 
-        // FIXME: reindex every time? don't know what to do
-        Session session = dao.openSession();
-        FullTextSession fullTextSession = Search.getFullTextSession(session);
-        fullTextSession.createIndexer().start();
+        renamePlayerAndUpdateIndex(fullTextSession, player, newName);
+
+        transaction.commit();
         session.close();
+    }
+
+    private void renamePlayerAndUpdateIndex(FullTextSession fullTextSession, Player player, String newName) {
+        String previousName = player.getName();
+        player.setName(newName);
+
+        // list all scores containing the player's name
+        QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PlayerInstance.class).get();
+
+        TermContext termContext = queryBuilder.keyword();
+        org.apache.lucene.search.Query finalQuery = termContext.onFields("score.playerInstances.player.name").matching(previousName)
+                .createQuery();
+
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(finalQuery, PlayerInstance.class);
+        List<PlayerInstance> players = hibQuery.list();
+
+        // update index
+        for (PlayerInstance playerInstance : players) {
+            if (playerInstance.getPlayer().getId().equals(player.getId())) {
+                fullTextSession.purge(PlayerInstance.class, playerInstance.getId());
+                fullTextSession.index(playerInstance);
+            }
+        }
     }
 
     public void removePlayer(Integer playerId, Integer ownerId) throws PlayerWithRegisteredMatchException, PlayerLinkedException {
