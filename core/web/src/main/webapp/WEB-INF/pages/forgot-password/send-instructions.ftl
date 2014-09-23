@@ -16,7 +16,7 @@
 				<h2><@spring.message code="label.forgot_your_password"/></h2>
 				<div class="centered">
 					<form action="<@spring.url relativeUrl="/app/forgotPassword/sendInstructions"/>" method="POST" accept-charset="utf-8" >
-						<p><@spring.message code="label.no_problem_just_let_us_know_what_your_email_is_and_well_send_you_instructions_to_reset_your_password"/></p>
+						<label><@spring.message code="label.no_problem_just_let_us_know_what_your_email_is_and_well_send_you_instructions_to_reset_your_password"/></label>
 						<#if errorMessage??>
 							<div class="row">
 								<div class="columns small-12">

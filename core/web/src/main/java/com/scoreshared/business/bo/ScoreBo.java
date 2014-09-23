@@ -60,14 +60,14 @@ public class ScoreBo extends BaseBo<Score> {
         saveScoreAndComment(loggedUser.getId(), score, comment);
 
         if (score.getPostInFacebook() && !SportEnum.OTHER.equals(score.getSport())) {
-            Pair<Integer, Integer> winLoss = countWinLoss(null, owner.getId());
+            Integer[] winLossTiesAndPractices = countWinLossTiesAndPractices(null, owner.getId());
 
             ScoreShared scoreShared = new ScoreShared();
             scoreShared.setScore(score);
             scoreShared.setLoggedUser(loggedUser);
             scoreShared.setDate(score.getDate());
-            scoreShared.setWin(winLoss.getLeft());
-            scoreShared.setLoss(winLoss.getRight());
+            scoreShared.setWin(winLossTiesAndPractices[0]);
+            scoreShared.setLoss(winLossTiesAndPractices[1]);
             scoreShared.setPlayerFirstName(loggedUser.getFirstName());
             scoreShared.setSport(score.getSport());
             scoreShared.setHash(hashEncoder.encodePassword(score.getId().toString(), score.getDate()));
@@ -96,7 +96,7 @@ public class ScoreBo extends BaseBo<Score> {
             owner = loggedUser;
         }
         score.setOwner(owner);
-        score.setWinnerDefined(score.hasWinner());
+        score.setType(score.calculateScoreType());
         score.setConfirmed(findScoreIsConfirmedById(score.getId()));
 
         consist(owner, score, score.getLeftPlayers());
@@ -366,16 +366,24 @@ public class ScoreBo extends BaseBo<Score> {
         return fieldAndValuePairs;
     }
 
-    public Pair<Integer, Integer> countWinLoss(String term, Integer ownerId) {
-        MutablePair<Integer, Integer> result = new MutablePair<Integer, Integer>();
+    public Integer[] countWinLossTiesAndPractices(String term, Integer ownerId) {
+        Integer[] result = new Integer[] { 0, 0, 0, 0 };
         
         List<Integer> playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.WIN);
         List<Object[]> fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
-        result.setLeft(dao.countInLucene(PlayerInstance.class, fieldAndValuePairs));
+        result[0] = dao.countInLucene(PlayerInstance.class, fieldAndValuePairs);
 
         playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.LOSS);
         fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
-        result.setRight(dao.countInLucene(PlayerInstance.class, fieldAndValuePairs));
+        result[1] = dao.countInLucene(PlayerInstance.class, fieldAndValuePairs);
+
+        playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.TIE);
+        fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
+        result[2] = dao.countInLucene(PlayerInstance.class, fieldAndValuePairs);
+
+        playerInstanceIds = graphBo.findConnectedPlayerInstancesByAssociation(ownerId, ScoreOutcomeEnum.PRACTICE);
+        fieldAndValuePairs = toFieldAndValuePairs(term, playerInstanceIds);
+        result[3]  = dao.countInLucene(PlayerInstance.class, fieldAndValuePairs);
 
         return result;
     }

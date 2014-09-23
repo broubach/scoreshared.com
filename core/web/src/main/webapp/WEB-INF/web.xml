@@ -121,4 +121,8 @@
 		<url-pattern>/app/profile/players/*</url-pattern>
 		<url-pattern>/app/scores/*</url-pattern>
 	</filter-mapping>
+
+	<session-config>
+	    <tracking-mode>COOKIE</tracking-mode>
+	</session-config>
 </web-app>

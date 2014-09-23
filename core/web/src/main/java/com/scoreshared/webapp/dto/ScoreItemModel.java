@@ -43,7 +43,7 @@ public class ScoreItemModel {
         StringBuilder result = new StringBuilder();
         List<PlayerInstance> partners = new ArrayList<PlayerInstance>();
         List<PlayerInstance> opponents = new ArrayList<PlayerInstance>();
-        if (score.hasWinner(loggedUser.getId())) {
+        if (score.isUserInLeft(loggedUser.getId())) {
             result.append(score.getFinalScore(true));
             partners.addAll(score.getLeftPlayers());
             opponents.addAll(score.getRightPlayers());
@@ -155,7 +155,7 @@ public class ScoreItemModel {
     }
     
     public boolean getLoggedUserWon() {
-        return score.hasWinner(loggedUser.getId());
+        return score.isUserInLeft(loggedUser.getId());
     }
 
     public String getOpponentsNames() {
@@ -167,7 +167,7 @@ public class ScoreItemModel {
     }
 
     public String getDetailTextHighlightingWinnerWithLoggedUserAtRight() {
-        if (score.hasWinner(loggedUser.getId())) {
+        if (score.isUserInLeft(loggedUser.getId())) {
             return score.getFinalScore(false, "<span class='winner'>", "</span>");
 
         }
@@ -175,7 +175,7 @@ public class ScoreItemModel {
     }
 
     public String getDetailTextHighlightingWinnerWithLoggedUserAtLeft() {
-        if (score.hasWinner(loggedUser.getId())) {
+        if (score.isUserInLeft(loggedUser.getId())) {
             return score.getFinalScore(true, "<span class='winner'>", "</span>");
 
         }

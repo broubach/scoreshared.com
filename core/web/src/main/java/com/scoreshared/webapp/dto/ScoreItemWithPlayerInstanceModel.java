@@ -39,7 +39,7 @@ public class ScoreItemWithPlayerInstanceModel extends ScoreItemModel {
     }
 
     public String getRevisionScoreWithLoggedUserAtRight() {
-        if (score.hasWinner(loggedUser.getId())) {
+        if (score.isUserInLeft(loggedUser.getId())) {
             return Score.getFinalScore(false, "<span class='winner'>", "</span>", new Integer[][] {
                     new Integer[] { playerInstance.getRevisionSet1Left(), playerInstance.getRevisionSet1Right() },
                     new Integer[] { playerInstance.getRevisionSet2Left(), playerInstance.getRevisionSet2Right() },

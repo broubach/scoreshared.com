@@ -185,7 +185,7 @@
 							     	</div>
 						     	<#else>
 							     	<div class="small-9 columns" id="facebook_panel_disabled">
-							     		<label>Go to Profile/Social networks to connect yourself before sharing your stats in Facebook.</label>
+							     		<label><@spring.message code="label.facebook_disabled"/></label>
 							     	</div>
 						     	</#if>
 							</div>

@@ -1145,3 +1145,7 @@ input[type=search]{
 	font-weight:bold;
 	cursor:default
 }
+.select2-hidden-accessible {
+    display: none !important; 
+    visibility: hidden !important;
+}

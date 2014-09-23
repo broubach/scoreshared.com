@@ -8,18 +8,24 @@ var Scores = {
 	options: {},
 
 	initSearchBarBehavior: function() {
-		$('#search-button,#radioAll,#radioWin,#radioLoss,#descendingByDate,#ascendingByDate').click(function(e){
-			var searchTerm = $('#search-term').val();
-			var outcome = $('input[name=scoreOutcomeFilter]:checked').val();
-			var ascending = Scores.options.ascending;
-			if (searchTerm) {
-				document.location.href = Scores.options.context + 'app/scores/'+ 0 + '/' + searchTerm + "/" + outcome + "/" + ascending;
-			} else {
-				document.location.href = Scores.options.context + 'app/scores/'+ 0 + '/' + outcome + "/" + ascending;
-			}
+		$('#search-button,#radioAll,#radioWin,#radioLoss').click(Scores.doSearch);
+		$('#descendingByDate,#ascendingByDate').click(function(e) {
+			Scores.options.ascending = !Scores.options.ascending;
+			Scores.doSearch(e);
 		});
 	},
 
+	doSearch: function(e) {
+		var searchTerm = $('#search-term').val();
+		var outcome = $('input[name=scoreOutcomeFilter]:checked').val();
+		var ascending = Scores.options.ascending;
+		if (searchTerm) {
+			document.location.href = Scores.options.context + 'app/scores/'+ 0 + '/' + searchTerm + "/" + outcome + "/" + ascending;
+		} else {
+			document.location.href = Scores.options.context + 'app/scores/'+ 0 + '/' + outcome + "/" + ascending;
+		}
+	},
+	
 	initTableHoverBehavior: function() {
 		$('.item-resultado').hover(function(){
 			$(this).find('span.actions').fadeIn('fast');

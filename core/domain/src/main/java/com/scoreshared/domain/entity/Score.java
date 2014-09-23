@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.MappingCharFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
@@ -82,13 +83,12 @@ public class Score extends BaseEntity implements Cloneable {
     @Cascade({ CascadeType.ALL })
     private Set<PlayerInstance> rightPlayers;
 
-    @Column(columnDefinition = "BIT", length = 1)
-    private boolean winnerDefined;
-
     private SportEnum sport;
 
     @Column(columnDefinition = "BIT", length = 1)
     private Boolean confirmed;
+    
+    private ScoreTypeEnum type;
 
     @Transient
     private boolean postInFacebook;
@@ -240,14 +240,6 @@ public class Score extends BaseEntity implements Cloneable {
         this.rightPlayers = rightPlayers;
     }
 
-    public boolean isWinnerDefined() {
-        return winnerDefined;
-    }
-
-    public void setWinnerDefined(boolean winnerDefined) {
-        this.winnerDefined = winnerDefined;
-    }
-
     public SportEnum getSport() {
         return sport;
     }
@@ -272,6 +264,14 @@ public class Score extends BaseEntity implements Cloneable {
         this.confirmed = confirmed;
     }
 
+    public ScoreTypeEnum getType() {
+        return type;
+    }
+
+    public void setType(ScoreTypeEnum type) {
+        this.type = type;
+    }
+
     public void setPostInFacebook(boolean postInFacebook) {
         this.postInFacebook = postInFacebook;
     }
@@ -288,23 +288,46 @@ public class Score extends BaseEntity implements Cloneable {
         this.socialMessage = socialMessage;
     }
 
-    /**
-     * True if left is really a winner. False if there is no winner or if right is the winner.
-     */
-    public Boolean hasWinner() {
-        int leftCount = 0;
-        int rightCount = 0;
+    public boolean isUntied() {
+        MutablePair<Integer, Integer> leftAndRightCounts = countSetsForLeftAndRight();
+        return (leftAndRightCounts.getLeft() + leftAndRightCounts.getRight()) > 0 && leftAndRightCounts.getLeft() != leftAndRightCounts.getRight();
+    }
+
+    public boolean isTied() {
+        MutablePair<Integer, Integer> leftAndRightCounts = countSetsForLeftAndRight();
+        return (leftAndRightCounts.getLeft() + leftAndRightCounts.getRight()) > 0 && leftAndRightCounts.getLeft() == leftAndRightCounts.getRight();
+    }
+
+    public boolean isPractice() {
+        MutablePair<Integer, Integer> leftAndRightCounts = countSetsForLeftAndRight();
+        return (leftAndRightCounts.getLeft() + leftAndRightCounts.getRight()) == 0;
+    }
+
+    public ScoreTypeEnum calculateScoreType() {
+        ScoreTypeEnum type = null;
+        if (isUntied()) {
+            type = ScoreTypeEnum.UNTIED;
+        } else if (isTied()) {
+            type = ScoreTypeEnum.TIED;
+        } else if (isPractice()) {
+            type = ScoreTypeEnum.PRACTICE;
+        }
+        return type;
+    }
+
+    private MutablePair<Integer, Integer> countSetsForLeftAndRight() {
+        MutablePair<Integer, Integer> leftAndRightCounts = new MutablePair<Integer, Integer>(0,0);
         Integer[][] finalScore = getFinalScoreArray();
         for (Integer[] set : finalScore) {
             if (set[0] != null && set[1] != null) {
                 if (set[0] > set[1]) {
-                    leftCount++;
+                    leftAndRightCounts.setLeft(leftAndRightCounts.getLeft() + 1);
                 } else {
-                    rightCount++;
+                    leftAndRightCounts.setRight(leftAndRightCounts.getRight() + 1);
                 }
             }
         }
-        return leftCount > rightCount;
+        return leftAndRightCounts;
     }
 
     private Integer[][] getFinalScoreArray() {
@@ -358,7 +381,7 @@ public class Score extends BaseEntity implements Cloneable {
         return getFinalScore(true);
     }
 
-    public boolean hasWinner(Integer userId) {
+    public boolean isUserInLeft(Integer userId) {
         for (PlayerInstance player : leftPlayers) {
             if (player.getAssociation() != null && player.getAssociation().getId().equals(userId)) {
                 return true;
@@ -391,21 +414,19 @@ public class Score extends BaseEntity implements Cloneable {
     }
 
     public String getOpponentPlayerNames(Integer loggedUserId) {
-        if (hasWinner(loggedUserId)) {
+        if (isUserInLeft(loggedUserId)) {
             return getRightPlayerNames();
-        } else if (hasWinner()) {
+        } else {
             return getLeftPlayerNames();
         }
-        return "";
     }
 
     public String getYourTeamPlayerNames(Integer loggedUserId) {
-        if (hasWinner(loggedUserId)) {
+        if (isUserInLeft(loggedUserId)) {
             return getLeftPlayerNames();
-        } else if (hasWinner()) {
+        } else {
             return getRightPlayerNames();
         }
-        return "";
     }
 
     @Override
@@ -441,7 +462,7 @@ public class Score extends BaseEntity implements Cloneable {
 
 	public PlayerInstance getSampleOpponent(User loggedUser) {
 	    Set<PlayerInstance> opponents = new HashSet<PlayerInstance>();
-	    if (hasWinner(loggedUser.getId())) {
+	    if (isUserInLeft(loggedUser.getId())) {
 	        opponents.addAll(rightPlayers);
 	
 	    } else {
@@ -487,6 +508,9 @@ public class Score extends BaseEntity implements Cloneable {
     }
 
     public String getPlayerNames(Set<PlayerInstance> players) {
+        if (players.isEmpty()) {
+            return "";
+        }
         StringBuilder result = new StringBuilder();
         for (PlayerInstance player : players) {
             result.append(player.getName());
@@ -522,8 +546,8 @@ public class Score extends BaseEntity implements Cloneable {
     }
 
     public boolean isOwnerAndPlayerInstanceInDifferentSidesOfScore(PlayerInstance playerInstance) {
-        return hasWinner(getOwner().getId()) && !hasWinner(playerInstance.getAssociation().getId())
-                || !hasWinner(getOwner().getId()) && hasWinner(playerInstance.getAssociation().getId());
+        return isUserInLeft(getOwner().getId()) && !isUserInLeft(playerInstance.getAssociation().getId())
+                || !isUserInLeft(getOwner().getId()) && isUserInLeft(playerInstance.getAssociation().getId());
     }
 
     public boolean hasConnectedPlayerInOtherSideOfOwner() {

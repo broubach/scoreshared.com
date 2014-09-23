@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -297,16 +296,16 @@ public class ScoreController extends BaseController {
     @ResponseBody
     public Map<String, String> getPlayerStats(@LoggedUser User loggedUser, @ModelAttribute("sportId") String sportId, @ModelAttribute("date") String date, @ModelAttribute("loggedUserIsWinner") Boolean loggedUserIsWinner, HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
-        Pair<Integer, Integer> winLoss = scoreBo.countWinLoss(null, loggedUser.getId());
+        Integer[] winLossTiesAndPractices = scoreBo.countWinLossTiesAndPractices(null, loggedUser.getId());
         
         int win = -1;
         int loss = -1;
         if (loggedUserIsWinner) {
-            win = winLoss.getLeft() + 1;
-            loss = winLoss.getRight();
+            win = winLossTiesAndPractices[0] + 1;
+            loss = winLossTiesAndPractices[1];
         } else {
-            win = winLoss.getLeft();
-            loss = winLoss.getRight() + 1;
+            win = winLossTiesAndPractices[0];
+            loss = winLossTiesAndPractices[1] + 1;
         }
 
         String title = messageResource.getMessage("label.score_shared_title",

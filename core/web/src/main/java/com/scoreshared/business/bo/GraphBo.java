@@ -196,6 +196,12 @@ public class GraphBo extends BaseBo<Player> {
 
         } else if (ScoreOutcomeEnum.WIN.equals(scoreOutcomeFilter)) {
             return dao.findByNamedQuery("connectedPlayerInstancesByAssociationAndOutcomeWinQuery", associationId);
+
+        } else if (ScoreOutcomeEnum.PRACTICE.equals(scoreOutcomeFilter)) {
+            return dao.findByNamedQuery("connectedPlayerInstancesByAssociationAndOutcomePracticeQuery", associationId);
+            
+        } else if (ScoreOutcomeEnum.TIE.equals(scoreOutcomeFilter)) {
+            return dao.findByNamedQuery("connectedPlayerInstancesByAssociationAndOutcomeTieQuery", associationId);
         }
 
         return dao.findByNamedQuery("connectedPlayerInstancesByAssociationQuery", associationId);

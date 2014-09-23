@@ -68,9 +68,11 @@ public class PlayerController extends BaseController {
         }
         mav.addObject("scores", items);
 
-        Pair<Integer, Integer> winLoss = scoreBo.countWinLoss(null, userId);
-        mav.addObject("win", winLoss.getLeft());
-        mav.addObject("loss", winLoss.getRight());
+        Integer[] winLossTiesAndPractices = scoreBo.countWinLossTiesAndPractices(null, userId);
+        mav.addObject("win", winLossTiesAndPractices[0]);
+        mav.addObject("loss", winLossTiesAndPractices[1]);
+        mav.addObject("tie", winLossTiesAndPractices[2]);
+        mav.addObject("practice", winLossTiesAndPractices[3]);
 
         return mav;
     }

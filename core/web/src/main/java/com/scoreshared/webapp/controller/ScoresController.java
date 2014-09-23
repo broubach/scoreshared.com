@@ -74,9 +74,11 @@ public class ScoresController extends BaseController {
     	
     	paginationHelper.calculatePaginationWindowAndAddToModel(result, pageNumber, scoresAndTotalCount.getRight());
     	
-    	Pair<Integer, Integer> winLoss = bo.countWinLoss(term, loggedUser.getId());
-    	result.addObject("win", winLoss.getLeft());
-        result.addObject("loss", winLoss.getRight());
+    	Integer[] winLossTiesAndPractices = bo.countWinLossTiesAndPractices(term, loggedUser.getId());
+    	result.addObject("win", winLossTiesAndPractices[0]);
+        result.addObject("loss", winLossTiesAndPractices[1]);
+        result.addObject("tie", winLossTiesAndPractices[2]);
+        result.addObject("practice", winLossTiesAndPractices[3]);
         result.addObject("outcome", outcome.toString());
         result.addObject("searchTerm", term);
         result.addObject("ascending", ascending);

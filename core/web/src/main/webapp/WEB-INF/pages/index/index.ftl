@@ -14,24 +14,25 @@
 	<div class="row banner">
 		<div class="columns large-12 last">
 			<hgroup class="frases-destaque">
-				<h2>Track your scores</h2>
-				<h2>Share your stats</h2>
-				<h2>Improve your game!</h2>
+				<h2><@spring.message code="label.index.phrase1"/></h2>
+				<h2><@spring.message code="label.index.phrase2"/></h2>
+				<h2><@spring.message code="label.index.phrase3"/></h2>
 			</hgroup>
 			<div class="foto-banner">
-				<div>Available for:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
+				<div><@spring.message code="label.index.available_for"/>:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
 				<img src="<@spring.url relativeUrl="/img/foto-esporte-1.png"/>" alt="" width="466" height="325"/>
 			</div>
 		</div>
 	</div>
 
 	<div class="row content">
-		<h3 class="pergunta pergunta-jogador">Keep track of your records to improve your game!</h3>
+		<h3 class="pergunta pergunta-jogador"><@spring.message code="label.index.upper.title"/></h3>
 		<div class="large-6 columns">
 			<ul class="player-steps">
-				<li class="step step1" data-step="1">What did I do last time I played this guy?</li>
-				<li class="step step2" data-step="2">What forehand grip was I using last match?</li>
-				<li class="step step3" data-step="3">How many times have we played?</li>
+				<li class="step step1" data-step="1"><@spring.message code="label.index.upper.phrase1"/></li>
+				<li class="step step2" data-step="2"><@spring.message code="label.index.upper.phrase2"/></li>
+				<li class="step step3" data-step="3"><@spring.message code="label.index.upper.phrase3"/></li>
+				<li class="step step4" data-step="4"><@spring.message code="label.index.upper.phrase4"/></li>
 			</ul>
 		</div>
 		<div class="large-6 columns" style="min-height: 305px">
@@ -40,16 +41,16 @@
 	</div>
 
 	<div class="row content">
-		<h3 class="pergunta">Great! How do I use it?</h3>
+		<h3 class="pergunta"><@spring.message code="label.index.lower.title"/></h3>
 		<div class="large-6 columns" style="min-height: 305px">
 			<img src="<@spring.url relativeUrl="/img/screen-coach-1.png"/>" class="screenshot-coach" alt="" />
 		</div>
 		<div class="large-6 columns">
 			<ul class="coach-steps">
-				<li class="step step1" data-step="1">Register yourself</li>
-				<li class="step step2" data-step="2">Start saving your scores after each match</li>
-				<li class="step step3" data-step="3">Keep track of your history</li>
-				<li class="step step4" data-step="4">Feel free to share it with your community!</li>
+				<li class="step step1" data-step="1"><@spring.message code="label.index.lower.phrase1"/></li>
+				<li class="step step2" data-step="2"><@spring.message code="label.index.lower.phrase2"/></li>
+				<li class="step step3" data-step="3"><@spring.message code="label.index.lower.phrase3"/></li>
+				<li class="step step4" data-step="4"><@spring.message code="label.index.lower.phrase4"/></li>
 			</ul>
 		</div>
 	</div>
@@ -84,6 +85,9 @@
 		$('#login_button').click(function() {
 			$('#login-form').submit();
 		});
+		$('#login').on("opened", function() {
+			$('#j_username').focus();
+		});
 		$('#fb_button').click(function(){
 			$('#fb_form').submit();
 		});
@@ -97,6 +101,7 @@
 			"<@spring.url relativeUrl="/img/screen-player-1.png"/>",
 			"<@spring.url relativeUrl="/img/screen-player-2.png"/>",
 			"<@spring.url relativeUrl="/img/screen-player-3.png"/>",
+			"<@spring.url relativeUrl="/img/screen-player-4.png"/>",
 			"<@spring.url relativeUrl="/img/screen-coach-1.png"/>",
 			"<@spring.url relativeUrl="/img/screen-coach-2.png"/>",
 			"<@spring.url relativeUrl="/img/screen-coach-3.png"/>",

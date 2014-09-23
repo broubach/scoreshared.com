@@ -247,6 +247,7 @@ public class ExtractorAndTransformer {
         }
         score.setConfirmed(isPlayerInstanceConnected(score.getLeftPlayers())
                 && isPlayerInstanceConnected(score.getRightPlayers()));
+        score.setType(score.calculateScoreType());
         return score;
     }
 
@@ -318,7 +319,28 @@ public class ExtractorAndTransformer {
                 rightPlayers.add(playerInstance);
             }
         }
+        balancePlayers(leftPlayers, rightPlayers);
         return new Set[] { leftPlayers, rightPlayers };
+    }
+
+    private void balancePlayers(Set<PlayerInstance> leftPlayers, Set<PlayerInstance> rightPlayers) {
+        while (Math.abs(leftPlayers.size() - rightPlayers.size()) >= 2) {
+            PlayerInstance unbalancedPlayer = null;
+            if (leftPlayers.size() < rightPlayers.size()) {
+                unbalancedPlayer = rightPlayers.iterator().next();
+                unbalancedPlayer.setScoreLeft(unbalancedPlayer.getScoreRight());
+                unbalancedPlayer.setScoreRight(null);
+                leftPlayers.add(unbalancedPlayer);
+                rightPlayers.remove(unbalancedPlayer);
+
+            } else if (rightPlayers.size() < leftPlayers.size()) {
+                unbalancedPlayer = leftPlayers.iterator().next();
+                unbalancedPlayer.setScoreRight(unbalancedPlayer.getScoreLeft());
+                unbalancedPlayer.setScoreLeft(null);
+                rightPlayers.add(unbalancedPlayer);
+                leftPlayers.remove(unbalancedPlayer);
+            }
+        }
     }
 
     private Set<PlayerInstance>[] transformPlayerInstancesFromEvento(List<JogadorEvento> jogadoresEventos) {

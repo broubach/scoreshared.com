@@ -7,6 +7,6 @@
 	<bean id="jmsTemplate" class="com.scoreshared.scaffold.CustomJmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="defaultDestination" ref="queue" />
-		<property name="enabled" value="false" />
+		<property name="enabled" value="${email.enabled}" />
 	</bean>
 </beans>

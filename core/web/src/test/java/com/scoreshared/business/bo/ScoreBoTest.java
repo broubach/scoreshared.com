@@ -37,7 +37,9 @@ public class ScoreBoTest {
     public void setup() {
         scoreBo.initializeLuceneIndex();
 
+        // Benardo
         loggedUser1 = scoreBo.findById(User.class, 38);
+        // Sampras
         loggedUser2 = scoreBo.findById(User.class, 39);
 
         ScoreModel scoreModel = new ScoreModel();
@@ -95,6 +97,54 @@ public class ScoreBoTest {
         comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
         scoreBo.save(score.getOwner(), loggedUser2, score, comment);
+
+        scoreModel = new ScoreModel();
+        scoreModel.setSet1Left(6);
+        scoreModel.setSet1Right(3);
+        scoreModel.setSet2Left(3);
+        scoreModel.setSet2Right(6);
+        scoreModel.setDate("26/08/2002");
+
+        playersLeft = new ArrayList<String>();
+        playersLeft.add("Pete Sampras");
+        scoreModel.setPlayersLeft(playersLeft);
+
+        playersRight = new ArrayList<String>();
+        playersRight.add("Andre Agassi");
+        scoreModel.setPlayersRight(playersRight);
+        scoreModel.setNewPlayersNotToBeRemembered(new ArrayList<String>());
+        scoreModel.setSportId(0);
+        scoreModel.setOwnerId(39);
+
+        scoreModel.setComment("Jogo empatado :/");
+
+        score = conversionService.convert(scoreModel, Score.class);
+
+        comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
+
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
+
+        scoreModel = new ScoreModel();
+        scoreModel.setDate("26/08/2002");
+
+        playersLeft = new ArrayList<String>();
+        playersLeft.add("Pete Sampras");
+        scoreModel.setPlayersLeft(playersLeft);
+
+        playersRight = new ArrayList<String>();
+        playersRight.add("Andre Agassi");
+        scoreModel.setPlayersRight(playersRight);
+        scoreModel.setNewPlayersNotToBeRemembered(new ArrayList<String>());
+        scoreModel.setSportId(0);
+        scoreModel.setOwnerId(39);
+
+        scoreModel.setComment("Treino!!");
+
+        score = conversionService.convert(scoreModel, Score.class);
+
+        comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
+
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
     }
 
     @Test
@@ -122,5 +172,13 @@ public class ScoreBoTest {
         // pete is a player who played with me, but in a match that I didnt win, so it wont be found
         scoresAndCount = scoreBo.findScores(null, "pete", ScoreOutcomeEnum.WIN, true, loggedUser1.getId());
         Assert.assertTrue("found 'pete', win outcomes, asceding order", scoresAndCount.getLeft().isEmpty());
+
+        // pete practiced with agassi, so it will be found
+        scoresAndCount = scoreBo.findScores(null, null, ScoreOutcomeEnum.PRACTICE, true, loggedUser2.getId());
+        Assert.assertTrue("found practice Pete played", scoresAndCount.getLeft().size() == 1);
+
+        // pete played a match that tied against agassi, so it will be found
+        scoresAndCount = scoreBo.findScores(null, null, ScoreOutcomeEnum.TIE, true, loggedUser2.getId());
+        Assert.assertTrue("found tied match Pete played", scoresAndCount.getLeft().size() == 1);
     }
 }

@@ -37,7 +37,9 @@
 						<div class="columns small-4 radio direita">
 							<label><input id="radioAll" type="radio" name="scoreOutcomeFilter" value="ALL" <#if outcome = 'ALL'>checked='checked'</#if>><@spring.message code="label.all"/></label>&nbsp;
 							<label><input id="radioWin" type="radio" name="scoreOutcomeFilter" value="WIN" <#if outcome = 'WIN'>checked='checked'</#if>><@spring.message code="label.win"/></label>&nbsp;
-							<label><input id="radioLoss" type="radio" name="scoreOutcomeFilter" value="LOSS" <#if outcome = 'LOSS'>checked='checked'</#if>><@spring.message code="label.loss"/></label></div>
+							<label><input id="radioLoss" type="radio" name="scoreOutcomeFilter" value="LOSS" <#if outcome = 'LOSS'>checked='checked'</#if>><@spring.message code="label.loss"/></label>
+							<label><input id="radioWin" type="radio" name="scoreOutcomeFilter" value="TIE" <#if outcome = 'TIE'>checked='checked'</#if>><@spring.message code="label.tie"/></label>&nbsp;
+							<label><input id="radioWin" type="radio" name="scoreOutcomeFilter" value="PRACTICE" <#if outcome = 'PRACTICE'>checked='checked'</#if>><@spring.message code="label.practice"/></label></div>
 						<div class="columns small-4 direita">
 							<#if (ascending)>
 								<a id="descendingByDate" href="#"><@spring.message code="label.descending_by_date"/></a>
@@ -48,9 +50,9 @@
 					</div>
 				</div>
 				<div class="columns small-2">
-					<#if (win + loss > 0)>
+					<#if (win + loss + tie + practice> 0)>
 						<canvas id="estatistica-jogos" title="<@spring.message code="label.win_loss_record"/>"></canvas><br/>
-						<p class="centralizado">${win} - ${loss} (${(win/(win + loss)) * 100} %)</p>
+						<label class="centralizado"><@spring.message code="label.win"/>: ${win} <#if ((win + loss) > 0)>(${(win/(win + loss)) * 100} %)</#if> / <@spring.message code="label.loss"/>: ${loss} / <@spring.message code="label.tie"/>: ${tie} / <@spring.message code="label.practice"/>: ${practice}</label>
 					</#if>
 				</div>
 			</div>
@@ -174,7 +176,7 @@ $(function() {
 		label_confirm_score_removal: "<@spring.message code="label.confirm_score_removal"/>",
 		label_confirm_to_hide_score_permanently: "<@spring.message code="label.confirm_to_hide_score_permanently"/>",
 		label_refresh_page_to_see_new_actions_available: "<@spring.message code="label.refresh_page_to_see_new_actions_available"/>",
-		ascending: ${(!ascending)?c},
+		ascending: ${(ascending)?c},
 		pageNumber: ${pageNumber},
 		win: ${win},
 		loss: ${loss}

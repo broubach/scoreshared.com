@@ -36,7 +36,7 @@
 					</div>
 				</#list>
 				<div class="vermais direita">
-					<a href="<@spring.url relativeUrl="/app/scores/0/ALL/true"/>"><@spring.message code="label.see_all_scores"/></a>
+					<a href="<@spring.url relativeUrl="/app/scores/0/ALL/false"/>"><@spring.message code="label.see_all_scores"/></a>
 				</div>
 			</div>
 		</div>
@@ -45,22 +45,24 @@
 			<div class="box-content">
 				<h2><@spring.message code="label.statistics"/></h2>
 				<hr />
-				<div class="row collapse">
-					<div class="columns large-7">
-						<canvas id="estatistica-jogos" title="<@spring.message code="label.win_loss_record"/>"></canvas>
+				<#if ((win + loss + tie + practice) > 0)>
+					<div class="row collapse">
+						<div class="columns large-7">
+							<canvas id="estatistica-jogos" title="<@spring.message code="label.win_loss_record"/>"></canvas>
+						</div>
+						<div class="columns large-5">
+							<ul class="legenda">
+								<li class="vitorias"><@spring.message code="label.win"/></li>
+								<li class="derrotas"><@spring.message code="label.loss"/></li>
+							</ul>
+						</div>
 					</div>
-					<div class="columns large-5">
-						<ul class="legenda">
-							<li class="vitorias"><@spring.message code="label.win"/></li>
-							<li class="derrotas"><@spring.message code="label.loss"/></li>
-						</ul>
+					<div class="row">
+						<div class="columns large-7 last">
+							<label class="centralizado"><@spring.message code="label.win"/>: ${win} <#if ((win + loss) > 0)>(${(win/(win + loss)) * 100} %)</#if> / <@spring.message code="label.loss"/>: ${loss} / <@spring.message code="label.tie"/>: ${tie} / <@spring.message code="label.practice"/>: ${practice}</label>
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="columns large-7 last">
-						<p class="centralizado">${win} - ${loss} (${(win/(win + loss)) * 100} %)</p>
-					</div>
-				</div>
+				</#if>
 			</div>
 		</div>
 	</div>

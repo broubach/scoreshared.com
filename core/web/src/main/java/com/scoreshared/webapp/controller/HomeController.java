@@ -59,9 +59,11 @@ public class HomeController extends BaseController {
         request.getSession().setAttribute(ConnectionsHelper.IS_USER_IN_WELCOME_STEPS, Boolean.FALSE);
 
         if (!scores.isEmpty()) {
-            Pair<Integer, Integer> winLoss = scoreBo.countWinLoss(null, loggedUser.getId());
-            mav.addObject("win", winLoss.getLeft());
-            mav.addObject("loss", winLoss.getRight());
+            Integer[] winLossTiesAndPractices = scoreBo.countWinLossTiesAndPractices(null, loggedUser.getId());
+            mav.addObject("win", winLossTiesAndPractices[0]);
+            mav.addObject("loss", winLossTiesAndPractices[1]);
+            mav.addObject("tie", winLossTiesAndPractices[2]);
+            mav.addObject("practice", winLossTiesAndPractices[3]);
 
             mav.setViewName("home/home");
 
@@ -101,7 +103,7 @@ public class HomeController extends BaseController {
         for (Score score : scoreBo.findPendingScoreApprovals(loggedUser.getId())) {
             item = new HashMap<String, Object>();
             item.put("senderName", score.getOwner().getFullName());
-            item.put("scoreText", score.hasWinner(loggedUser.getId()) ? score.getFinalScore(true) : score.getFinalScore(false));
+            item.put("scoreText", score.isUserInLeft(loggedUser.getId()) ? score.getFinalScore(true) : score.getFinalScore(false));
             item.put("scoreId", score.getId());
             item.put("type", "APPROVAL");
             result.add(item);
@@ -114,7 +116,7 @@ public class HomeController extends BaseController {
                 if (playerInstance.getRevisionMessage() != null) {
                     item.put("senderName", playerInstance.getName());
                     item.put("scoreText",
-                            score.hasWinner(loggedUser.getId()) ? score.getFinalScore(true) : score.getFinalScore(false));
+                            score.isUserInLeft(loggedUser.getId()) ? score.getFinalScore(true) : score.getFinalScore(false));
                     item.put("scoreId", score.getId());
                     item.put("playerInstanceId", playerInstance.getId());
                     item.put("type", "REVISION");
