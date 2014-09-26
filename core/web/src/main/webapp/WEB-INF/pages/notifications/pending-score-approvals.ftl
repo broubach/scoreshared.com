@@ -41,8 +41,8 @@
 										<tbody>
 										<tr>
 											<td><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.sampleOpponentAvatar?html)!}&small"/>"/></td>
-											<td>${item.opponentsNames}</td>
-											<td>${item.detailTextHighlightingWinnerWithLoggedUserAtRight}</td>
+											<td class="decoratable">${item.opponentsNames}</td>
+											<td class="decoratable">${item.detailTextHighlightingWinnerWithLoggedUserAtRight}</td>
 											<td><@spring.message code="label.you"/></td>
 											<td><img src="<@spring.url relativeUrl="/img/icons/time.png"/>" alt="${item.dateTime}" title="${item.dateTime}">${item.dateTime}</td>
 											<td width="40%">
@@ -88,7 +88,7 @@ var ClickContext = {
 		currentUrl: {}
 };
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');

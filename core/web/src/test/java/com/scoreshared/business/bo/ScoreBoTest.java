@@ -66,7 +66,7 @@ public class ScoreBoTest {
 
         PlayerInstanceComment comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(score.getOwner(), loggedUser1, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser1, score, comment, false);
 
         scoreModel = new ScoreModel();
         scoreModel.setSet1Left(6);
@@ -96,7 +96,7 @@ public class ScoreBoTest {
 
         comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment, false);
 
         scoreModel = new ScoreModel();
         scoreModel.setSet1Left(6);
@@ -122,7 +122,7 @@ public class ScoreBoTest {
 
         comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment, false);
 
         scoreModel = new ScoreModel();
         scoreModel.setDate("26/08/2002");
@@ -144,7 +144,7 @@ public class ScoreBoTest {
 
         comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-        scoreBo.save(score.getOwner(), loggedUser2, score, comment);
+        scoreBo.save(score.getOwner(), loggedUser2, score, comment, false);
     }
 
     @Test

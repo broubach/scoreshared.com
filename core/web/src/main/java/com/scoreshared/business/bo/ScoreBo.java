@@ -52,12 +52,12 @@ public class ScoreBo extends BaseBo<Score> {
     @Value("${http_server_address_port}")
     private String httpServerAddressPort;
 
-    public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment) {
+    public void save(User owner, User loggedUser, Score score, PlayerInstanceComment comment, boolean isScoreForwarded) {
         consist(owner, loggedUser, score, comment);
 
         updateProfileWithNewestPreferences(score);
 
-        saveScoreAndComment(loggedUser.getId(), score, comment);
+        saveScoreAndComment(loggedUser.getId(), score, comment, isScoreForwarded);
 
         if (score.getPostInFacebook() && !SportEnum.OTHER.equals(score.getSport())) {
             Integer[] winLossTiesAndPractices = countWinLossTiesAndPractices(null, owner.getId());
@@ -122,8 +122,8 @@ public class ScoreBo extends BaseBo<Score> {
         return null;
     }
 
-    private void saveScoreAndComment(Integer loggedUserId, Score score, PlayerInstanceComment comment) {
-        if (Boolean.TRUE.equals(score.isUpdatable(loggedUserId))) {
+    private void saveScoreAndComment(Integer loggedUserId, Score score, PlayerInstanceComment comment, boolean isScoreForwarded) {
+        if (Boolean.TRUE.equals(score.isUpdatable(loggedUserId)) || isScoreForwarded) {
             dao.saveOrUpdate(score);
         }
         if (comment != null && score.isUpdatable(loggedUserId) != null) {
@@ -446,7 +446,7 @@ public class ScoreBo extends BaseBo<Score> {
         PlayerInstance playerInstanceToBeNewOwner = score.getAssociatedPlayer(newOwnerId);
         if (playerInstanceToBeNewOwner.isScoreConnected()) {
             score.setOwner(playerInstanceToBeNewOwner.getAssociation());
-            save(score.getOwner(), loggedUser, score, null);
+            save(score.getOwner(), loggedUser, score, null, true);
         }
     }
 

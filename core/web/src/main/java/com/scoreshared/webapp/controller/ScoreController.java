@@ -206,7 +206,7 @@ public class ScoreController extends BaseController {
             Score score = conversionService.convert(scoreModel, Score.class);
             PlayerInstanceComment comment = conversionService.convert(scoreModel, PlayerInstanceComment.class);
 
-            scoreBo.save(score.getOwner(), loggedUser, score, comment);
+            scoreBo.save(score.getOwner(), loggedUser, score, comment, false);
 
             if (session.getAttribute("postSaveUrl") != null) {
                 mav.setViewName("redirect:/" + session.getAttribute("postSaveUrl"));

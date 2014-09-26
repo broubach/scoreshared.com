@@ -71,9 +71,9 @@
 										<td><#if item.confirmed!false><img src="<@spring.url relativeUrl="/img/icons/check.png"/>" title="<@spring.message code="label.confirmed_score"/>"></#if></td>
 										<td>${item.date}</td>
 										<td>${item.time}</td>
-										<td>${item.yourTeamNames}</td>
+										<td class="decoratable">${item.yourTeamNames}</td>
 										<td>${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.against"/></td>
-										<td>${item.opponentsNames}</td>
+										<td class="decoratable">${item.opponentsNames}</td>
 										<td>
 											<#if item.comment??>
 												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" height="16" width="16" title="${item.comment.comment}"/>
@@ -167,7 +167,7 @@
 
 <script type="text/javascript">
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	DialogGeneralConfirm.init();
 	

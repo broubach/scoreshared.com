@@ -81,7 +81,7 @@
 											<tr>
 												<#if player.connected>
 													<td id="avatar-column"><img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(player.association.profile.avatarHash?html)!}&small"/>"/></td>
-													<td>${player.name}</td>
+													<td class="decoratable">${player.name}</td>
 													<td id="actions-column" width="50%">
 														<span class="actions hide">
 															<a href="removeLink,${player.id?c}" class="button button-small button-primary"><@spring.message code="label.remove_link"/></a>
@@ -140,7 +140,7 @@ var ClickContext = {
 	currentId: {},
 };
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	var newPlayerWizardOptions = {
 			contextPath: "<@spring.url relativeUrl="/"/>",

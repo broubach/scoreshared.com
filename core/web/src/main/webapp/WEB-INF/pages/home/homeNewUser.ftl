@@ -36,7 +36,7 @@
 	  <li data-class="menu-score" data-options="tipLocation: bottom; nubPosition: top;">
 	  	<p><@spring.message code="label.welcome_wizard.scores.1"/></p>
 	  </li>
-	  <li data-class="menu-mensagens-alert" data-options="tipLocation: bottom; nubPosition: top;">
+	  <li data-class="menu-mensagens" data-options="tipLocation: bottom; nubPosition: top;">
 	  	<p><@spring.message code="label.welcome_wizard.notifications.1"/></p>
 	  </li>
 	  <li data-class="menu-profile" data-options="tipLocation: bottom; nubPosition: top;">

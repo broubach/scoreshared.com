@@ -34,7 +34,7 @@
 										<tbody>
 										<tr>
 											<td><img src="<@spring.url relativeUrl="/app/avatar?hash=${(item[0]?html)!}&small"/>" class="avatar"/></td>
-											<td>${item[1]} ${item[2]}</td>
+											<td class="decoratable">${item[1]} ${item[2]}</td>
 											<td width="30%">
 												<span class="actions hide">
 													<a href="accept,${item[3]?c}" class="button button-small button-primary"><@spring.message code="label.accept"/></a>
@@ -76,7 +76,7 @@ var ClickContext = {
 		tableLine: {}
 };
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');

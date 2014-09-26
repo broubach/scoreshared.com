@@ -45,7 +45,7 @@
 										<table>
 											<tbody>
 												<tr>
-													<td><@spring.message code="label.reviewed_by"/>: <img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/> ${item.playerInstance.player.name}</td>
+													<td class="decoratable"><@spring.message code="label.reviewed_by"/>: <img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${(item.playerInstance.player.avatar?html)!}&small"/>"/> ${item.playerInstance.player.name}</td>
 													<td width="30%" rowspan="6">
 														<span class="actions hide">
 															<a href="approve,${item.score.id?c},${item.playerInstance.id?c}" class="button button-small button-primary"><@spring.message code="label.approve"/></a>
@@ -55,8 +55,8 @@
 												</tr>
 												<tr><td><@spring.message code="label.original_date"/>: ${item.dateTime}</td></tr>
 												<tr><td><@spring.message code="label.reviewed_date"/>: ${item.revisionDateTime}</td></tr>
-												<tr><td><@spring.message code="label.original_score"/>: ${item.opponentsNames} ${item.detailTextHighlightingWinnerWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
-												<tr><td><@spring.message code="label.reviewed_score"/>: ${item.opponentsNames} ${item.revisionScoreWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
+												<tr><td class="decoratable"><@spring.message code="label.original_score"/>: ${item.opponentsNames} ${item.detailTextHighlightingWinnerWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
+												<tr><td class="decoratable"><@spring.message code="label.reviewed_score"/>: ${item.opponentsNames} ${item.revisionScoreWithLoggedUserAtRight} <@spring.message code="label.you"/></td></tr>
 												<tr><td><@spring.message code="label.revision_message"/>: ${item.playerInstance.revisionMessage!""}</td></tr>
 											</tbody>
 										</table>
@@ -85,7 +85,7 @@ var ClickContext = {
 		tableLine: {},
 };
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	$('.item-resultado').hover(function(){
 		$(this).find('span.actions').fadeIn('fast');

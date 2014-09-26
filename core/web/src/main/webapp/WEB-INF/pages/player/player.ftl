@@ -41,7 +41,7 @@
 										<td>
 											${item.dateTime}
 										</td>
-										<td>${item.detailText}</td>
+										<td class="decoratable">${item.detailText}</td>
 										<td width="10%">
 											<#assign avatarHash>${item.sampleOpponentAvatar}</#assign>
 											<#if avatarHash?has_content>
@@ -113,7 +113,7 @@
 
 <script type="text/javascript">
 $(function() {
-	PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	PlayerDecorationUtil.addPlayerLinksTo('.decoratable', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
 
 	$('#connect').click(function(e) {
 		<#if player.id??>
