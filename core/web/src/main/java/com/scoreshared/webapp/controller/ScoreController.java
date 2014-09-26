@@ -209,7 +209,7 @@ public class ScoreController extends BaseController {
             scoreBo.save(score.getOwner(), loggedUser, score, comment);
 
             if (session.getAttribute("postSaveUrl") != null) {
-                mav.setViewName("redirect:" + session.getAttribute("postSaveUrl"));
+                mav.setViewName("redirect:/" + session.getAttribute("postSaveUrl"));
                 status.setComplete();
 
             } else {

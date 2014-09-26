@@ -360,8 +360,8 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return password != null && password.length() >= 6;
     }
 
-    public String findUserIdByForgotPasswordHash(String hash) {
-        return (String) dao.findByNamedQuery("userIdByForgotPasswordHashQuery", hash).get(0);
+    public Integer findUserIdByForgotPasswordHash(String hash) {
+        return (Integer) dao.findByNamedQuery("userIdByForgotPasswordHashQuery", hash).get(0);
     }
 
     public List<Player> listPlayersNameExceptLoggedUser(User loggedUser) {

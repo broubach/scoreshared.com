@@ -268,7 +268,7 @@
 
 		<#if (score.id??)>
 			$("#comment").focus();
-		<#else>
+		<#elseif (unusedPlayersList != '[]')>
 			$("#playersRight").select2("open");
 		</#if>
 	});

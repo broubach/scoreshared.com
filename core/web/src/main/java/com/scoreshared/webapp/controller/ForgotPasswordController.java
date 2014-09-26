@@ -78,7 +78,7 @@ public class ForgotPasswordController extends BaseController {
                 return "forgot-password/reset-password";
             }
 
-            String userId = userBo.findUserIdByForgotPasswordHash(hash);
+            Integer userId = userBo.findUserIdByForgotPasswordHash(hash);
             session.invalidate();
             userBo.resetPassword(hash, passwordEncoder.encodePassword(newPassword, userId));
             return "redirect:/app";
