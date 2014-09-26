@@ -68,24 +68,24 @@
 								<table>
 									<tbody>
 									<tr>
-										<td><#if item.confirmed!false><img src="<@spring.url relativeUrl="/img/icons/check.png"/>" title="<@spring.message code="label.confirmed_score"/>"></#if></td>
-										<td>${item.date}</td>
-										<td>${item.time}</td>
-										<td class="decoratable">${item.yourTeamNames}</td>
-										<td>${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.against"/></td>
-										<td class="decoratable">${item.opponentsNames}</td>
-										<td>
+										<td style="padding-right: 0px"><#if item.confirmed!false><img src="<@spring.url relativeUrl="/img/icons/check.png"/>" title="<@spring.message code="label.confirmed_score"/>"></#if></td>
+										<td style="padding-right: 0px">${item.date}</td>
+										<td style="padding-right: 0px">${item.time}</td>
+										<td class="decoratable" style="padding-right: 0px">${item.yourTeamNames}</td>
+										<td style="padding-right: 0px">${item.detailTextHighlightingWinnerWithLoggedUserAtLeft} <@spring.message code="label.against"/></td>
+										<td class="decoratable" style="padding-right: 0px">${item.opponentsNames}</td>
+										<td style="padding-right: 0px">
 											<#if item.comment??>
-												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" height="16" width="16" title="${item.comment.comment}"/>
+												<img src="<@spring.url relativeUrl="/img/text_align_justify.png"/>" height="16px" width="16px" title="${item.comment.comment}"/>
 											</#if>
 										</td>
-										<td>
+										<td style="padding-right: 0px">
 											<#assign avatarHash>${item.sampleOpponentAvatar}</#assign>
 											<#if avatarHash?has_content>
 												<img class="avatar" src="<@spring.url relativeUrl="/app/avatar?hash=${avatarHash}&small"/>"/>
 											</#if>
 										</td>
-										<td id="actions-column" width="35%">
+										<td id="actions-column" width="35%" style="padding-right: 0px">
 											<span class="actions hide">
 												<a href="edit,${item.score.id?c}" class="button button-small button-primary"><@spring.message code="label.edit"/></a>
 												<#if associatedPlayer.owner.id == item.score.owner.id>
