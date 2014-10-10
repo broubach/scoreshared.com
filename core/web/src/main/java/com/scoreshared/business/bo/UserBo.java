@@ -344,6 +344,15 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
     }
 
+    private void sendWelcomeEmail(String email, String firstName, String password, Locale locale) {
+        String templateName = "welcome-email-template";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("firstName", firstName);
+        params.put("password", password);
+        String body = parseTemplate(templateName, params, locale);
+        sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
+    }
+
     public boolean isForgotPasswordHashValid(String hash) {
         return !dao.findByNamedQuery("existentForgotPasswordInstructionsHashQuery", new Date(), hash).isEmpty();
     }
@@ -404,8 +413,12 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         return 0;
     }
 
-    public boolean updatePassword(User loggedUser, String password) {
+    public boolean updatePassword(User loggedUser, String password, boolean isNewUser, Locale locale) {
         if (isPasswordValid(password)) {
+            if (isNewUser) {
+                sendWelcomeEmail(loggedUser.getEmail(), loggedUser.getFirstName(), password, locale);
+            }
+
             password = hashEncoder.encodePassword(password, loggedUser.getId());
             loggedUser.setPassword(password);
             dao.saveOrUpdate(loggedUser);

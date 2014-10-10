@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.scoreshared.business.bo.UserBo;
 import com.scoreshared.domain.entity.User;
@@ -49,8 +50,10 @@ public class AccountSettingsController extends BaseController {
             if (captcha.isCorrect(captchaAnswer)) {
                 userBo.closeAccount(loggedUser, reasonsNotToUseScoreshared);
                 session.invalidate();
-                // FIXME: send email
-                return new ModelAndView("index/index");
+                // TODO: send email
+                RedirectView redirect = new RedirectView("/app/index");
+                redirect.setExposeModelAttributes(false);
+                return new ModelAndView(redirect);
 
             } else {
                 ModelAndView result = new ModelAndView("account-settings/close-account");

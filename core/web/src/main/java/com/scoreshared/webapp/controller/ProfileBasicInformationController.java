@@ -61,7 +61,7 @@ public class ProfileBasicInformationController {
 
     @RequestMapping(value = "/profile/basic-information", method = RequestMethod.POST)
     public String validateAndSaveBasicInformation(@LoggedUser User loggedUser,
-            @ModelAttribute @Valid BasicInformationForm form, BindingResult result) {
+            @ModelAttribute @Valid BasicInformationForm form, BindingResult result, HttpServletRequest request) {
         if (!result.hasErrors()) {
             boolean informationUpdated = false;
             if (!form.getEmail().trim().equalsIgnoreCase(loggedUser.getEmail())
@@ -79,7 +79,7 @@ public class ProfileBasicInformationController {
             }
 
             if (!StringUtils.isEmpty(form.getPassword())) {
-                if (!bo.updatePassword(loggedUser, form.getPassword())) {
+                if (!bo.updatePassword(loggedUser, form.getPassword(), false, localeResolver.resolveLocale(request))) {
                     result.rejectValue("password", "error.the_password_must_have_at_least_6_characters");
                 } else {
                     informationUpdated = true;

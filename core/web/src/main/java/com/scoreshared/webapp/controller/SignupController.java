@@ -247,7 +247,7 @@ public class SignupController extends BaseController {
             if (captcha.isCorrect(captchaAnswer)) {
                 User user = form.toUser();
                 userBo.saveNewUser(user, form.getInvitationHash());
-                userBo.updatePassword(user, form.getPassword());
+                userBo.updatePassword(user, form.getPassword(), true, localeResolver.resolveLocale(request));
 
                 securityHelper.authenticateUserWithPassword(request, response, form.getEmail(), form.getPassword());
 
