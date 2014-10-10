@@ -27,7 +27,7 @@
 								<td>
 									<p>Olá,<br>
 									<p>Você perdeu sua senha no scoreshared.com?</p>
-									<p>Se sim, visite <a href="http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}" style="color:#069054">http://www.scoreshared.com/forgotPassword/resetPassword?hash=${hash}</a> para reiniciar a sua senha. Esta página será válida por 2 dias.</p>
+									<p>Se sim, visite <a href="http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}" style="color:#069054">http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}</a> para reiniciar a sua senha. Esta página será válida por 2 dias.</p>
 			
 									<p>Caso contrário, apenas ignore esse email.</p>
 									<p>Atenciosamente,<br/>Scoreshared team</p>

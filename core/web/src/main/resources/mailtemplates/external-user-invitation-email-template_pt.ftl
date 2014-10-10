@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Recupero di Password</title>
+<title>Welcome to scoreshared!</title>
 </head>
  
 <body bgcolor="#FFFFFF">
@@ -25,12 +25,15 @@
 						<table width="100%">
 							<tr>
 								<td>
-									<p>Ciao,<br>
-									<p>Hai perso la password di scoreshared.com?</p>
-									<p>Se sì, visitare <a href="http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}" style="color:#069054">http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}</a> per riavviare la password. Questa pagina sarà disponibile per 2 giorni.</p>
+									<p>Olá!</p>
+									<p>Você foi convidado para o Scoreshared por ${userName}.</p>
+									<p>Essa é a mensagem que ${userName} enviou a você:</p>
+									<p></p><i>${message}</i></p:
 
-									<p>Se non, appena ignorare questa mail.</p>
-									<p>Cordialmente,<br/>Scoreshared team</p>
+									<p>Se você quiser aceitar o convite e começar a acompanhar seus resultados, clique no link a seguir:</p>
+									<p><a href="http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}">http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}</a>.</p>
+
+									<p>Atenciosamente,<br/>Scoreshared team</p>
 
 									<!-- social & contact -->
 									<table class="social" width="100%">
@@ -40,7 +43,7 @@
 												<table align="left" class="column" width="15%">
 													<tr>
 														<td>				
-															<h5 class="">Connettiti con noi:</h5>
+															<h5 class="">Connect with us:</h5>
 															<p class=""><a href="http://www.facebook.com/scoreshared" class="soc-btn fb"><img src="http://2km.com.br/scoreshared/img/newsletter/facebook.png" alt="Facebook"/></a> <a href="https://twitter.com/scoreshared" class="soc-btn tw"><img src="http://2km.com.br/scoreshared/img/newsletter/twitter.png" alt="Twitter"/></a></p>
 														</td>
 													</tr>
@@ -50,7 +53,7 @@
 												<table align="left" class="column">
 													<tr>
 														<td>
-															<h5 class="">Informazione di contatto:</h5>												
+															<h5 class="">Contact information:</h5>												
 															<p>Email: <strong><a href="emailto:contact@scoreshared.com">contact@scoreshared.com</a></strong></p>
 														</td>
 													</tr>
