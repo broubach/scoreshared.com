@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Welcome to scoreshared!</title>
+<title>Convite ao Scoreshared!</title>
 </head>
  
 <body bgcolor="#FFFFFF">
@@ -27,8 +27,10 @@
 								<td>
 									<p>Olá!</p>
 									<p>Você foi convidado para o Scoreshared por ${userName}.</p>
-									<p>Essa é a mensagem que ${userName} enviou a você:</p>
-									<p></p><i>${message}</i></p:
+									<#if message??>
+										<p>Essa é a mensagem que ${userName} enviou a você:</p>
+										<p><i>${message}</i></p>
+									</#if>
 
 									<p>Se você quiser aceitar o convite e começar a acompanhar seus resultados, clique no link a seguir:</p>
 									<p><a href="http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}">http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}</a>.</p>

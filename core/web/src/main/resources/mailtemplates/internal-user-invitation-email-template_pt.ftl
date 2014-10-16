@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Invitation to Scoreshared</title>
+<title>Convite ao Scoreshared</title>
 </head>
  
 <body bgcolor="#FFFFFF">
@@ -20,22 +20,19 @@
 				<tr>
 					<td></td>
 					<td class="container" bgcolor="#FFFFFF">
-			
+
 						<div class="content">
 						<table width="100%">
 							<tr>
 								<td>
-									<p>Hi!</p>
-									<p>You were invited to join Scoreshared by ${userName}.</p>
+									<p>Olá!</p>
+									<p>Você foi convidado a integrar a lista de jogadores de ${userName}.</p>
 									<#if message??>
-										<p>This is the message ${userName} sent you:</p>
+										<p>Essa é a sua mensagem enviada à você:</p>
 										<p><i>${message}</i></p>
 									</#if>
-
-									<p>If you'd like to accept the invitation and start to keep track of your scores, click the following link:</p>
-									<p><a href="http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}">http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}</a>.</p>
-
-									<p>Best regards,<br/>Scoreshared team</p>
+									<p>Se você quiser aceitar o convite e começar a acompanhar seus resultados com essa pessoa, por favor aceite o convite em <a href="http://${http_server_address_port}">www.scoreshared.com</a>.</p>
+									<p>Atenciosamente,<br/>Scoreshared team</p>
 
 									<!-- social & contact -->
 									<table class="social" width="100%">

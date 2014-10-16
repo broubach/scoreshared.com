@@ -92,7 +92,7 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     private void sendInternalInvitationMail(String userName, String invitationMessage, String invitationEmail, Locale locale) {
-        String templateName = "firstEmailToAlreadyRegistered";
+        String templateName = "internal-user-invitation-email-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("message", invitationMessage);
         params.put("userName", userName);
