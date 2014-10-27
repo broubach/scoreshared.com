@@ -81,7 +81,7 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     private void sendExternalInvitationMail(String playerName, String message, String email, String invitationHash, Locale locale) {
-        String templateName = "external-user-invitation-email-template";
+        String templateName = "external-user-invitation-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("message", message);
         params.put("userName", playerName);
@@ -92,7 +92,7 @@ public class GraphBo extends BaseBo<Player> {
     }
 
     private void sendInternalInvitationMail(String userName, String invitationMessage, String invitationEmail, Locale locale) {
-        String templateName = "internal-user-invitation-email-template";
+        String templateName = "internal-user-invitation-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("message", invitationMessage);
         params.put("userName", userName);

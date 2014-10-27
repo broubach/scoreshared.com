@@ -337,7 +337,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     }
     
     private void sendInstructionsMail(String email, String hash, Locale locale) {
-        String templateName = "forgot-password-email-template";
+        String templateName = "forgot-password-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("hash", hash);
         String body = parseTemplate(templateName, params, locale);
@@ -345,7 +345,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     }
 
     private void sendWelcomeEmail(String email, String firstName, String password, Locale locale) {
-        String templateName = "welcome-email-template";
+        String templateName = "welcome-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("firstName", firstName);
         params.put("password", password);
@@ -434,5 +434,13 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    public void sendFarewellEmail(String email, String firstName, Locale locale) {
+        String templateName = "farewell-template";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("firstName", firstName);
+        String body = parseTemplate(templateName, params, locale);
+        sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
     }
 }

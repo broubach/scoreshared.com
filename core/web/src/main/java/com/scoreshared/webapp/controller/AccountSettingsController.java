@@ -50,7 +50,7 @@ public class AccountSettingsController extends BaseController {
             if (captcha.isCorrect(captchaAnswer)) {
                 userBo.closeAccount(loggedUser, reasonsNotToUseScoreshared);
                 session.invalidate();
-                // TODO: send email
+                userBo.sendFarewellEmail(loggedUser.getEmail(), loggedUser.getFirstName(), localeResolver.resolveLocale(request));
                 RedirectView redirect = new RedirectView("/app/index");
                 redirect.setExposeModelAttributes(false);
                 return new ModelAndView(redirect);
