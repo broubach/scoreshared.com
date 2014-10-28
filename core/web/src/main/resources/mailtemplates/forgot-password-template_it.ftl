@@ -27,7 +27,7 @@
 								<td>
 									<p>Ciao,<br>
 									<p>Hai perso la password di scoreshared.com?</p>
-									<p>Se sì, visitare <a href="http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}" style="color:#069054">http://www.scoreshared.com/app/forgotPassword/resetPassword?hash=${hash}</a> per riavviare la password. Questa pagina sarà disponibile per 2 giorni.</p>
+									<p>Se sì, visitare <a href="${http_server_address_port}/app/forgotPassword/resetPassword?hash=${hash}" style="color:#069054">${http_server_address_port}/app/forgotPassword/resetPassword?hash=${hash}</a> per riavviare la password. Questa pagina sarà disponibile per 2 giorni.</p>
 
 									<p>Se non, appena ignorare questa mail.</p>
 									<p>Cordialmente,<br/>Scoreshared team</p>

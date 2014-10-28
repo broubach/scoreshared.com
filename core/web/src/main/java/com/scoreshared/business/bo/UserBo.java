@@ -47,6 +47,9 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
     @Value("${email.fromName}")
     private String fromName;
     
+    @Value("${http_server_address_port}")
+    private String httpServerAddressPort;
+
     public static final String DEFAULT_AVATAR_KEY = "defaultAvatarKey";
     private static final Integer DEFAULT_AVATAR_ID = 4;
     public static final String SMALL_DEFAULT_AVATAR_KEY = "smallDefaultAvatarKey";
@@ -340,6 +343,7 @@ public class UserBo extends BaseBo<User> implements UserDetailsService {
         String templateName = "forgot-password-template";
         Map<String, String> params = new HashMap<String, String>();
         params.put("hash", hash);
+        params.put("http_server_address_port", httpServerAddressPort);
         String body = parseTemplate(templateName, params, locale);
         sendMail(from, fromName, email, getSubjectByTemplateName(templateName, locale), body);
     }

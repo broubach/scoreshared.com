@@ -31,7 +31,7 @@
 										<p>Essa é a sua mensagem enviada à você:</p>
 										<p><i>${message}</i></p>
 									</#if>
-									<p>Se você quiser aceitar o convite e começar a acompanhar seus resultados com essa pessoa, por favor aceite o convite em <a href="http://${http_server_address_port}">www.scoreshared.com</a>.</p>
+									<p>Se você quiser aceitar o convite e começar a acompanhar seus resultados com essa pessoa, por favor aceite o convite em <a href="${http_server_address_port}">www.scoreshared.com</a>.</p>
 									<p>Atenciosamente,<br/>Scoreshared team</p>
 
 									<!-- social & contact -->

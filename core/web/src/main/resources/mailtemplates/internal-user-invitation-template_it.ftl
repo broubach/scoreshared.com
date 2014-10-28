@@ -31,7 +31,7 @@
 										<p>Questo è il messagio che lei ti ha inviato:</p>
 										<p><i>${message}</i></p>
 									</#if>
-									<p>Se vuoi accettare l'invito e iniziare a condividere i tuoi punteggi con questa persona, prego visitare <a href="http://${http_server_address_port}">www.scoreshared.com</a> per confermare.</p>
+									<p>Se vuoi accettare l'invito e iniziare a condividere i tuoi punteggi con questa persona, prego visitare <a href="${http_server_address_port}">www.scoreshared.com</a> per confermare.</p>
 									<p>Cordialmente,<br/>Scoreshared team</p>
 
 									<!-- social & contact -->

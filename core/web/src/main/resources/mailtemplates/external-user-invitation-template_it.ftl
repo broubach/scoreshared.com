@@ -33,7 +33,7 @@
 									</#if>
 
 									<p>Se vuoi accettare l'invito e iniziare a tracciare i tuoi punteggi, fare clic sul seguente link:</p>
-									<p><a href="http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}">http://${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}</a>.</p>
+									<p><a href="${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}">${http_server_address_port}/app/signup/receiveInvitation/${invitationHash}</a>.</p>
 
 									<p>Cordialmente,<br/>Scoreshared team</p>
 
