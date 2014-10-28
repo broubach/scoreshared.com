@@ -381,6 +381,7 @@
 									<directory>${project.build.directory}/minify</directory>
 								</resource>
 							</webResources>
+							<warSourceExcludes>WEB-INF/pages/helper-snippets/google-analytics.ftl,WEB-INF/pages/helper-snippets/google-analytics-production.ftl</warSourceExcludes>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -399,6 +400,13 @@
 											tofile="${project.build.outputDirectory}/scoreshared.properties" />
 										<delete
 											file="${project.build.outputDirectory}/scoreshared.production.properties" />
+										<delete
+											file="${project.build.directory}/${project.build.finalName}/WEB-INF/pages/helper-snippets/google-analytics.ftl" />
+										<copy
+											file="src/main/webapp/WEB-INF/pages/helper-snippets/google-analytics-production.ftl"
+											tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/pages/helper-snippets/google-analytics.ftl" />
+										<delete
+											file="${project.build.directory}/${project.build.finalName}/WEB-INF/pages/helper-snippets/google-analytics-production.ftl" />
 									</tasks>
 								</configuration>
 							</execution>
