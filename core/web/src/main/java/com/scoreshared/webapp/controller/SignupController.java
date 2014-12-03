@@ -231,7 +231,12 @@ public class SignupController extends BaseController {
     }
 
     @RequestMapping(value = "/captcha", method = RequestMethod.GET)
-    public String getCaptchaSnippet() {
+    public String getCaptchaSnippet(ModelMap model, HttpServletRequest request) {
+        Object captcha = (Captcha) request.getSession().getAttribute(Captcha.NAME);
+        if (captcha != null) {
+            // This code is only helpful when running the load test
+            model.put("captchaText", ((Captcha) captcha).getAnswer());
+        }
         return "signup/captcha-snippet";
     }
 

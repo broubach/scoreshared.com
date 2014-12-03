@@ -1,10 +1,13 @@
 <#import "/spring.ftl" as spring />
 
+<span>
 <h3><@spring.message code="label.security_control"/></h3>
 <h4><@spring.message code="label.insert_word_shown_below"/></h4>
 <form id="captcha-form">
 	<div class="input text">
 		<a id="refresh-captcha" href="#"><@spring.message code="label.try_with_other_words"/></a>
+		<#-- The following code should be uncommented for load test-->
+		<#-- input id="captchaText" value="${captchaText}" /-->
 		<img id="captcha" src="<@spring.url relativeUrl="/app/captcha"/>"/>
 	</div>
 	<div class="input text">
@@ -19,3 +22,4 @@
 	</div>
 </form>
 <div id="message-console" class="error-panel label alert radius" style="display: none"></div>
+</span>

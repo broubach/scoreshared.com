@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,22 +24,28 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 public class CustomTimestampTypeDescriptor implements SqlTypeDescriptor {
 
     public static final CustomTimestampTypeDescriptor INSTANCE = new CustomTimestampTypeDescriptor();
-    
+
     private static TimeZone UTC;
     private static TimeZone AMERICA_SAO_PAULO;
     private static SimpleDateFormat UTC_DF;
-    private static SimpleDateFormat CONVERSION_DF;
-    private static Map<String, Calendar> calendarByTimeZone;
+    private static SimpleDateFormat CONVERSION_UTC_DF;
+    private static SimpleDateFormat CONVERSION_AMERICA_SAO_PAULO_DF;
+    private static Map<String, DateFormat> dateFormatByTimeZone;
     {
-        calendarByTimeZone = new HashMap<String, Calendar>();
-        synchronized (calendarByTimeZone) {
+        dateFormatByTimeZone = new HashMap<String, DateFormat>();
+        synchronized (dateFormatByTimeZone) {
             UTC = TimeZone.getTimeZone("UTC");
-            AMERICA_SAO_PAULO = TimeZone.getTimeZone("America/Sao_Paulo");
-            CONVERSION_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             UTC_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             UTC_DF.setTimeZone(UTC);
-            calendarByTimeZone.put(AMERICA_SAO_PAULO.getID(), Calendar.getInstance(AMERICA_SAO_PAULO));
-            calendarByTimeZone.put(UTC.getID(), Calendar.getInstance(UTC));
+
+            AMERICA_SAO_PAULO = TimeZone.getTimeZone("America/Sao_Paulo");
+            CONVERSION_UTC_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            CONVERSION_UTC_DF.setTimeZone(UTC);
+            CONVERSION_AMERICA_SAO_PAULO_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            CONVERSION_AMERICA_SAO_PAULO_DF.setTimeZone(AMERICA_SAO_PAULO);
+
+            dateFormatByTimeZone.put(AMERICA_SAO_PAULO.getID(), CONVERSION_AMERICA_SAO_PAULO_DF);
+            dateFormatByTimeZone.put(UTC.getID(), CONVERSION_UTC_DF);
         }
     }
 
@@ -53,19 +59,20 @@ public class CustomTimestampTypeDescriptor implements SqlTypeDescriptor {
     }
 
     public <X> ValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-        return new BasicBinder<X>( javaTypeDescriptor, this ) {
+        return new BasicBinder<X>(javaTypeDescriptor, this) {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
-                Timestamp s = javaTypeDescriptor.unwrap( value, Timestamp.class, options );
+                Timestamp s = javaTypeDescriptor.unwrap(value, Timestamp.class, options);
                 if (s != null) {
-                    // there's something like 1970-01-01 19:00:00 that should be converted to
+                    // there's something like 1970-01-01 19:00:00 that should be
+                    // converted to
                     // 1970-01-01 22:00:00 before persisting
                     Timestamp result = convert(s.getTime(), UTC);
 
-                    st.setTimestamp( index, result );
+                    st.setTimestamp(index, result);
                 } else {
 
-                    st.setTimestamp( index, null );
+                    st.setTimestamp(index, null);
                 }
             }
         };
@@ -79,7 +86,10 @@ public class CustomTimestampTypeDescriptor implements SqlTypeDescriptor {
                     java.sql.Timestamp source = rs.getTimestamp(name);
                     if (source != null) {
                         // gets the date in UTC
-                        Date parsedToConvert = UTC_DF.parse(source.toString());
+                        Date parsedToConvert = null;
+                        synchronized (UTC_DF) {
+                            parsedToConvert = UTC_DF.parse(source.toString());
+                        }
 
                         // converts it to America/Sao_Paulo
                         Timestamp converted = convert(parsedToConvert.getTime(), AMERICA_SAO_PAULO);
@@ -95,13 +105,11 @@ public class CustomTimestampTypeDescriptor implements SqlTypeDescriptor {
     }
 
     public Timestamp convert(long timeMillis, TimeZone timezone) {
-        Calendar calendar = calendarByTimeZone.get(timezone.getID());
-        synchronized (calendar) {
-            calendar.setTimeInMillis(timeMillis);
+        DateFormat df = dateFormatByTimeZone.get(timezone.getID());
+        synchronized (df) {
+            df.getCalendar().setTimeInMillis(timeMillis);
 
-            CONVERSION_DF.setCalendar(calendar);
-
-            return Timestamp.valueOf(CONVERSION_DF.format(calendar.getTime()));
+            return Timestamp.valueOf(df.format(df.getCalendar().getTime()));
         }
     }
 }
