@@ -23,9 +23,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.scoreshared.business.bo.PlayerBo;
 import com.scoreshared.business.bo.UserBo;
+import com.scoreshared.business.exception.EmptyPlayerNameException;
+import com.scoreshared.business.exception.LongPlayerNameException;
+import com.scoreshared.business.exception.PlayerLinkedException;
+import com.scoreshared.domain.entity.Player;
 import com.scoreshared.domain.entity.User;
 import com.scoreshared.scaffold.LoggedUser;
+import com.scoreshared.scaffold.UserLoggedListener;
 import com.scoreshared.webapp.dto.BasicInformationForm;
 import com.scoreshared.webapp.validation.BasicInformationFormValidator;
 
@@ -34,7 +40,10 @@ import com.scoreshared.webapp.validation.BasicInformationFormValidator;
 public class ProfileBasicInformationController {
 
     @Inject
-    private UserBo bo;
+    private UserBo userBo;
+
+    @Inject
+    private PlayerBo playerBo;
 
     @Inject
     private MessageSource messageResource;
@@ -68,7 +77,7 @@ public class ProfileBasicInformationController {
                     || !StringUtils.isEmpty(form.getEmailConfirmation())) {
                 if (form.getEmailConfirmation() != null
                         && form.getEmailConfirmation().trim().equalsIgnoreCase(form.getEmail().trim())) {
-                    if (!bo.updateEmail(loggedUser, form.getEmail().trim())) {
+                    if (!userBo.updateEmail(loggedUser, form.getEmail().trim())) {
                         result.rejectValue("email", "error.the_specified_email_already_exists");
                     } else {
                         informationUpdated = true;
@@ -79,7 +88,7 @@ public class ProfileBasicInformationController {
             }
 
             if (!StringUtils.isEmpty(form.getPassword())) {
-                if (!bo.updatePassword(loggedUser, form.getPassword(), false, localeResolver.resolveLocale(request))) {
+                if (!userBo.updatePassword(loggedUser, form.getPassword(), false, localeResolver.resolveLocale(request))) {
                     result.rejectValue("password", "error.the_password_must_have_at_least_6_characters");
                 } else {
                     informationUpdated = true;
@@ -87,12 +96,15 @@ public class ProfileBasicInformationController {
             }
 
             boolean shouldUpdateUser = false;
+            boolean shouldRenamePlayer = false;
             if (!loggedUser.getFirstName().equalsIgnoreCase(form.getFirstName().trim())) {
                 loggedUser.setFirstName(form.getFirstName().trim());
+                shouldRenamePlayer = true;
                 shouldUpdateUser = true;
             }
             if (!loggedUser.getLastName().equalsIgnoreCase(form.getLastName().trim())) {
                 loggedUser.setLastName(form.getLastName().trim());
+                shouldRenamePlayer = true;
                 shouldUpdateUser = true;
             }
             if (!form.getGender().equals(String.valueOf(loggedUser.getGender()))) {
@@ -110,9 +122,33 @@ public class ProfileBasicInformationController {
                 shouldUpdateUser = false;
             }
 
-            if (shouldUpdateUser) {
-                bo.updateUser(loggedUser);
-                informationUpdated = true;
+            try {
+                Player player = null;
+                if (shouldRenamePlayer) {
+                    player = (Player) request.getSession().getAttribute(UserLoggedListener.ASSOCIATED_PLAYER);
+                    playerBo.renamePlayer(player.getId(), loggedUser.getFullName(), loggedUser.getId(), true);
+
+                    informationUpdated = true;
+                }
+
+                if (shouldUpdateUser) {
+                    userBo.updateUser(loggedUser);
+                    informationUpdated = true;
+                }
+
+                if (player != null) {
+                    player = playerBo.findPlayerByAssociationAndOwner(loggedUser.getId(), loggedUser.getId());
+                    request.getSession().setAttribute(UserLoggedListener.ASSOCIATED_PLAYER, player);
+                }
+
+            } catch (PlayerLinkedException e) {
+                throw new RuntimeException("Linked player exception that should never be thrown", e);
+            } catch (EmptyPlayerNameException e) {
+                informationUpdated = false;
+                result.reject("error.player_name_cannot_be_empty");
+            } catch (LongPlayerNameException e) {
+                informationUpdated = false;
+                result.reject("error.player_name_cannot_be_longer_than_255_characters");
             }
 
             if (informationUpdated) {

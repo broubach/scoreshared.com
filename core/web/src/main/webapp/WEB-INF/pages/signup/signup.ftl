@@ -29,7 +29,7 @@
 				<h2><@spring.message code="label.signup_with_your_facebook_account"/></h2>
 				<div class="centered">
 					<a href="#" id="fb_button"><img src="<@spring.url relativeUrl="/img/buttons/button-login-fb.png"/>"/></a>
-					<form id="fb_form" action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /></form>
+					<form id="fb_form" action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email,publish_actions" /></form>
 				</div>
 			</div>
 		</div>

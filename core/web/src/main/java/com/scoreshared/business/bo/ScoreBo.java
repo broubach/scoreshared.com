@@ -15,9 +15,11 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
 import org.apache.lucene.search.SortField;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.social.SocialException;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
@@ -38,6 +40,8 @@ import com.scoreshared.webapp.controller.ScoreOutcomeEnum;
 
 @Component
 public class ScoreBo extends BaseBo<Score> {
+    
+    private static final Logger log = Logger.getLogger("com.scoreshared");
     
     @Inject
     private GraphBo graphBo;
@@ -76,11 +80,16 @@ public class ScoreBo extends BaseBo<Score> {
 
             Connection<Facebook> facebookConnection = connectionRepository.findPrimaryConnection(Facebook.class);
             if (facebookConnection != null) {
-                MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-                map.set(scoreShared.getSport().name().toLowerCase() + "_record",
-                        new StringBuilder().append(httpServerAddressPort).append("/app/facebook/")
-                                .append(scoreShared.getHash()).toString());
-                facebookConnection.getApi().publish("me", "scoreshared:update", map);
+                try {
+                    MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+                    map.set(scoreShared.getSport().name().toLowerCase() + "_record",
+                            new StringBuilder().append(httpServerAddressPort).append("/app/facebook/")
+                                    .append(scoreShared.getHash()).toString());
+                    facebookConnection.getApi().publish("me", "scoreshared:update", map);
+
+                } catch (SocialException e) {
+                    log.error("Looks like there was some issue when publishing to the user timeline.", e);
+                }
             }
         }
     }

@@ -62,7 +62,7 @@ public class ProfilePlayersController {
             @ModelAttribute("playerName") String playerName, HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
-            bo.renamePlayer(playerId, playerName, loggedUser.getId());
+            bo.renamePlayer(playerId, playerName, loggedUser.getId(), false);
         } catch (PlayerLinkedException e) {
             result.put(
                     "errorMessage",
@@ -76,7 +76,7 @@ public class ProfilePlayersController {
         } catch (LongPlayerNameException e) {
             result.put(
                     "errorMessage",
-                    messageResource.getMessage("error.player_name_cannot_be_longer_than_45_characters", null,
+                    messageResource.getMessage("error.player_name_cannot_be_longer_than_255_characters", null,
                             localeResolver.resolveLocale(request)));
         }
         return result;
@@ -130,7 +130,7 @@ public class ProfilePlayersController {
                             localeResolver.resolveLocale(request)));
         } catch (LongPlayerNameException e) {
             result.put("errorMessage", messageResource.getMessage(
-                    "error.player_name_cannot_be_longer_than_45_characters", null,
+                    "error.player_name_cannot_be_longer_than_255_characters", null,
                     localeResolver.resolveLocale(request)));
         }
         return result;

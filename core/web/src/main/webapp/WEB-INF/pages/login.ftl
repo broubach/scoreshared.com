@@ -37,7 +37,7 @@
 					<span class="label secondary"><@spring.message code="label.login_with"/></span>
 				</div>
 				<div class="small-5 columns">
-					<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email" /><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
+					<form action="<@spring.url relativeUrl="/app/signin/facebook"/>" method="POST"><input type="hidden" name="scope" value="email,publish_actions" /><button type="submit" class="radius button-small secondary"><img src="<@spring.url relativeUrl="/img/fb.png"/>"/> <@spring.message code="label.facebook"/></button></form>
 				</div>
 			</div>
 		</div>

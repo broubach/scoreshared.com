@@ -60,11 +60,11 @@ public class PlayerBo extends GraphBo {
         flagPlayersWithScore(players);
     }
 
-    public void renamePlayer(Integer playerId, String newName, Integer ownerId) throws PlayerLinkedException, EmptyPlayerNameException, LongPlayerNameException {
+    public void renamePlayer(Integer playerId, String newName, Integer ownerId, boolean expectLinkedPlayer) throws PlayerLinkedException, EmptyPlayerNameException, LongPlayerNameException {
         if (newName.isEmpty()) {
             throw new EmptyPlayerNameException();
         }
-        if (newName.length() > 45) {
+        if (newName.length() > 255) {
             throw new LongPlayerNameException();
         }
 
@@ -73,7 +73,7 @@ public class PlayerBo extends GraphBo {
         Transaction transaction = fullTextSession.beginTransaction();
 
         Player player = (Player) fullTextSession.load(Player.class, playerId);
-        if (player.isConnected()) {
+        if (!expectLinkedPlayer && player.isConnected()) {
             throw new PlayerLinkedException();
         }
 

@@ -7,7 +7,7 @@
 				<h2><@spring.message code="label.rename_player"/></h2>
 				<div id="info-panel" class="label radius" style="display: none"></div>
 				<div class="input text">
-					<input name="dialog-rename-player-new_name" type="text" id="dialog-rename-player-new_name" maxlength="45"></input>
+					<input name="dialog-rename-player-new_name" type="text" id="dialog-rename-player-new_name" maxlength="255"></input>
 				</div>
 				<div class="row content no-padding-bottom">
 					<div class="columns small-12 direita">
