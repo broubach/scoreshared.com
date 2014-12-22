@@ -200,6 +200,9 @@ public class ScoreController extends BaseController {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.writeValue(playersList, toPlayerList(userBo.listPlayersNameExceptLoggedUser(loggedUser)));
                 mav.addObject("playersList", playersList.toString());
+                mav.addObject("unusedPlayersList", playersList.toString());
+
+                connectionsHelper.populateModelMapWithConnections(mav.getModelMap(), StringUtils.isEmpty(loggedUser.getPassword()), false);
                 return mav;
             }
 

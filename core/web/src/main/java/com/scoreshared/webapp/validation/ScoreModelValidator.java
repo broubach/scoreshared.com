@@ -45,7 +45,7 @@ public class ScoreModelValidator implements Validator {
         }
 
         // date mandatory 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "error.field_is_required",
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "error.field__is_required",
                 new Object[] { messageResource.getMessage("label.validation_date", null, locale) });
         if (errors.getFieldError("date") == null) {
             try {
