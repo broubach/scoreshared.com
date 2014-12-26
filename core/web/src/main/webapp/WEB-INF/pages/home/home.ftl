@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<#assign head_additional_css=["/css/joyride-2.1.css"]>
 	<#assign head_additional_js=[	"/js/scaffold/playerDecorationUtil.js",
 									"/js/vendor/Chart.min.js"
 									]>
@@ -42,7 +43,7 @@
 			</div>
 		</div>
 		<div class="columns large-6">
-			<a href="<@spring.url relativeUrl="/app/score"/>" class="button button-primary js-new-score no-margin-top"><@spring.message code="label.create"/></a>
+			<a id="createScoreButton" href="<@spring.url relativeUrl="/app/score"/>" class="button button-primary js-new-score no-margin-top"><@spring.message code="label.create"/></a>
 			<div class="box-content">
 				<h2><@spring.message code="label.statistics"/></h2>
 				<hr />
@@ -67,9 +68,39 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="row content">
+		<br/>
+	</div>
+
+	<#include "/helper-snippets/basic-footer.ftl">
+
+	<ol id="intro" data-joyride style="display: none">
+	  <li data-text="<@spring.message code="label.welcome_wizard.intro.2"/>" data-options="cookieMonster: true; cookieName: JoyRide; cookieDomain: false; cookieExpires: 1">
+		<p><@spring.message code="label.welcome_wizard.intro.1"/></p>
+	  </li>
+	  <li data-id="createScoreButton" data-options="scrollSpeed: 0; tipLocation: bottom; nubPosition: top;">
+	  	<p><@spring.message code="label.welcome_wizard.create_button.2"/></p>
+	  </li>
+	  <li data-class="menu-score" data-options="tipLocation: bottom; nubPosition: top;">
+	  	<p><@spring.message code="label.welcome_wizard.scores.1"/></p>
+	  </li>
+	  <li data-class="menu-mensagens" data-options="tipLocation: bottom; nubPosition: top;">
+	  	<p><@spring.message code="label.welcome_wizard.notifications.1"/></p>
+	  </li>
+	  <li data-class="menu-profile" data-options="tipLocation: bottom; nubPosition: top;">
+	  	<p><@spring.message code="label.welcome_wizard.profile.1"/></p>
+	  </li>
+	  <li data-id="feedback" data-button="<@spring.message code="label.welcome_wizard.feedback.2"/>" data-options="tipLocation: right; nubPosition: left;">
+	  	<p><@spring.message code="label.welcome_wizard.feedback.1"/></p>
+	  </li>
+	</ol>
+</body>
+</html>
+
 	<script>
 	$(function(){
-	    PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>')
+	    PlayerDecorationUtil.addPlayerLinksTo('.item-resultado', ${playersForLinkCreation}, '<@spring.url relativeUrl="/"/>');
 
 	    //Get the context of the canvas element we want to select
 		var ctx = $("#estatistica-jogos").get(0).getContext("2d");
@@ -119,12 +150,9 @@
 	        url: 'http://www.scoreshared.com/chart?win=${win}&loss=${loss}',
 	        async: true
 	   }); 
+
+		if ($.cookie('JoyRide') == undefined) {
+			$(document).foundation('joyride', 'start');
+		}
 	});
 	</script>
-	<div class="row content">
-		<br/>
-	</div>
-
-	<#include "/helper-snippets/basic-footer.ftl">
-</body>
-</html>

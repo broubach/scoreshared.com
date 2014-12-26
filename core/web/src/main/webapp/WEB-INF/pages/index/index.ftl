@@ -19,7 +19,7 @@
 				<h2><@spring.message code="label.index.phrase3"/></h2>
 			</hgroup>
 			<div class="foto-banner">
-				<div><@spring.message code="label.index.available_for"/>:</br><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
+				<div><@spring.message code="label.index.available_for"/>:<br/><span data-sport="1">Tennis</span>, <span data-sport="2">Squash</span>, <span data-sport="3">Paddle</span>, <span data-sport="4">Table Tennis</span>, <span data-sport="5">Badminton</span> and others...</div>
 				<img src="<@spring.url relativeUrl="/img/foto-esporte-1.png"/>" alt="" width="466" height="325"/>
 			</div>
 		</div>
